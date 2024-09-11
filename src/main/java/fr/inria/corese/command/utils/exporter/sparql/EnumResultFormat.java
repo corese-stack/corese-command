@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import fr.inria.corese.sparql.api.ResultFormatDef;
+import fr.inria.corese.core.sparql.api.ResultFormatDef;
 
 /**
  * Enumeration of result serialization formats.

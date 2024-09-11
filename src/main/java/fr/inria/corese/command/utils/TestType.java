@@ -2,10 +2,10 @@ package fr.inria.corese.command.utils;
 
 import fr.inria.corese.core.Graph;
 import fr.inria.corese.core.query.QueryProcess;
-import fr.inria.corese.kgram.api.core.Node;
-import fr.inria.corese.kgram.core.Query;
-import fr.inria.corese.sparql.datatype.DatatypeMap;
-import fr.inria.corese.sparql.exceptions.EngineException;
+import fr.inria.corese.core.kgram.api.core.Node;
+import fr.inria.corese.core.kgram.core.Query;
+import fr.inria.corese.core.sparql.datatype.DatatypeMap;
+import fr.inria.corese.core.sparql.exceptions.EngineException;
 
 /**
  * Utility class to test the type of a string.

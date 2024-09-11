@@ -5,8 +5,8 @@ import java.nio.file.Path;
 
 import fr.inria.corese.command.utils.exporter.AbstractExporter;
 import fr.inria.corese.core.Graph;
-import fr.inria.corese.kgram.core.Mappings;
-import fr.inria.corese.sparql.triple.parser.ASTQuery;
+import fr.inria.corese.core.kgram.core.Mappings;
+import fr.inria.corese.core.sparql.triple.parser.ASTQuery;
 import picocli.CommandLine.Model.CommandSpec;
 
 /**

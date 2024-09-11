@@ -8,7 +8,7 @@ import fr.inria.corese.command.utils.loader.rdf.RdfDataLoader;
 import fr.inria.corese.command.utils.loader.sparql.SparqlQueryLoader;
 import fr.inria.corese.core.Graph;
 import fr.inria.corese.core.query.QueryProcess;
-import fr.inria.corese.kgram.core.Mappings;
+import fr.inria.corese.core.kgram.core.Mappings;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 

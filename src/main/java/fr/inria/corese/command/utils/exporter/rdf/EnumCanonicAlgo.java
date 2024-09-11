@@ -1,6 +1,6 @@
 package fr.inria.corese.command.utils.exporter.rdf;
 
-import fr.inria.corese.sparql.api.ResultFormatDef;
+import fr.inria.corese.core.sparql.api.ResultFormatDef;
 
 /**
  * Enumeration of canonic algorithms.
