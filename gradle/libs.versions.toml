@@ -2,7 +2,7 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
-fr-inria-corese-corese-core = "4.5.1"
+fr-inria-corese-corese-core = "5.0.0-SNAPSHOT"
 info-picocli-picocli = "4.7.6"
 org-assertj-assertj-core = "3.26.3"
 org-junit-jupiter-junit-jupiter-api = "5.11.0-M1"
