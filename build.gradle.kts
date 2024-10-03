@@ -8,6 +8,7 @@ plugins {
     id("com.gradleup.shadow") version "8.3.1"
     signing
     application
+    id("org.gradlex.extra-java-module-info") version "1.8"
 }
 
 project.setProperty("mainClassName","fr.inria.corese.command.App")
@@ -30,13 +31,28 @@ repositories {
 }
 
 dependencies {
-    api(libs.info.picocli.picocli)
-    api(libs.fr.inria.corese.corese.core)
+    implementation("org.apache.commons:commons-lang3:3.17.0")
+    implementation("fr.inria.corese:corese-core:5.0.0-SNAPSHOT")
+    implementation(libs.info.picocli.picocli)
+    implementation(libs.fr.inria.corese.corese.core)
+    implementation("fr.com.hp.hpl.jena.rdf.arp:arp:2.2.b")
+    implementation("commons-lang:commons-lang:2.4")
+    implementation("org.apache.commons:commons-collections4:4.4")
+    implementation("com.github.jsonld-java:jsonld-java:0.13.4")
+
     testImplementation(libs.org.junit.jupiter.junit.jupiter.api)
     testImplementation(libs.org.junit.jupiter.junit.jupiter.engine)
     testImplementation(libs.org.wiremock.wiremock)
     testImplementation(libs.org.assertj.assertj.core)
 }
+
+extraJavaModuleInfo {
+    failOnMissingModuleInfo.set(false)
+    automaticModule("fr.com.hp.hpl.jena.rdf.arp:arp", "arp")
+    automaticModule("com.github.jsonld-java:jsonld-java", "jsonld.java")
+    automaticModule("commons-lang:commons-lang", "commons.lang")
+}
+
 
 group = "fr.inria.corese"
 version = "5.0.0-SNAPSHOT"
