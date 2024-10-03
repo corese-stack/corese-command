@@ -79,3 +79,4 @@ target/
 
 # Other build directories and generated files
 /bin/
+/qodana.yaml
