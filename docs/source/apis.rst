@@ -4,14 +4,14 @@ CORESE APIs
 .. toctree::
   :hidden:
 
-   Java API <java_api/library_root>
+   CLI API <cli_ref/cli_root>
 
 .. grid:: 2
 
     .. grid-item-card::
       :shadow: sm
       :class-card: sd-rounded-3
-      :link: java_api/library_root.html
+      :link: https://corese-stack.github.io/corese-core/
 
       Corese Java API
       ^^^^^^^^^^^^^^^^^^^^^^^
