@@ -19,7 +19,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        ref: main
+        ref: feature/retrieve_doc # TODO: update with main upon release
 
     - name: Fetch tags
       run: git fetch --prune --unshallow --tags --force
@@ -28,7 +28,7 @@ jobs:
       run: |
         source /builds/miniconda3/etc/profile.d/conda.sh
         conda activate corese-core-documentation
-        sphinx-multiversion docs/source build/html -D 'exhale_args.containmentFolder=${sourcedir}/java_api'
+        sphinx-multiversion docs/source build/html
         chmod u+x docs/switcher_generator.sh
         ./docs/switcher_generator.sh build/html/switcher.json build/html/index.html
 
