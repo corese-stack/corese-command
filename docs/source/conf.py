@@ -42,8 +42,6 @@ extensions = [
     #'sphinx_mdinclude', # to include partial markdown files
     #'m2r3', # to include markdown files
     'sphinx_copybutton', # to add copy buttons to code blocks
-    'breathe', # to include doxygen generated documentation for java code
-    'exhale' # to process doxygen xml files
     ]
 
 templates_path = ['_templates']
@@ -92,7 +90,7 @@ html_theme_options = {
             "icon": "fab fa-github-square"
         }
     ],
-    "switcher": {"json_url": "https://corese-stack.github.io/corese-core/switcher.json", "version_match": r"v\d+\.\d+\.\d+"}
+    "switcher": {"json_url": "https://corese-stack.github.io/corese-command/switcher.json", "version_match": r"v\d+\.\d+\.\d+"}
 }
 
 html_sidebars = {
@@ -104,44 +102,6 @@ html_sidebars = {
 
 myst_heading_anchors = 4
 myst_fence_as_directive = ["mermaid"]
-
-# -- Doxygen/breath/exhale extensions Options --------------------------------
-# Setup absolute paths for communicating with breathe / exhale where
-# items are expected / should be trimmed by.
-# https://breathe.readthedocs.io/en/latest/quickstart.html
-# https://exhale.readthedocs.io/en/latest/usage.html
-
-# Setup the breathe extension
-# https://breathe.readthedocs.io/en/latest/
-breathe_projects = {
-    "corese": "../build/doxygen_xml"
-}
-
-breathe_default_project = "corese"
-
-# Setup the exhale extension
-exhale_args = {
-    # These arguments are required
-    "containmentFolder":     "./java_api",
-    "rootFileName":          "library_root.rst", # EXCLUDE - if we want to change the sections
-    "doxygenStripFromPath": "..",
-    # Heavily encouraged optional argument (see docs)
-    "rootFileTitle":         "Java API",
-
-    # Suggested optional arguments
-    "createTreeView":        True,
-    # TIP: if using the sphinx-bootstrap-theme, you need
-    # "treeViewIsBootstrap": True,
-    "exhaleExecutesDoxygen": True,
-    # all Doxygen configuration will be done in the Doxyfile
-    "exhaleUseDoxyfile": True,
-    "verboseBuild": False,
-
-    # Exclude certain entities from Full API
-    # https://exhale.readthedocs.io/en/latest/reference/configs.html#root-api-document-customization
-    "unabridgedOrphanKinds": {'dir', 'file', 'page', 'namespace' }
-}
-
 
 # Tell sphinx what the primary language being documented is.
 primary_domain = 'java'
