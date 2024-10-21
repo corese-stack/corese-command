@@ -31,7 +31,7 @@ CORESE APIs
     .. grid-item-card::
       :shadow: sm
       :class-card: sd-rounded-3
-      :link: cli_ref/index.html
+      :link: cli_ref/cli_root.html
 
       Corese command-line interface
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
