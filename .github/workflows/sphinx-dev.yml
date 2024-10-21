@@ -28,11 +28,5 @@ jobs:
       run: |
         source /builds/miniconda3/etc/profile.d/conda.sh
         conda activate corese-core-documentation
-        cd docs/source
-        doxygen DoxyfileFull
-        cd ../..
-        mkdir build/
-        mkdir build/html/
-        mkdir build/html/dev/
-        mv docs/build/doxygen_html/* build/html/dev/
+        sphinx-build docs/source/ build/html/dev/
         ghp-import build/html/dev/ -p -x dev
