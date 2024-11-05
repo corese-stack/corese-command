@@ -4,9 +4,8 @@ package fr.inria.corese.command.utils.exporter;
 import java.nio.file.Path;
 
 import fr.inria.corese.core.Graph;
-import fr.inria.corese.core.print.ResultFormat;
 import fr.inria.corese.core.kgram.core.Mappings;
-import fr.inria.corese.core.sparql.triple.function.extension.ResultFormater;
+import fr.inria.corese.core.print.ResultFormat;
 import picocli.CommandLine.Model.CommandSpec;
 
 /**
