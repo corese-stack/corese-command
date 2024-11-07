@@ -1,0 +1,72 @@
+# Corese Changelog
+
+## Version 4.5.0 – 2023-12-14
+
+### Added
+
+- Added new sub-command `shacl` to validate RDF graphs against SHACL shapes.
+- Added new sub-command `remote-sparql` to execute SPARQL queries on remote endpoints (see [issue #135](https://github.com/Wimmics/corese/issues/135)).
+- Added verbose option.
+- Added support for property files.
+- Added `-no-owl-import` option (see [issue #134](https://github.com/Wimmics/corese/issues/134)).
+- Added output formats `N-Triples` and `N-Quads` to the `convert` sub-command.
+
+### Changed
+
+- Moved hint messages to the standard error stream.
+- Moved error messages to the standard error stream (see [issues #141](https://github.com/Wimmics/corese/issues/141) and [#142](https://github.com/Wimmics/corese/issues/142)).
+
+### Fixed
+
+- Fixed Trig serialization to escape special characters (see [issue #151](https://github.com/Wimmics/corese/issues/151)).
+- Fixed federated queries with `PREFIX` statements failing under certain conditions (see [issue #140](https://github.com/Wimmics/corese/issues/140)).
+
+## Version 4.4.1 – 2023-07-25
+
+### Added
+
+- Added URL support as an input file for `convert` and `sparql` sub-commands.
+- Added standard input support as an input file for `sparql` and `convert` sub-commands.
+- Added standard output support as an output file for `sparql` and `convert` sub-commands.
+- Added multiple files support as input for the `sparql` sub-command.
+- Added directory and recursive directory support as input for the `sparql` sub-command.
+- Added support for all types of queries (SELECT, CONSTRUCT, ASK, DESCRIBE, INSERT, DELETE, INSERT WHERE, DELETE WHERE) in the `sparql` sub-command.
+- Added user choice for result format in the `sparql` sub-command.
+- Added Markdown output format for the `sparql` sub-command.
+- Added MIME type support as a format name.
+- Added configuration to disable `owl:imports` auto-import.
+
+### Changed
+
+- Refactored `convert` and `sparql` sub-commands.
+- Renamed format names for more consistency.
+
+### Removed
+
+- Removed `owlProfile` and `ldscript` sub-commands (to be reintroduced in a future release after refactoring).
+
+### Fixed
+
+- Fixed warning: `sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.`
+
+### Security
+
+- Updated `json` from `20180813` to `20230227` in `/sparql` (see [Pull Request #123](https://github.com/Wimmics/corese/pull/123)).
+- Updated `json` from `20180813` to `20230227` in `/corese-test` (see [Pull Request #124](https://github.com/Wimmics/corese/pull/124)).
+- Updated `guava` from `31.1-jre` to `32.0.0-jre` in `/corese-jena` (see [Pull Request #128](https://github.com/Wimmics/corese/pull/128)).
+
+## Version 4.4.0 – 2023-03-30
+
+### Added
+
+- **Corese-Command**: Initial beta release of the Corese-Command line application.  
+  > **Note**: The interface and commands are subject to change in future versions.
+
+- **Options**:
+  - `-h`, `--help`: Display help message and exit.
+  - `-V`, `--version`: Print version information and exit.
+
+- **Commands**:
+  - `convert`: Allows conversion of RDF files between different serialization formats (e.g., Turtle, RDF/XML, JSON-LD).
+  - `sparql`: Enables execution of SPARQL queries directly from the command line.
+  - `owlProfile`: Checks RDF data against OWL profiles to ensure compatibility.
