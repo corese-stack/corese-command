@@ -1,0 +1,38 @@
+<configuration>
+
+    <!-- Define properties -->
+
+    <!-- Default log pattern includes date, thread, level, logger, message, file name, and line
+    number -->
+    <property
+        name="LOG_PATTERN"
+        value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    />
+
+    <!-- Define a default log level for the root logger -->
+    <!-- TRACE < DEBUG < INFO < WARN < ERROR -->
+    <property name="ROOT_LOG_LEVEL" value="info" />
+
+    <!-- Console Appender -->
+    <!-- Logs messages to the console (stdout) -->
+    <appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Use the enriched pattern -->
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root Logger -->
+    <!-- Logs all messages at INFO level and above -->
+    <root level="${ROOT_LOG_LEVEL}">
+        <appender-ref ref="ConsoleAppender" />
+    </root>
+
+    <!-- Specific Logger -->
+
+    <!-- Limit the log level for the fr.inria.corese.core package -->
+    <logger name="fr.inria.corese.core" level="error">
+        <appender-ref ref="ConsoleAppender" />
+    </logger>
+
+</configuration>

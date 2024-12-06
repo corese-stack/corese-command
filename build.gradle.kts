@@ -70,6 +70,8 @@ dependencies {
     implementation("com.github.jsonld-java:jsonld-java:0.13.6") // Library for JSON-LD support
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0") // Jakarta REST API specifications
     implementation("fr.com.hp.hpl.jena.rdf.arp:arp:2.2.b") // Jena implementation for RDF parsing
+    implementation("org.slf4j:slf4j-api:2.0.16") // Simple Logging Facade for Java (SLF4J)
+    runtimeOnly("ch.qos.logback:logback-classic:1.5.12") // Logging framework for SLF4J
 
     testImplementation("org.wiremock:wiremock:3.9.2") // HTTP server mocking for API testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.3") // JUnit 5 for testing
