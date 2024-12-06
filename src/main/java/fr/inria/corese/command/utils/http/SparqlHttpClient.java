@@ -24,12 +24,15 @@ import jakarta.ws.rs.client.Invocation.Builder;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import picocli.CommandLine.Model.CommandSpec;
 
 /**
  * This class provides functionalities to send HTTP requests to a SPARQL
  * endpoint.
  */
 public class SparqlHttpClient {
+
+    private CommandSpec spec;
 
     private final String endpointUrl;
     private EnumRequestMethod requestMethod = EnumRequestMethod.GET;
@@ -51,7 +54,8 @@ public class SparqlHttpClient {
      * 
      * @param endpointUrl URL of the SPARQL endpoint to send the request to.
      */
-    public SparqlHttpClient(String endpointUrl) {
+    public SparqlHttpClient(CommandSpec spec, String endpointUrl) {
+        this.spec = spec;
         if (endpointUrl == null || endpointUrl.isEmpty()) {
             throw new IllegalArgumentException("Endpoint URL must be specified");
         }
@@ -186,7 +190,7 @@ public class SparqlHttpClient {
 
                 String newLocation = this.getRedirectLocation(response);
                 if (this.verbose) {
-                    System.err.println("Redirecting to: " + newLocation);
+                    this.spec.commandLine().getErr().println("Redirecting to: " + newLocation);
                 }
 
                 webTarget = this.buildWebTarget(newLocation, query, defaultGraphUris, namedGraphUris);
@@ -217,10 +221,10 @@ public class SparqlHttpClient {
      * @param response the response to print
      */
     private void printResponse(Response response) {
-        System.err.println("Response Details:");
+        this.spec.commandLine().getErr().println("Response Details:");
 
         if (response != null) {
-            System.err.println("  HTTP code: " + response.getStatus());
+            this.spec.commandLine().getErr().println("  HTTP code: " + response.getStatus());
         }
     }
 
@@ -231,35 +235,35 @@ public class SparqlHttpClient {
      * @param bodyContent the body content of the request
      */
     private void printRequest(WebTarget webTarget, String bodyContent) {
-        System.err.println("Request Details:");
+        this.spec.commandLine().getErr().println("Request Details:");
 
         // Print URL
         if (webTarget != null && webTarget.getUri() != null) {
-            System.err.println("\tURL: " + webTarget.getUri());
+            this.spec.commandLine().getErr().println("\tURL: " + webTarget.getUri());
         }
 
         // Print request method
         if (this.requestMethod != null) {
-            System.err.println("\tmethod: " + this.requestMethod);
+            this.spec.commandLine().getErr().println("\tmethod: " + this.requestMethod);
         }
 
         // Print query string parameter
         if (webTarget != null && webTarget.getUri() != null && webTarget.getUri().getQuery() != null
                 && !webTarget.getUri().getQuery().isEmpty()) {
-            System.err.println("\tQuery string parameter: " + webTarget.getUri().getQuery());
+            this.spec.commandLine().getErr().println("\tQuery string parameter: " + webTarget.getUri().getQuery());
         }
 
         // Print headers
         if (this.headers != null && !this.headers.isEmpty()) {
-            System.err.println("\tHeaders:");
+            this.spec.commandLine().getErr().println("\tHeaders:");
             for (Pair<String, String> header : this.headers) {
 
-                System.err.println("    " + header.getKey() + ": " + header.getValue());
+                this.spec.commandLine().getErr().println("    " + header.getKey() + ": " + header.getValue());
             }
         }
 
         if (bodyContent != null && !bodyContent.isEmpty()) {
-            System.err.println("\tRequest body: " + bodyContent);
+            this.spec.commandLine().getErr().println("\tRequest body: " + bodyContent);
         }
     }
 

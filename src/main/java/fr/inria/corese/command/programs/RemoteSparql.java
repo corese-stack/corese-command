@@ -114,7 +114,7 @@ public class RemoteSparql extends AbstractCommand {
      */
     public String sendRequest() throws Exception {
 
-        SparqlHttpClient client = new SparqlHttpClient(this.endpoint_url);
+        SparqlHttpClient client = new SparqlHttpClient(this.spec, this.endpoint_url);
         this.parseHeader(client);
         client.setRequestMethod(this.requestMethod);
         client.setVerbose(this.verbose);
