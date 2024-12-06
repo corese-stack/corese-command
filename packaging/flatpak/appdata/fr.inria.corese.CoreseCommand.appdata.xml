@@ -2,45 +2,33 @@
 <component type="console-application">
     <id>fr.inria.corese.CoreseCommand</id>
 
-    <name>Corese-Command</name>
+    <name>Corese Command</name>
+    <name xml:lang="fr">Corese Command</name>
 
-    <summary>Unlock the power of the Semantic Web</summary>
-    <summary xml:lang="fr">Débloquez la puissance du Web sémantique</summary>
+    <summary>Handling the semantic web</summary>
+    <summary xml:lang="fr">Manipuler le web sémantique</summary>
 
-    <developer_name>Inria Research Team Wimmics</developer_name>
-    <developer_name xml:lang="fr">Équipe de recherche Inria Wimmics</developer_name>
+    <developer id="fr.inria.wimmics">
+        <name>Inria Research Team Wimmics</name>
+        <name xml:lang="fr">Équipe de recherche Inria Wimmics</name>
+    </developer>
 
     <metadata_license>MIT</metadata_license>
     <project_license>CECILL-C</project_license>
 
-    <description>
-        <p>
-            Corese is a comprehensive software platform designed to implement and extend the W3C's
-            Semantic Web standards. This includes support for RDF, RDFS, SPARQL 1.1 Query &amp;
-            Update, OWL RL, SHACL, and more.
-        </p>
-        <p>
-            Corese-Command serves as the command-line interface (CLI) to the Corese platform. With
-            it, you can execute SPARQL queries against RDF datasets and effortlessly convert between
-            various RDF serialization formats all directly from the command line. This makes
-            Corese-Command an invaluable asset for automated data processing, rapid testing, and
-            seamless integration into broader applications and workflows.
-        </p>
+    <branding>
+        <color type="primary" scheme_preference="light">#faa298</color>
+        <color type="primary" scheme_preference="dark">#7f2c22</color>
+    </branding>
 
-        <!-- French translation -->
-        <p xml:lang="fr">
-            Corese est une plateforme logicielle complète conçue pour mettre en œuvre et étendre les
-            normes du Web sémantique de W3C. Cela inclut le support pour RDF, RDFS, SPARQL 1.1 Query
-            &amp; Update, OWL RL, SHACL, et plus encore.
-        </p>
-        <p xml:lang="fr">
-            Corese-Command sert d'interface en ligne de commande (CLI) à la plateforme Corese. Avec
-            lui, vous pouvez exécuter des requêtes SPARQL contre des ensembles de données RDF et
-            convertir facilement entre divers formats de sérialisation RDF directement depuis la
-            ligne de commande. Cela fait de Corese-Command un atout inestimable pour le traitement
-            automatisé des données, les tests rapides, et l'intégration transparente dans des
-            applications et des flux de travail plus larges.
-        </p>
+    <description>
+        <p>Corese Command is a powerful command-line utility designed for working with RDF data and SPARQL queries. It provides an extensive set of tools for managing and analyzing semantic web datasets with ease.</p>
+        <p>This application enables seamless conversion between RDF serialization formats, robust SPARQL querying capabilities, and the ability to validate RDF datasets using SHACL shapes. It also supports remote SPARQL querying over the web and canonicalization of RDF data to ensure consistency.</p>
+        <p>Whether you`re building knowledge graphs, integrating data, or exploring semantic web applications, Corese Command streamlines complex operations into a straightforward and efficient workflow.</p>
+
+        <p xml:lang="fr">Corese Command est un outil en ligne de commande puissant conçu pour travailler avec les données RDF et les requêtes SPARQL. Il offre un ensemble complet de fonctionnalités pour gérer et analyser des ensembles de données du web sémantique de manière efficace.</p>
+        <p xml:lang="fr">Cette application permet une conversion fluide entre les formats de sérialisation RDF, des capacités avancées de requêtage SPARQL, ainsi que la validation de données RDF à l`aide des formes SHACL. Elle prend également en charge les requêtes SPARQL distantes sur le web et la canonicalisation des données RDF pour garantir leur cohérence.</p>
+        <p xml:lang="fr">Que vous construisiez des graphes de connaissances, intégriez des données ou exploriez des applications du web sémantique, Corese Command simplifie des opérations complexes pour offrir un flux de travail clair et efficace.</p>
     </description>
 
 
@@ -54,6 +42,7 @@
 
     <keywords>
         <keyword>semantic web</keyword>
+        <keyword xml:lang="fr">web sémantique</keyword>
         <keyword>RDF</keyword>
         <keyword>SPARQL</keyword>
         <keyword>OWL</keyword>
@@ -69,16 +58,27 @@
         <keyword>SPARQL Template</keyword>
         <keyword>Command Line Interface</keyword>
         <keyword>CLI</keyword>
+        <keyword xml:lang="fr">interface en ligne de commande</keyword>
         <keyword>linked data</keyword>
-        <keyword>graph databasE</keyword>
+        <keyword xml:lang="fr">données liées</keyword>
+        <keyword>graph database</keyword>
+        <keyword xml:lang="fr">base de données de graphes</keyword>
         <keyword>web of data</keyword>
+        <keyword xml:lang="fr">web de données</keyword>
         <keyword>knowledge graph</keyword>
+        <keyword xml:lang="fr">graphe de connaissances</keyword>
         <keyword>ontology</keyword>
+        <keyword xml:lang="fr">ontologie</keyword>
         <keyword>reasoning</keyword>
+        <keyword xml:lang="fr">raisonnement</keyword>
         <keyword>inference</keyword>
+        <keyword xml:lang="fr">inférence</keyword>
         <keyword>inference engine</keyword>
+        <keyword xml:lang="fr">moteur d'inférence</keyword>
         <keyword>rule engine</keyword>
+        <keyword xml:lang="fr">moteur de règles</keyword>
         <keyword>knowledge representation</keyword>
+        <keyword xml:lang="fr">représentation des connaissances</keyword>
     </keywords>
 
     <content_rating type="oars-1.1" />
@@ -87,32 +87,55 @@
 
     <screenshots>
         <screenshot type="default">
-            <image>https://files.inria.fr/corese/distrib/FlatHub/command/convert-jsonld.png</image>
-            <caption>Convert Turtle to JSON-LD</caption>
+            <image>https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/help.png</image>
+            <caption>Print help page</caption>
+            <caption xml:lang="fr">Afficher la page d'aide</caption>
         </screenshot>
         <screenshot>
-            <image>https://files.inria.fr/corese/distrib/FlatHub/command/sparql-md.png</image>
-            <caption>SPARQL query with markdown output</caption>
+            <image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/convert_1.png</image>
+            <caption>Convert Turtle to JSON-LD from a local file</caption>
+            <caption xml:lang="fr">Convertir Turtle en JSON-LD à partir d'un fichier local</caption>
         </screenshot>
         <screenshot>
-            <image>https://files.inria.fr/corese/distrib/FlatHub/command/sparql-xml.png</image>
-            <caption>SPARQL query with XML output</caption>
+            <image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/convert_2.png</image>
+            <caption>Convert Turtle to Trig from an online file</caption>
+            <caption xml:lang="fr">Convertir Turtle en Trig à partir d'un fichier en ligne</caption>
         </screenshot>
         <screenshot>
-            <image>https://files.inria.fr/corese/distrib/FlatHub/command/convert-trig-url.png</image>
-            <caption>Convert Turtle to TriG from URL</caption>
+            <image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/sparql_1.png</image>
+            <caption>Query a local file with markdown output</caption>
+            <caption xml:lang="fr">Interroger un fichier local avec une sortie en markdown</caption>
         </screenshot>
         <screenshot>
-            <image>https://files.inria.fr/corese/distrib/FlatHub/command/sparql-pipe-insert.png</image>
-            <caption>SPARQL query with pipe input and INSERT WHERE</caption>
+            <image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/sparql_2.png</image>
+            <caption>Query a local file with xml output</caption>
+            <caption xml:lang="fr">Interroger un fichier local avec une sortie en xml</caption>
+        </screenshot>
+        <screenshot>
+            <image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/sparql_2.png</image>
+            <caption>Query a online endpoint</caption>
+            <caption xml:lang="fr">Interroger un point de terminaison en ligne</caption>
+        </screenshot>
+        <screenshot>
+            <image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/shacl.png</image>
+            <caption>Validate RDF data against SHACL shapes</caption>
+            <caption xml:lang="fr">Valider des données RDF contre des formes SHACL</caption>
+        </screenshot>
+        <screenshot>
+            <image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/canonicalize.png</image>
+            <caption>Canonicalize RDF data</caption>
+            <caption xml:lang="fr">Canonicaliser des données RDF</caption>
         </screenshot>
     </screenshots>
 
     <releases>
-        <release version="4.5.1" date="">
-            <description>
-            </description>
-        </release>
         <release version="4.5.0" date="2023-12-14">
             <description>
                 <ul>
@@ -152,7 +175,7 @@
                     query types (SELECT, CONSTRUCT, ASK, etc.).&#10;
                     - User can choose result format in 'sparql', including markdown.&#10;
                     - Added mime type as a format name.&#10;
-                    – Disabled owl:imports auto-import.&#10;
+                    - Disabled owl:imports auto-import.&#10;
                     - Docker users can pass custom options and adjust log level for
                     Corese-server.&#10;
                     - Standardized format names in Corese-command.&#10;
@@ -170,7 +193,7 @@
                     - L'utilisateur peut choisir le format du résultat dans 'sparql', y compris en
                     markdown.&#10;
                     - Ajout du type MIME comme nom de format.&#10;
-                    – Désactivation de l'auto-importation owl:imports.&#10;
+                    - Désactivation de l'auto-importation owl:imports.&#10;
                     - Les utilisateurs de Docker peuvent passer des options personnalisées et
                     ajuster le niveau de journalisation pour Corese-server.&#10;
                     - Standardisation des noms de format dans Corese-command.&#10;
@@ -183,17 +206,17 @@
         <release version="4.4.0" date="2023-03-30">
             <description>
                 <p>
-                    – Added prove of concept of sub-commands `convert`.&#10;
-                    – Added prove of concept of sub-commands `sparql`.&#10;
-                    – Added prove of concept of sub-commands `ldscript`.&#10;
-                    – Added prove of concept of sub-commands `owlProfile`.&#10;
+                    - Added prove of concept of sub-commands `convert`.&#10;
+                    - Added prove of concept of sub-commands `sparql`.&#10;
+                    - Added prove of concept of sub-commands `ldscript`.&#10;
+                    - Added prove of concept of sub-commands `owlProfile`.&#10;
                 </p>
                 <!-- French translation -->
                 <p xml:lang="fr">
-                    – Ajouté une preuve de concept pour les sous-commandes `convert`.&#10;
-                    – Ajouté une preuve de concept pour les sous-commandes `sparql`.&#10;
-                    – Ajouté une preuve de concept pour les sous-commandes `ldscript`.&#10;
-                    – Ajouté une preuve de concept pour les sous-commandes `owlProfile`.&#10;
+                    - Ajouté une preuve de concept pour les sous-commandes `convert`.&#10;
+                    - Ajouté une preuve de concept pour les sous-commandes `sparql`.&#10;
+                    - Ajouté une preuve de concept pour les sous-commandes `ldscript`.&#10;
+                    - Ajouté une preuve de concept pour les sous-commandes `owlProfile`.&#10;
                 </p>
             </description>
         </release>
