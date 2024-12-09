@@ -1,18 +1,20 @@
 package fr.inria.corese.command.utils.http;
 
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import fr.inria.corese.command.VersionProvider;
 import fr.inria.corese.command.utils.TestType;
 import fr.inria.corese.core.Graph;
-import fr.inria.corese.core.query.QueryProcess;
 import fr.inria.corese.core.kgram.core.Query;
+import fr.inria.corese.core.query.QueryProcess;
 import fr.inria.corese.core.sparql.triple.parser.Constant;
 import fr.inria.corese.core.sparql.triple.update.ASTUpdate;
 import fr.inria.corese.core.sparql.triple.update.Composite;
@@ -153,6 +155,9 @@ public class SparqlHttpClient {
             boolean ignoreQueryValidation)
             throws Exception {
 
+        // Add the user agent
+        this.addHeader("User-Agent", this.USERAGENT);
+
         // Fix parameters
         if (defaultGraphUris == null) {
             defaultGraphUris = new ArrayList<>();
@@ -173,30 +178,26 @@ public class SparqlHttpClient {
         // Create the request body based on type of request method
         String bodyContent = this.buildRequestBody(query, defaultGraphUris, namedGraphUris);
 
-        // Print query and body content if verbose mode is enabled
-        if (this.verbose) {
-            this.printRequest(webTarget, bodyContent);
-        }
-
         Response response;
         this.redirectCount = 0;
-        while (true) {
-            // Execute the request
-            response = this.executeRequest(webTarget, bodyContent);
 
-            // Manage redirections
-            if (this.isRedirection(response) && this.redirectCount < this.maxRedirects) {
-                this.redirectCount++;
+        // Execute the request
+        response = this.executeRequest(webTarget, bodyContent);
 
-                String newLocation = this.getRedirectLocation(response);
-                if (this.verbose) {
-                    this.spec.commandLine().getErr().println("Redirecting to: " + newLocation);
-                }
+        // Follow redirections
+        while (this.isRedirection(response) && this.redirectCount < this.maxRedirects) {
+            this.redirectCount++;
 
-                webTarget = this.buildWebTarget(newLocation, query, defaultGraphUris, namedGraphUris);
-            } else {
-                break;
+            String newLocation = this.getRedirectLocation(response);
+
+            if (this.verbose) {
+                this.spec.commandLine().getErr().println("Redirecting to: " + newLocation);
             }
+
+            webTarget = this.buildWebTarget(newLocation, query, defaultGraphUris, namedGraphUris);
+
+            // Execute the redirection request
+            response = this.executeRequest(webTarget, bodyContent);
         }
 
         // Print the response if verbose mode is enabled
@@ -221,11 +222,42 @@ public class SparqlHttpClient {
      * @param response the response to print
      */
     private void printResponse(Response response) {
-        this.spec.commandLine().getErr().println("Response Details:");
+        PrintWriter err = this.spec.commandLine().getErr();
 
-        if (response != null) {
-            this.spec.commandLine().getErr().println("  HTTP code: " + response.getStatus());
+        err.println("╔════════════════════════════════╗");
+        err.println("║         RESPONSE DETAILS       ║");
+        err.println("╚════════════════════════════════╝\n");
+
+        if (response == null) {
+            err.println("No response available.\n");
+            err.println("──────────────────────────────────");
+            return;
         }
+
+        // HTTP code
+        err.println("► HTTP CODE");
+        err.println("  " + response.getStatus());
+
+        // Status info
+        if (response.getStatusInfo() != null) {
+            err.println("\n► STATUS INFO");
+            err.println("  " + response.getStatusInfo().toString());
+        }
+
+        // Headers
+        Map<String, List<Object>> headers = response.getHeaders();
+        if (!headers.isEmpty()) {
+            err.println("\n► HEADERS");
+            for (Map.Entry<String, List<Object>> header : headers.entrySet()) {
+                for (Object value : header.getValue()) {
+                    err.println("  " + header.getKey() + ": " + value);
+                }
+            }
+        }
+
+        // Do not display the response body here
+
+        err.println("\n──────────────────────────────────");
     }
 
     /**
@@ -233,38 +265,60 @@ public class SparqlHttpClient {
      * 
      * @param webTarget   the web target of the request
      * @param bodyContent the body content of the request
+     * @param contentType the content type of the request
      */
-    private void printRequest(WebTarget webTarget, String bodyContent) {
-        this.spec.commandLine().getErr().println("Request Details:");
+    private void printRequest(WebTarget webTarget, String bodyContent, String contentType) {
+        PrintWriter err = this.spec.commandLine().getErr();
 
-        // Print URL
+        err.println("╔════════════════════════════════╗");
+        err.println("║        REQUEST DETAILS         ║");
+        err.println("╚════════════════════════════════╝\n");
+
+        // URL
         if (webTarget != null && webTarget.getUri() != null) {
-            this.spec.commandLine().getErr().println("\tURL: " + webTarget.getUri());
+            err.println("► URL");
+            err.println("  " + webTarget.getUri());
         }
 
-        // Print request method
+        // Method
         if (this.requestMethod != null) {
-            this.spec.commandLine().getErr().println("\tmethod: " + this.requestMethod);
+            err.println("\n► METHOD");
+            err.println("  " + this.requestMethod);
         }
 
-        // Print query string parameter
+        // Query parameters
         if (webTarget != null && webTarget.getUri() != null && webTarget.getUri().getQuery() != null
                 && !webTarget.getUri().getQuery().isEmpty()) {
-            this.spec.commandLine().getErr().println("\tQuery string parameter: " + webTarget.getUri().getQuery());
-        }
-
-        // Print headers
-        if (this.headers != null && !this.headers.isEmpty()) {
-            this.spec.commandLine().getErr().println("\tHeaders:");
-            for (Pair<String, String> header : this.headers) {
-
-                this.spec.commandLine().getErr().println("    " + header.getKey() + ": " + header.getValue());
+            err.println("\n► QUERY PARAMETERS");
+            String[] queryLines = webTarget.getUri().getQuery().split("\n");
+            for (String line : queryLines) {
+                err.println("  " + line);
             }
         }
 
-        if (bodyContent != null && !bodyContent.isEmpty()) {
-            this.spec.commandLine().getErr().println("\tRequest body: " + bodyContent);
+        // Headers
+        if ((this.headers != null && !this.headers.isEmpty()) || (contentType != null && !contentType.isEmpty())) {
+            err.println("\n► HEADERS");
+
+            for (Pair<String, String> header : this.headers) {
+                err.println("  " + header.getKey() + ": " + header.getValue());
+            }
+
+            if (contentType != null && !contentType.isEmpty()) {
+                err.println("  Content-Type: " + contentType);
+            }
         }
+
+        // Body content
+        if (bodyContent != null && !bodyContent.isEmpty()) {
+            err.println("\n► REQUEST BODY");
+            String[] bodyLines = bodyContent.split("\n");
+            for (String line : bodyLines) {
+                err.println("  " + line);
+            }
+        }
+
+        err.println("\n──────────────────────────────────");
     }
 
     /**
@@ -451,20 +505,32 @@ public class SparqlHttpClient {
         Response response = null;
 
         // Add headers
-        Builder builder = webTarget.request()
-                .header("User-Agent", this.USERAGENT);
+        Builder builder = webTarget.request();
 
         for (Pair<String, String> header : this.headers) {
             builder = builder.header(header.getKey(), header.getValue());
+        }
+
+        // Add request content types
+        String contentType = null;
+        if (this.requestMethod == EnumRequestMethod.POST_URLENCODED) {
+            contentType = MediaType.APPLICATION_FORM_URLENCODED;
+        } else if (this.requestMethod == EnumRequestMethod.POST_DIRECT) {
+            contentType = "application/sparql-query";
+        }
+
+        // Print query and body content if verbose mode is enabled
+        if (this.verbose) {
+            this.printRequest(webTarget, bodyContent, contentType);
         }
 
         // Send the request
         if (this.requestMethod == EnumRequestMethod.GET) {
             response = builder.get();
         } else if (this.requestMethod == EnumRequestMethod.POST_URLENCODED) {
-            response = builder.post(Entity.entity(bodyContent, MediaType.APPLICATION_FORM_URLENCODED));
+            response = builder.post(Entity.entity(bodyContent, contentType));
         } else if (this.requestMethod == EnumRequestMethod.POST_DIRECT) {
-            response = builder.post(Entity.entity(bodyContent, "application/sparql-query"));
+            response = builder.post(Entity.entity(bodyContent, contentType));
         }
 
         return response;
