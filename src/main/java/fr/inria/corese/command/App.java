@@ -11,13 +11,9 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Help.Ansi.Style;
 import picocli.CommandLine.Help.ColorScheme;
 
-@Command(name = "Corese-command", version = App.version, mixinStandardHelpOptions = true, subcommands = {
-        Convert.class, Sparql.class, Shacl.class, RemoteSparql.class, Canonicalize.class, GenerateCompletion.class
-})
-
+@Command(name = "Corese-command", versionProvider = VersionProvider.class, mixinStandardHelpOptions = true, subcommands = {
+        Convert.class, Sparql.class, Shacl.class, RemoteSparql.class, Canonicalize.class, GenerateCompletion.class })
 public final class App implements Runnable {
-
-    public final static String version = "4.5.1";
 
     public static void main(String[] args) {
         // Define the color scheme

@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-import fr.inria.corese.command.App;
+import fr.inria.corese.command.VersionProvider;
 import fr.inria.corese.command.utils.ConfigManager;
 import fr.inria.corese.command.utils.exporter.rdf.RdfDataExporter;
 import fr.inria.corese.core.util.Property;
@@ -19,7 +19,7 @@ import picocli.CommandLine.Spec;
  * 
  * This class provides common options and methods for all commands.
  */
-@Command(version = App.version)
+@Command(versionProvider = VersionProvider.class)
 public abstract class AbstractCommand implements Callable<Integer> {
 
     ///////////////

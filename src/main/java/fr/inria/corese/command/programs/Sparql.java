@@ -1,18 +1,17 @@
 package fr.inria.corese.command.programs;
 
-import fr.inria.corese.command.App;
 import fr.inria.corese.command.utils.exporter.sparql.EnumResultFormat;
 import fr.inria.corese.command.utils.exporter.sparql.SparqlResultExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
 import fr.inria.corese.command.utils.loader.rdf.RdfDataLoader;
 import fr.inria.corese.command.utils.loader.sparql.SparqlQueryLoader;
 import fr.inria.corese.core.Graph;
-import fr.inria.corese.core.query.QueryProcess;
 import fr.inria.corese.core.kgram.core.Mappings;
+import fr.inria.corese.core.query.QueryProcess;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(name = "sparql", version = App.version, description = "Run a SPARQL query.", mixinStandardHelpOptions = true)
+@Command(name = "sparql", description = "Run a SPARQL query.", mixinStandardHelpOptions = true)
 public class Sparql extends AbstractInputCommand {
 
     @Option(names = { "-f", "-if",

@@ -1,6 +1,5 @@
 package fr.inria.corese.command.programs;
 
-import fr.inria.corese.command.App;
 import fr.inria.corese.command.utils.TestType;
 import fr.inria.corese.command.utils.exporter.rdf.EnumRdfOutputFormat;
 import fr.inria.corese.command.utils.exporter.rdf.RdfDataExporter;
@@ -10,7 +9,7 @@ import fr.inria.corese.core.Graph;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(name = "shacl", version = App.version, description = "Run SHACL validation on a RDF dataset.", mixinStandardHelpOptions = true)
+@Command(name = "shacl", description = "Run SHACL validation on a RDF dataset.", mixinStandardHelpOptions = true)
 public class Shacl extends AbstractInputCommand {
 
     @Option(names = { "-f", "-if",

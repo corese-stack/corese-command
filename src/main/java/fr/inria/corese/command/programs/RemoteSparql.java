@@ -6,14 +6,13 @@ import java.util.List;
 
 import com.github.jsonldjava.shaded.com.google.common.io.Files;
 
-import fr.inria.corese.command.App;
 import fr.inria.corese.command.utils.http.EnumRequestMethod;
 import fr.inria.corese.command.utils.http.SparqlHttpClient;
 import fr.inria.corese.command.utils.loader.sparql.SparqlQueryLoader;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(name = "remote-sparql", version = App.version, description = "Execute a SPARQL query on a remote endpoint.", mixinStandardHelpOptions = true)
+@Command(name = "remote-sparql", description = "Execute a SPARQL query on a remote endpoint.", mixinStandardHelpOptions = true)
 public class RemoteSparql extends AbstractCommand {
 
     @Option(names = { "-q",

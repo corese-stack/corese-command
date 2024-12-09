@@ -1,6 +1,5 @@
 package fr.inria.corese.command.programs;
 
-import fr.inria.corese.command.App;
 import fr.inria.corese.command.utils.exporter.rdf.EnumRdfOutputFormat;
 import fr.inria.corese.command.utils.exporter.rdf.RdfDataExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
@@ -9,7 +8,7 @@ import fr.inria.corese.core.Graph;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(name = "convert", version = App.version, description = "Convert an RDF file from one serialization format to another.", mixinStandardHelpOptions = true)
+@Command(name = "convert", description = "Convert an RDF file from one serialization format to another.", mixinStandardHelpOptions = true)
 public class Convert extends AbstractInputCommand {
 
     @Option(names = { "-f", "-if",

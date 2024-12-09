@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import fr.inria.corese.command.App;
+import fr.inria.corese.command.VersionProvider;
 import fr.inria.corese.command.utils.TestType;
 import fr.inria.corese.core.Graph;
 import fr.inria.corese.core.query.QueryProcess;
@@ -43,7 +43,7 @@ public class SparqlHttpClient {
 
     private int redirectCount = 0;
     private int maxRedirects = 5;
-    private final String USERAGENT = "Corese-Command/" + App.version;
+    private final String USERAGENT = "Corese-Command/" + VersionProvider.getCommandVersion();
 
     /////////////////
     // Constructor //
