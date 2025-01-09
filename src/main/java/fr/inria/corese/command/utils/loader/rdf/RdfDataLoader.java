@@ -232,7 +232,7 @@ public class RdfDataLoader {
                             + "Please specify the input format with the option -f.");
         } else {
             try {
-                load.parse(inputStream, inputFormat.getCoreseCode());
+                load.parse(inputStream, inputFormat.getCoreseFormat());
                 return graph;
             } catch (Exception e) {
                 throw new IllegalArgumentException("Failed to parse RDF file. Check if file is well-formed and that "

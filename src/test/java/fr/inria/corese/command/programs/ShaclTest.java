@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import fr.inria.corese.core.Graph;
+import fr.inria.corese.core.api.Loader;
 import fr.inria.corese.core.load.Load;
 import fr.inria.corese.core.print.CanonicalRdf10Format;
 import picocli.CommandLine;
@@ -51,7 +52,7 @@ public class ShaclTest {
         cmd.setErr(err);
     }
 
-    public boolean compareFiles(String filePath1, String filePath2, int format) throws IOException {
+    public boolean compareFiles(String filePath1, String filePath2, Loader.format coreseFormat) throws IOException {
         // Get content of files
         String content1 = getStringContent(filePath1);
         String content2 = getStringContent(filePath2);
@@ -61,8 +62,8 @@ public class ShaclTest {
         String clearContent2 = maskUUIDs(content2);
 
         // Canonicalize RDF content
-        String canonicallFile1 = canonicalize(clearContent1, format);
-        String canonicallFile2 = canonicalize(clearContent2, format);
+        String canonicallFile1 = canonicalize(clearContent1, coreseFormat);
+        String canonicallFile2 = canonicalize(clearContent2, coreseFormat);
 
         return canonicallFile1.equals(canonicallFile2);
     }
@@ -76,7 +77,7 @@ public class ShaclTest {
         return new String(java.nio.file.Files.readAllBytes(Paths.get(path)));
     }
 
-    private String canonicalize(String content, int format) {
+    private String canonicalize(String content, Loader.format coreseFormat) {
 
         // Content String to Input Stream
         InputStream is = new ByteArrayInputStream(content.getBytes());
@@ -86,7 +87,7 @@ public class ShaclTest {
         Load ld = Load.create(graph);
 
         try {
-            ld.parse(is, format);
+            ld.parse(is, coreseFormat);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -112,7 +113,7 @@ public class ShaclTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Load.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
         assertNotEquals("", result);
     }
 
@@ -133,7 +134,7 @@ public class ShaclTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Load.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
         assertNotEquals("", result);
     }
 
@@ -159,7 +160,7 @@ public class ShaclTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Load.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
         assertNotEquals("", result);
     }
 
@@ -185,7 +186,7 @@ public class ShaclTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Load.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
         assertNotEquals("", result);
     }
 
@@ -206,7 +207,7 @@ public class ShaclTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Load.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
         assertNotEquals("", result);
     }
 
@@ -227,7 +228,7 @@ public class ShaclTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Load.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
         assertNotEquals("", result);
     }
 
@@ -248,7 +249,7 @@ public class ShaclTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Load.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
         assertNotEquals("", result);
     }
 
@@ -272,7 +273,7 @@ public class ShaclTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Load.RDFXML_FORMAT));
+        assertTrue(this.compareFiles(expected, result, Loader.format.RDFXML_FORMAT));
         assertNotEquals("", result);
     }
 
@@ -296,7 +297,7 @@ public class ShaclTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Load.JSONLD_FORMAT));
+        assertTrue(this.compareFiles(expected, result, Loader.format.JSONLD_FORMAT));
         assertNotEquals("", result);
     }
 
@@ -318,7 +319,7 @@ public class ShaclTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Load.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
         assertNotEquals("", result);
     }
 

@@ -16,95 +16,96 @@ public enum EnumResultFormat {
     /////////////////
 
     // RdfXml
-    RDFXML("rdfxml", ResultFormatDef.RDF_XML_FORMAT, "rdf", false),
-    APPLICATION_RDF_XML("application/rdf+xml", ResultFormatDef.RDF_XML_FORMAT, "rdf", false),
-    RDF("rdf", ResultFormatDef.RDF_XML_FORMAT, "rdf", false),
+    RDFXML("rdfxml", ResultFormatDef.format.RDF_XML_FORMAT, "rdf", false),
+    APPLICATION_RDF_XML("application/rdf+xml", ResultFormatDef.format.RDF_XML_FORMAT, "rdf", false),
+    RDF("rdf", ResultFormatDef.format.RDF_XML_FORMAT, "rdf", false),
 
     // Turtle
-    TURTLE("turtle", ResultFormatDef.TURTLE_FORMAT, "ttl", false),
-    TEXT_TURTLE("text/turtle", ResultFormatDef.TURTLE_FORMAT, "ttl", false),
-    TTL("ttl", ResultFormatDef.TURTLE_FORMAT, "ttl", false),
+    TURTLE("turtle", ResultFormatDef.format.TURTLE_FORMAT, "ttl", false),
+    TEXT_TURTLE("text/turtle", ResultFormatDef.format.TURTLE_FORMAT, "ttl", false),
+    TTL("ttl", ResultFormatDef.format.TURTLE_FORMAT, "ttl", false),
 
     // Trig
-    TRIG("trig", ResultFormatDef.TRIG_FORMAT, "trig", false),
-    APPLICATION_TRIG("application/trig", ResultFormatDef.TRIG_FORMAT, "trig", false),
+    TRIG("trig", ResultFormatDef.format.TRIG_FORMAT, "trig", false),
+    APPLICATION_TRIG("application/trig", ResultFormatDef.format.TRIG_FORMAT, "trig", false),
 
     // JsonLd
-    JSONLD("jsonld", ResultFormatDef.JSONLD_FORMAT, "jsonld", false),
-    APPLICATION_LD_JSON("application/ld+json", ResultFormatDef.JSONLD_FORMAT, "jsonld", false),
+    JSONLD("jsonld", ResultFormatDef.format.JSONLD_FORMAT, "jsonld", false),
+    APPLICATION_LD_JSON("application/ld+json", ResultFormatDef.format.JSONLD_FORMAT, "jsonld", false),
 
     // Ntriples
-    NTRIPLES("ntriples", ResultFormatDef.NTRIPLES_FORMAT, "nt", false),
-    APPLICATION_N_TRIPLES("application/n-triples", ResultFormatDef.NTRIPLES_FORMAT, "nt", false),
-    NT("nt", ResultFormatDef.NTRIPLES_FORMAT, "nt", false),
+    NTRIPLES("ntriples", ResultFormatDef.format.NTRIPLES_FORMAT, "nt", false),
+    APPLICATION_N_TRIPLES("application/n-triples", ResultFormatDef.format.NTRIPLES_FORMAT, "nt", false),
+    NT("nt", ResultFormatDef.format.NTRIPLES_FORMAT, "nt", false),
 
     // Nquads
-    NQUADS("nquads", ResultFormatDef.NQUADS_FORMAT, "nq", false),
-    APPLICATION_N_QUADS("application/n-quads", ResultFormatDef.NQUADS_FORMAT, "nq", false),
-    NQ("nq", ResultFormatDef.NQUADS_FORMAT, "nq", false),
+    NQUADS("nquads", ResultFormatDef.format.NQUADS_FORMAT, "nq", false),
+    APPLICATION_N_QUADS("application/n-quads", ResultFormatDef.format.NQUADS_FORMAT, "nq", false),
+    NQ("nq", ResultFormatDef.format.NQUADS_FORMAT, "nq", false),
 
     // Rdfc-1.0-sha256
-    RDFC10("rdfc-1.0", ResultFormatDef.RDFC10_FORMAT, "nq", false),
-    RDFC10SHA256("rdfc-1.0-sha256", ResultFormatDef.RDFC10_FORMAT, "nq", false),
+    RDFC10("rdfc-1.0", ResultFormatDef.format.RDFC10_FORMAT, "nq", false),
+    RDFC10SHA256("rdfc-1.0-sha256", ResultFormatDef.format.RDFC10_FORMAT, "nq", false),
 
     // Rdfc-1.0-sha384
-    RDFC10SHA384("rdfc-1.0-sha384", ResultFormatDef.RDFC10_SHA384_FORMAT, "nq", false),
+    RDFC10SHA384("rdfc-1.0-sha384", ResultFormatDef.format.RDFC10_SHA384_FORMAT, "nq", false),
 
     /////////////////////
     // Mapping Formats //
     /////////////////////
 
     // Xml
-    XML("xml", ResultFormatDef.XML_FORMAT, "srx", true),
-    APPLICATION_SPARQL_RESULTS_XML("application/sparql-results+xml", ResultFormatDef.XML_FORMAT, "srx", true),
-    SRX("srx", ResultFormatDef.XML_FORMAT, "srx", true),
+    XML("xml", ResultFormatDef.format.XML_FORMAT, "srx", true),
+    APPLICATION_SPARQL_RESULTS_XML("application/sparql-results+xml", ResultFormatDef.format.XML_FORMAT, "srx", true),
+    SRX("srx", ResultFormatDef.format.XML_FORMAT, "srx", true),
 
     // Json
-    JSON("json", ResultFormatDef.JSON_FORMAT, "srj", true),
-    APPLICATION_SPARQL_RESULTS_JSON("application/sparql-results+json", ResultFormatDef.JSON_FORMAT, "srj", true),
-    SRJ("srj", ResultFormatDef.JSON_FORMAT, "srj", true),
+    JSON("json", ResultFormatDef.format.JSON_FORMAT, "srj", true),
+    APPLICATION_SPARQL_RESULTS_JSON("application/sparql-results+json", ResultFormatDef.format.JSON_FORMAT, "srj", true),
+    SRJ("srj", ResultFormatDef.format.JSON_FORMAT, "srj", true),
 
     // Csv
-    CSV("csv", ResultFormatDef.CSV_FORMAT, "csv", true),
-    TEXT_CSV("text/csv", ResultFormatDef.CSV_FORMAT, "csv", true),
+    CSV("csv", ResultFormatDef.format.CSV_FORMAT, "csv", true),
+    TEXT_CSV("text/csv", ResultFormatDef.format.CSV_FORMAT, "csv", true),
 
     // Tsv
-    TSV("tsv", ResultFormatDef.TSV_FORMAT, "tsv", true),
-    TEXT_TAB_SEPARATED_VALUES("text/tab-separated-values", ResultFormatDef.TSV_FORMAT, "tsv", true),
+    TSV("tsv", ResultFormatDef.format.TSV_FORMAT, "tsv", true),
+    TEXT_TAB_SEPARATED_VALUES("text/tab-separated-values", ResultFormatDef.format.TSV_FORMAT, "tsv", true),
 
     // Markdown
-    MARKDOWN("markdown", ResultFormatDef.MARKDOWN_FORMAT, "md", true),
-    TEXT_MARKDOWN("text/markdown", ResultFormatDef.MARKDOWN_FORMAT, "md", true),
-    MD("md", ResultFormatDef.MARKDOWN_FORMAT, "md", true);
+    MARKDOWN("markdown", ResultFormatDef.format.MARKDOWN_FORMAT, "md", true),
+    TEXT_MARKDOWN("text/markdown", ResultFormatDef.format.MARKDOWN_FORMAT, "md", true),
+    MD("md", ResultFormatDef.format.MARKDOWN_FORMAT, "md", true);
 
     private final String name;
-    private final int coreseCodeFormat;
+    private final ResultFormatDef.format coreseFormat;
     private final String extention;
     private final boolean isMappingFormat;
 
     /**
      * Constructor.
      * 
-     * @param name             The name of the format.
-     * @param coreseCodeFormat The Corese code of the format.
-     * @param extention        The extension of the format.
-     * @param isMappingFormat  True if the format is a mapping format, false
-     *                         otherwise.
+     * @param name            The name of the format.
+     * @param coreseFormat    The Corese format.
+     * @param extention       The extension of the format.
+     * @param isMappingFormat True if the format is a mapping format, false
+     *                        otherwise.
      */
-    private EnumResultFormat(String name, int coreseCodeFormat, String extention, boolean isMappingFormat) {
+    private EnumResultFormat(String name, ResultFormatDef.format coreseFormat, String extention,
+            boolean isMappingFormat) {
         this.name = name;
-        this.coreseCodeFormat = coreseCodeFormat;
+        this.coreseFormat = coreseFormat;
         this.extention = extention;
         this.isMappingFormat = isMappingFormat;
     }
 
     /**
-     * Get the Corese code of the format.
+     * Get the Corese format.
      * 
-     * @return The Corese code of the format.
+     * @return The Corese format.
      */
-    public int getCoreseCodeFormat() {
-        return this.coreseCodeFormat;
+    public ResultFormatDef.format getCoreseFormat() {
+        return this.coreseFormat;
     }
 
     /**
