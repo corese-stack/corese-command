@@ -17,22 +17,22 @@ import fr.inria.corese.core.load.Load;
 import fr.inria.corese.core.print.CanonicalRdf10Format;
 import picocli.CommandLine;
 
-public class SparqlTest {
+public class QueryTest {
 
-        private Sparql sparql = new Sparql();
+        private Query sparql = new Query();
         private CommandLine cmd = new CommandLine(sparql);
 
         private StringWriter out = new StringWriter();
         private StringWriter err = new StringWriter();
 
-        private String inputPath = SparqlTest.class.getResource("/fr/inria/corese/command/programs/sparql/input/")
+        private String inputPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/sparql/input/")
                         .getPath();
-        private String referencesPath = SparqlTest.class
+        private String referencesPath = QueryTest.class
                         .getResource("/fr/inria/corese/command/programs/sparql/references/")
                         .getPath();
-        private String resultsPath = SparqlTest.class.getResource("/fr/inria/corese/command/programs/sparql/results")
+        private String resultsPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/sparql/results")
                         .getPath();
-        private String queriesPath = SparqlTest.class.getResource("/fr/inria/corese/command/programs/sparql/queries/")
+        private String queriesPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/sparql/queries/")
                         .getPath();
 
         @BeforeEach

@@ -11,8 +11,8 @@ import fr.inria.corese.core.query.QueryProcess;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(name = "sparql", description = "Run a SPARQL query.", mixinStandardHelpOptions = true)
-public class Sparql extends AbstractInputCommand {
+@Command(name = "query", description = "Run a SPARQL query.", mixinStandardHelpOptions = true)
+public class Query extends AbstractInputCommand {
 
     @Option(names = { "-f", "-if",
             "--input-format" }, description = "Specifies the RDF serialization format of the input file. Possible values are: :@|fg(225) ${COMPLETION-CANDIDATES}|@.")
@@ -26,7 +26,7 @@ public class Sparql extends AbstractInputCommand {
             "--query" }, description = "Specifies the SPARQL query string or the path/URL to a .rq file containing the query.", required = true)
     private String queryUrlOrFile;
 
-    public Sparql() {
+    public Query() {
     }
 
     @Override

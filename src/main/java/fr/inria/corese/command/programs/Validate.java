@@ -9,8 +9,8 @@ import fr.inria.corese.core.Graph;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(name = "shacl", description = "Run SHACL validation on a RDF dataset.", mixinStandardHelpOptions = true)
-public class Shacl extends AbstractInputCommand {
+@Command(name = "validate", description = "Run SHACL validation on a RDF dataset.", mixinStandardHelpOptions = true)
+public class Validate extends AbstractInputCommand {
 
     @Option(names = { "-f", "-if",
             "--input-format" }, description = "Specifies the RDF serialization format of the input file. Possible values are: :@|fg(225) ${COMPLETION-CANDIDATES}|@.")
