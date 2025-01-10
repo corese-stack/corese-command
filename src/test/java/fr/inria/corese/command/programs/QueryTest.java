@@ -19,20 +19,20 @@ import picocli.CommandLine;
 
 public class QueryTest {
 
-        private Query sparql = new Query();
-        private CommandLine cmd = new CommandLine(sparql);
+        private Query query = new Query();
+        private CommandLine cmd = new CommandLine(query);
 
         private StringWriter out = new StringWriter();
         private StringWriter err = new StringWriter();
 
-        private String inputPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/sparql/input/")
+        private String inputPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/query/input/")
                         .getPath();
         private String referencesPath = QueryTest.class
-                        .getResource("/fr/inria/corese/command/programs/sparql/references/")
+                        .getResource("/fr/inria/corese/command/programs/query/references/")
                         .getPath();
-        private String resultsPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/sparql/results")
+        private String resultsPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/query/results")
                         .getPath();
-        private String queriesPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/sparql/queries/")
+        private String queriesPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/query/queries/")
                         .getPath();
 
         @BeforeEach

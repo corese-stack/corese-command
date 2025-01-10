@@ -30,8 +30,8 @@ import picocli.CommandLine;
 public class QueryRemoteTest {
 
         // Picocli objects
-        private QueryRemote convert = new QueryRemote();
-        private CommandLine cmd = new CommandLine(convert);
+        private QueryRemote queryRemote = new QueryRemote();
+        private CommandLine cmd = new CommandLine(queryRemote);
 
         private StringWriter out = new StringWriter();
         private StringWriter err = new StringWriter();

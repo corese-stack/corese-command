@@ -23,22 +23,22 @@ import picocli.CommandLine;
 
 public class ValidateTest {
 
-    private Validate shacl = new Validate();
-    private CommandLine cmd = new CommandLine(shacl);
+    private Validate validate = new Validate();
+    private CommandLine cmd = new CommandLine(validate);
 
     private StringWriter out = new StringWriter();
     private StringWriter err = new StringWriter();
 
-    private String inputRdfPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/shacl/inputRdf")
+    private String inputRdfPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/validate/inputRdf")
             .getPath();
     private String inputRdfPathRecursive = QueryTest.class
-            .getResource("/fr/inria/corese/command/programs/shacl/inputRdf-Recursive1")
+            .getResource("/fr/inria/corese/command/programs/validate/inputRdf-Recursive1")
             .getPath();
-    private String inputShaclPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/shacl/inputShacl")
+    private String inputShaclPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/validate/inputShacl")
             .getPath();
-    private String referencesPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/shacl/references")
+    private String referencesPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/validate/references")
             .getPath();
-    private String resultsPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/shacl/results")
+    private String resultsPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/validate/results")
             .getPath();
 
     private static final String UUID_REGEX = "<urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}>";
