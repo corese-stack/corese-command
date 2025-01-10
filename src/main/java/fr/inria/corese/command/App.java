@@ -2,9 +2,9 @@ package fr.inria.corese.command;
 
 import fr.inria.corese.command.programs.Canonicalize;
 import fr.inria.corese.command.programs.Convert;
-import fr.inria.corese.command.programs.RemoteSparql;
-import fr.inria.corese.command.programs.Shacl;
-import fr.inria.corese.command.programs.Sparql;
+import fr.inria.corese.command.programs.Query;
+import fr.inria.corese.command.programs.QueryRemote;
+import fr.inria.corese.command.programs.Validate;
 import picocli.AutoComplete.GenerateCompletion;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -12,7 +12,7 @@ import picocli.CommandLine.Help.Ansi.Style;
 import picocli.CommandLine.Help.ColorScheme;
 
 @Command(name = "Corese-command", versionProvider = VersionProvider.class, mixinStandardHelpOptions = true, subcommands = {
-        Convert.class, Sparql.class, Shacl.class, RemoteSparql.class, Canonicalize.class, GenerateCompletion.class })
+        Convert.class, Query.class, QueryRemote.class, Validate.class, Canonicalize.class, GenerateCompletion.class })
 public final class App implements Runnable {
 
     public static void main(String[] args) {

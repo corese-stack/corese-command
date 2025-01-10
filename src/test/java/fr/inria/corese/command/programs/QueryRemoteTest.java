@@ -27,10 +27,10 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
 import picocli.CommandLine;
 
-public class RemoteSparqlTest {
+public class QueryRemoteTest {
 
         // Picocli objects
-        private RemoteSparql convert = new RemoteSparql();
+        private QueryRemote convert = new QueryRemote();
         private CommandLine cmd = new CommandLine(convert);
 
         private StringWriter out = new StringWriter();

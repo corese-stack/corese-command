@@ -12,8 +12,8 @@ import fr.inria.corese.command.utils.loader.sparql.SparqlQueryLoader;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-@Command(name = "remote-sparql", description = "Execute a SPARQL query on a remote endpoint.", mixinStandardHelpOptions = true)
-public class RemoteSparql extends AbstractCommand {
+@Command(name = "query-remote", description = "Execute a SPARQL query on a remote endpoint.", mixinStandardHelpOptions = true)
+public class QueryRemote extends AbstractCommand {
 
     @Option(names = { "-q",
             "--query" }, description = "Specifies the SPARQL query to execute. This can be provided as a URL or a file path.", required = false)
