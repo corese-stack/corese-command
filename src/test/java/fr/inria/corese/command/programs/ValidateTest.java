@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
@@ -29,17 +31,29 @@ public class ValidateTest {
     private StringWriter out = new StringWriter();
     private StringWriter err = new StringWriter();
 
-    private String inputRdfPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/validate/inputRdf")
-            .getPath();
-    private String inputRdfPathRecursive = QueryTest.class
-            .getResource("/fr/inria/corese/command/programs/validate/inputRdf-Recursive1")
-            .getPath();
-    private String inputShaclPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/validate/inputShacl")
-            .getPath();
-    private String referencesPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/validate/references")
-            .getPath();
-    private String resultsPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/validate/results")
-            .getPath();
+    Path inputRdfPath;
+    Path inputRdfPathRecursive;
+    Path inputShaclPath;
+    Path referencesPath;
+    Path resultPath;
+
+    public ValidateTest() throws URISyntaxException {
+        this.inputRdfPath = Paths.get(
+                ValidateTest.class.getResource("/fr/inria/corese/command/programs/validate/inputRdf").toURI());
+
+        this.inputRdfPathRecursive = Paths.get(
+                ValidateTest.class.getResource("/fr/inria/corese/command/programs/validate/inputRdf-Recursive1")
+                        .toURI());
+
+        this.inputShaclPath = Paths.get(
+                ValidateTest.class.getResource("/fr/inria/corese/command/programs/validate/inputShacl").toURI());
+
+        this.referencesPath = Paths.get(
+                ValidateTest.class.getResource("/fr/inria/corese/command/programs/validate/references").toURI());
+
+        this.resultPath = Paths.get(
+                ValidateTest.class.getResource("/fr/inria/corese/command/programs/validate/results").toURI());
+    }
 
     private static final String UUID_REGEX = "<urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}>";
     private static final String NEUTRAL_UUID = "<urn:uuid:00000000-0000-0000-0000-000000000000>";
@@ -99,11 +113,11 @@ public class ValidateTest {
     @Test
     public void test1RDF1SHACLBeatlesOk() throws IOException {
 
-        String inputRdf = Paths.get(this.inputRdfPath, "beatles-ok.ttl").toString();
-        String inputShacl = Paths.get(this.inputShaclPath, "beatles-validator.ttl").toString();
+        String inputRdf = this.inputRdfPath.resolve("beatles-ok.ttl").toString();
+        String inputShacl = this.inputShaclPath.resolve("beatles-validator.ttl").toString();
 
-        String expected = Paths.get(this.referencesPath, "beatles-ok.ttl").toString();
-        String result = Paths.get(this.resultsPath, "beatles-ok.ttl").toString();
+        String expected = this.referencesPath.resolve("beatles-ok.ttl").toString();
+        String result = this.resultPath.resolve("beatles-ok.ttl").toString();
 
         int exitCode = cmd.execute(
                 "-i", inputRdf,
@@ -120,11 +134,11 @@ public class ValidateTest {
     @Test
     public void test1RDF1SHACLBeatlesErr() throws IOException {
 
-        String inputRdf = Paths.get(this.inputRdfPath, "beatles-err.ttl").toString();
-        String inputShacl = Paths.get(this.inputShaclPath, "beatles-validator.ttl").toString();
+        String inputRdf = this.inputRdfPath.resolve("beatles-err.ttl").toString();
+        String inputShacl = this.inputShaclPath.resolve("beatles-validator.ttl").toString();
 
-        String expected = Paths.get(this.referencesPath, "beatles-err.ttl").toString();
-        String result = Paths.get(this.resultsPath, "beatles-err.ttl").toString();
+        String expected = this.referencesPath.resolve("beatles-err.ttl").toString();
+        String result = this.resultPath.resolve("beatles-err.ttl").toString();
 
         int exitCode = cmd.execute(
                 "-i", inputRdf,
@@ -141,14 +155,14 @@ public class ValidateTest {
     @Test
     public void test2RDF2SHACLBeatlesOk() throws IOException {
 
-        String inputRdf1 = Paths.get(this.inputRdfPath, "beatles-ok.ttl").toString();
-        String inputShacl1 = Paths.get(this.inputShaclPath, "beatles-validator.ttl").toString();
+        String inputRdf1 = this.inputRdfPath.resolve("beatles-ok.ttl").toString();
+        String inputShacl1 = this.inputShaclPath.resolve("beatles-validator.ttl").toString();
 
-        String inputRdf2 = Paths.get(this.inputRdfPath, "person-ok.ttl").toString();
-        String inputShacl2 = Paths.get(this.inputShaclPath, "person-validator.ttl").toString();
+        String inputRdf2 = this.inputRdfPath.resolve("person-ok.ttl").toString();
+        String inputShacl2 = this.inputShaclPath.resolve("person-validator.ttl").toString();
 
-        String expected = Paths.get(this.referencesPath, "beatles-person-ok.ttl").toString();
-        String result = Paths.get(this.resultsPath, "beatles-person-ok.ttl").toString();
+        String expected = this.referencesPath.resolve("beatles-person-ok.ttl").toString();
+        String result = this.resultPath.resolve("beatles-person-ok.ttl").toString();
 
         int exitCode = cmd.execute(
                 "-i", inputRdf1,
@@ -167,14 +181,14 @@ public class ValidateTest {
     @Test
     public void test2RDF2SHACLBeatlesErr() throws IOException {
 
-        String inputRdf1 = Paths.get(this.inputRdfPath, "beatles-err.ttl").toString();
-        String inputShacl1 = Paths.get(this.inputShaclPath, "beatles-validator.ttl").toString();
+        String inputRdf1 = this.inputRdfPath.resolve("beatles-err.ttl").toString();
+        String inputShacl1 = this.inputShaclPath.resolve("beatles-validator.ttl").toString();
 
-        String inputRdf2 = Paths.get(this.inputRdfPath, "person-err.ttl").toString();
-        String inputShacl2 = Paths.get(this.inputShaclPath, "person-validator.ttl").toString();
+        String inputRdf2 = this.inputRdfPath.resolve("person-err.ttl").toString();
+        String inputShacl2 = this.inputShaclPath.resolve("person-validator.ttl").toString();
 
-        String expected = Paths.get(this.referencesPath, "beatles-person-err.ttl").toString();
-        String result = Paths.get(this.resultsPath, "beatles-person-err.ttl").toString();
+        String expected = this.referencesPath.resolve("beatles-person-err.ttl").toString();
+        String result = this.resultPath.resolve("beatles-person-err.ttl").toString();
 
         int exitCode = cmd.execute(
                 "-i", inputRdf1,
@@ -194,10 +208,10 @@ public class ValidateTest {
     public void test1RDFUrl1SHACLBeatlesOk() throws IOException {
 
         String inputRdf = "https://files.inria.fr/corese/data/unit-test/beatles.ttl";
-        String inputShacl = Paths.get(this.inputShaclPath, "beatles-validator.ttl").toString();
+        String inputShacl = this.inputShaclPath.resolve("beatles-validator.ttl").toString();
 
-        String expected = Paths.get(this.referencesPath, "beatles-ok.ttl").toString();
-        String result = Paths.get(this.resultsPath, "beatles-ok.ttl").toString();
+        String expected = this.referencesPath.resolve("beatles-ok.ttl").toString();
+        String result = this.resultPath.resolve("beatles-ok.ttl").toString();
 
         int exitCode = cmd.execute(
                 "-i", inputRdf,
@@ -214,11 +228,11 @@ public class ValidateTest {
     @Test
     public void test1RDF1SHACLUrlBeatlesOk() throws IOException {
 
-        String inputRdf = Paths.get(this.inputRdfPath, "beatles-ok.ttl").toString();
+        String inputRdf = this.inputRdfPath.resolve("beatles-ok.ttl").toString();
         String inputShacl = "https://files.inria.fr/corese/data/unit-test/beatles-validator.ttl";
 
-        String expected = Paths.get(this.referencesPath, "beatles-ok.ttl").toString();
-        String result = Paths.get(this.resultsPath, "beatles-ok.ttl").toString();
+        String expected = this.referencesPath.resolve("beatles-ok.ttl").toString();
+        String result = this.resultPath.resolve("beatles-ok.ttl").toString();
 
         int exitCode = cmd.execute(
                 "-i", inputRdf,
@@ -235,11 +249,11 @@ public class ValidateTest {
     @Test
     public void testRDFSHACLDirectoryBeatlesErr() throws IOException {
 
-        String inputRdf = Paths.get(this.inputRdfPath).toString();
-        String inputShacl = Paths.get(this.inputShaclPath).toString();
+        String inputRdf = this.inputRdfPath.toString();
+        String inputShacl = this.inputShaclPath.toString();
 
-        String expected = Paths.get(this.referencesPath, "directory-err.ttl").toString();
-        String result = Paths.get(this.resultsPath, "directory-err.ttl").toString();
+        String expected = this.referencesPath.resolve("directory-err.ttl").toString();
+        String result = this.resultPath.resolve("directory-err.ttl").toString();
 
         int exitCode = cmd.execute(
                 "-i", inputRdf,
@@ -256,11 +270,11 @@ public class ValidateTest {
     @Test
     public void test1RDF1SHACLBeatlesOkrdf() throws IOException {
 
-        String inputRdf = Paths.get(this.inputRdfPath, "beatles-ok.rdf").toString();
-        String inputShacl = Paths.get(this.inputShaclPath, "beatles-validator.rdf").toString();
+        String inputRdf = this.inputRdfPath.resolve("beatles-ok.rdf").toString();
+        String inputShacl = this.inputShaclPath.resolve("beatles-validator.rdf").toString();
 
-        String expected = Paths.get(this.referencesPath, "beatles-ok.rdf").toString();
-        String result = Paths.get(this.resultsPath, "beatles-ok.rdf").toString();
+        String expected = this.referencesPath.resolve("beatles-ok.rdf").toString();
+        String result = this.resultPath.resolve("beatles-ok.rdf").toString();
 
         int exitCode = cmd.execute(
                 "-i", inputRdf,
@@ -280,11 +294,11 @@ public class ValidateTest {
     @Test
     public void test1RDF1SHACLBeatlesOkjsonld() throws IOException {
 
-        String inputRdf = Paths.get(this.inputRdfPath, "beatles-ok.jsonld").toString();
-        String inputShacl = Paths.get(this.inputShaclPath, "beatles-validator.jsonld").toString();
+        String inputRdf = this.inputRdfPath.resolve("beatles-ok.jsonld").toString();
+        String inputShacl = this.inputShaclPath.resolve("beatles-validator.jsonld").toString();
 
-        String expected = Paths.get(this.referencesPath, "beatles-ok.jsonld").toString();
-        String result = Paths.get(this.resultsPath, "beatles-ok.jsonld").toString();
+        String expected = this.referencesPath.resolve("beatles-ok.jsonld").toString();
+        String result = this.resultPath.resolve("beatles-ok.jsonld").toString();
 
         int exitCode = cmd.execute(
                 "-i", inputRdf,
@@ -304,11 +318,11 @@ public class ValidateTest {
     @Test
     public void testRDFSHACLDirectoryRecursiveBeatlesErr() throws IOException {
 
-        String inputRdf = Paths.get(this.inputRdfPathRecursive).toString();
-        String inputShacl = Paths.get(this.inputShaclPath).toString();
+        String inputRdf = this.inputRdfPathRecursive.toString();
+        String inputShacl = this.inputShaclPath.toString();
 
-        String expected = Paths.get(this.referencesPath, "directory-err.ttl").toString();
-        String result = Paths.get(this.resultsPath, "directory-err.ttl").toString();
+        String expected = this.referencesPath.resolve("directory-err.ttl").toString();
+        String result = this.resultPath.resolve("directory-err.ttl").toString();
 
         int exitCode = cmd.execute(
                 "-i", inputRdf,

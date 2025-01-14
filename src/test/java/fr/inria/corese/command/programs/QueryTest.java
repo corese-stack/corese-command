@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,15 +27,24 @@ public class QueryTest {
         private StringWriter out = new StringWriter();
         private StringWriter err = new StringWriter();
 
-        private String inputPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/query/input/")
-                        .getPath();
-        private String referencesPath = QueryTest.class
-                        .getResource("/fr/inria/corese/command/programs/query/references/")
-                        .getPath();
-        private String resultsPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/query/results")
-                        .getPath();
-        private String queriesPath = QueryTest.class.getResource("/fr/inria/corese/command/programs/query/queries/")
-                        .getPath();
+        Path inputPath;
+        Path referencesPath;
+        Path resultPath;
+        Path queriesPath;
+
+        public QueryTest() throws URISyntaxException {
+                this.inputPath = Paths.get(
+                                QueryTest.class.getResource("/fr/inria/corese/command/programs/query/input/").toURI());
+
+                this.referencesPath = Paths.get(QueryTest.class
+                                .getResource("/fr/inria/corese/command/programs/query/references/").toURI());
+
+                this.resultPath = Paths.get(
+                                QueryTest.class.getResource("/fr/inria/corese/command/programs/query/results").toURI());
+
+                this.queriesPath = Paths.get(QueryTest.class
+                                .getResource("/fr/inria/corese/command/programs/query/queries/").toURI());
+        }
 
         @BeforeEach
         public void setUp() {
@@ -69,10 +80,10 @@ public class QueryTest {
 
         @Test
         public void testSelectRdfxmlInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesSelectRdfxml = Paths.get(resultsPath, "select", "beatles-select-rdfxml.rdf")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesSelectRdfxml = resultPath.resolve("select").resolve("beatles-select-rdfxml.rdf")
                                 .toString();
-                String pathQueryBeatlesAlbum = Paths.get(queriesPath, "select", "beatlesAlbums.rq").toString();
+                String pathQueryBeatlesAlbum = queriesPath.resolve("select").resolve("beatlesAlbums.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "rdfxml", "-o",
                                 pathResBeatlesSelectRdfxml, "-q", pathQueryBeatlesAlbum);
@@ -88,10 +99,10 @@ public class QueryTest {
 
         @Test
         public void testSelectTurtleInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesSelectTurtle = Paths.get(resultsPath, "select", "beatles-select-turtle.ttl")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesSelectTurtle = resultPath.resolve("select").resolve("beatles-select-turtle.ttl")
                                 .toString();
-                String pathQueryBeatlesAlbum = Paths.get(queriesPath, "select", "beatlesAlbums.rq").toString();
+                String pathQueryBeatlesAlbum = queriesPath.resolve("select").resolve("beatlesAlbums.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "turtle", "-o",
                                 pathResBeatlesSelectTurtle, "-q", pathQueryBeatlesAlbum);
@@ -107,10 +118,10 @@ public class QueryTest {
 
         @Test
         public void testSelectTriginvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesSelectTrig = Paths.get(resultsPath, "select", "beatles-select-trig.trig")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesSelectTrig = resultPath.resolve("select").resolve("beatles-select-trig.trig")
                                 .toString();
-                String pathQueryBeatlesAlbum = Paths.get(queriesPath, "select", "beatlesAlbums.rq").toString();
+                String pathQueryBeatlesAlbum = queriesPath.resolve("select").resolve("beatlesAlbums.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "trig", "-o",
                                 pathResBeatlesSelectTrig, "-q", pathQueryBeatlesAlbum);
@@ -126,10 +137,10 @@ public class QueryTest {
 
         @Test
         public void testSelectJsonldInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesSelectJsonld = Paths.get(resultsPath, "select", "beatles-select-jsonld.jsonld")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesSelectJsonld = resultPath.resolve("select").resolve("beatles-select-jsonld.jsonld")
                                 .toString();
-                String pathQueryBeatlesAlbum = Paths.get(queriesPath, "select", "beatlesAlbums.rq").toString();
+                String pathQueryBeatlesAlbum = queriesPath.resolve("select").resolve("beatlesAlbums.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "jsonld", "-o",
                                 pathResBeatlesSelectJsonld, "-q", pathQueryBeatlesAlbum);
@@ -145,13 +156,13 @@ public class QueryTest {
 
         @Test
         public void testSelectBidingXml() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesSelectXml = Paths
-                                .get(referencesPath, "select", "beatles-select-bidingxml.xml")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesSelectXml = referencesPath.resolve("select")
+                                .resolve("beatles-select-bidingxml.xml")
                                 .toString();
-                String pathResBeatlesSelectXml = Paths.get(resultsPath, "select", "beatles-select-xml.xml")
+                String pathResBeatlesSelectXml = resultPath.resolve("select").resolve("beatles-select-xml.xml")
                                 .toString();
-                String pathQueryBeatlesAlbum = Paths.get(queriesPath, "select", "beatlesAlbums.rq").toString();
+                String pathQueryBeatlesAlbum = queriesPath.resolve("select").resolve("beatlesAlbums.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "xml", "-o",
                                 pathResBeatlesSelectXml, "-q", pathQueryBeatlesAlbum);
@@ -164,14 +175,13 @@ public class QueryTest {
 
         @Test
         public void testSelectBidingJson() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesSelectJson = Paths
-                                .get(referencesPath, "select", "beatles-select-bidingjson.json")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesSelectJson = referencesPath.resolve("select")
+                                .resolve("beatles-select-bidingjson.json")
                                 .toString();
-                String pathResBeatlesSelectJson = Paths
-                                .get(resultsPath, "select", "beatles-select-json.json")
+                String pathResBeatlesSelectJson = resultPath.resolve("select").resolve("beatles-select-json.json")
                                 .toString();
-                String pathQueryBeatlesAlbum = Paths.get(queriesPath, "select", "beatlesAlbums.rq").toString();
+                String pathQueryBeatlesAlbum = queriesPath.resolve("select").resolve("beatlesAlbums.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "json", "-o",
                                 pathResBeatlesSelectJson, "-q", pathQueryBeatlesAlbum);
@@ -184,13 +194,13 @@ public class QueryTest {
 
         @Test
         public void testSelectBidingCsv() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesSelectCsv = Paths
-                                .get(referencesPath, "select", "beatles-select-bidingcsv.csv")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesSelectCsv = referencesPath.resolve("select")
+                                .resolve("beatles-select-bidingcsv.csv")
                                 .toString();
-                String pathResBeatlesSelectCsv = Paths.get(resultsPath, "select", "beatles-select-csv.csv")
+                String pathResBeatlesSelectCsv = resultPath.resolve("select").resolve("beatles-select-csv.csv")
                                 .toString();
-                String pathQueryBeatlesAlbum = Paths.get(queriesPath, "select", "beatlesAlbums.rq").toString();
+                String pathQueryBeatlesAlbum = queriesPath.resolve("select").resolve("beatlesAlbums.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "csv", "-o",
                                 pathResBeatlesSelectCsv, "-q", pathQueryBeatlesAlbum);
@@ -203,13 +213,13 @@ public class QueryTest {
 
         @Test
         public void testSelectBidingTSV() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesSelectTsv = Paths
-                                .get(referencesPath, "select", "beatles-select-bidingtsv.tsv")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesSelectTsv = referencesPath.resolve("select")
+                                .resolve("beatles-select-bidingtsv.tsv")
                                 .toString();
-                String pathResBeatlesSelectTsv = Paths.get(resultsPath, "select", "beatles-select-tsv.tsv")
+                String pathResBeatlesSelectTsv = resultPath.resolve("select").resolve("beatles-select-tsv.tsv")
                                 .toString();
-                String pathQueryBeatlesAlbum = Paths.get(queriesPath, "select", "beatlesAlbums.rq").toString();
+                String pathQueryBeatlesAlbum = queriesPath.resolve("select").resolve("beatlesAlbums.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "tsv", "-o",
                                 pathResBeatlesSelectTsv, "-q", pathQueryBeatlesAlbum);
@@ -222,14 +232,14 @@ public class QueryTest {
 
         @Test
         public void testSelectMarkdown() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesSelectMarkdown = Paths
-                                .get(referencesPath, "select", "beatles-select-bidingmarkdown.md")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesSelectMarkdown = referencesPath.resolve("select")
+                                .resolve("beatles-select-bidingmarkdown.md")
                                 .toString();
-                String pathResBeatlesSelectMarkdown = Paths
-                                .get(resultsPath, "select", "beatles-select-bidingmarkdown.md")
+                String pathResBeatlesSelectMarkdown = resultPath.resolve("select")
+                                .resolve("beatles-select-bidingmarkdown.md")
                                 .toString();
-                String pathQueryBeatlesAlbum = Paths.get(queriesPath, "select", "beatlesAlbums.rq").toString();
+                String pathQueryBeatlesAlbum = queriesPath.resolve("select").resolve("beatlesAlbums.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "markdown", "-o",
                                 pathResBeatlesSelectMarkdown, "-q", pathQueryBeatlesAlbum);
@@ -242,10 +252,10 @@ public class QueryTest {
 
         @Test
         public void testAskTrueRdfxmlInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesAskFalse = Paths.get(resultsPath, "ask", "beatles-ask-rdfxml-false.rdf")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesAskFalse = resultPath.resolve("ask").resolve("beatles-ask-rdfxml-false.rdf")
                                 .toString();
-                String pathQueryBeatlesAskFalse = Paths.get(queriesPath, "ask", "beatlesFalse.rq").toString();
+                String pathQueryBeatlesAskFalse = queriesPath.resolve("ask").resolve("beatlesFalse.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "rdfxml", "-o", pathResBeatlesAskFalse, "-q",
                                 pathQueryBeatlesAskFalse);
@@ -262,10 +272,10 @@ public class QueryTest {
 
         @Test
         public void testAskFalseRdfxmlInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesAskFalse = Paths.get(resultsPath, "ask", "beatles-ask-rdfxml-false.rdf")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesAskFalse = resultPath.resolve("ask").resolve("beatles-ask-rdfxml-false.rdf")
                                 .toString();
-                String pathQueryBeatlesAskFalse = Paths.get(queriesPath, "ask", "beatlesFalse.rq").toString();
+                String pathQueryBeatlesAskFalse = queriesPath.resolve("ask").resolve("beatlesFalse.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "rdfxml", "-o", pathResBeatlesAskFalse, "-q",
                                 pathQueryBeatlesAskFalse);
@@ -281,10 +291,10 @@ public class QueryTest {
 
         @Test
         public void testAskTrueTurtleInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesAskTrue = Paths.get(resultsPath, "ask", "beatles-ask-turtle-true.ttl")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesAskTrue = resultPath.resolve("ask").resolve("beatles-ask-turtle-true.ttl")
                                 .toString();
-                String pathQueryBeatlesAskTrue = Paths.get(queriesPath, "ask", "beatlesTrue.rq").toString();
+                String pathQueryBeatlesAskTrue = queriesPath.resolve("ask").resolve("beatlesTrue.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "turtle", "-o", pathResBeatlesAskTrue, "-q",
                                 pathQueryBeatlesAskTrue);
@@ -300,10 +310,10 @@ public class QueryTest {
 
         @Test
         public void testAskFalseTurtleInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesAskFalse = Paths.get(resultsPath, "ask", "beatles-ask-turtle-false.ttl")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesAskFalse = resultPath.resolve("ask").resolve("beatles-ask-turtle-false.ttl")
                                 .toString();
-                String pathQueryBeatlesAskFalse = Paths.get(queriesPath, "ask", "beatlesFalse.rq").toString();
+                String pathQueryBeatlesAskFalse = queriesPath.resolve("ask").resolve("beatlesFalse.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "turtle", "-o", pathResBeatlesAskFalse, "-q",
                                 pathQueryBeatlesAskFalse);
@@ -319,9 +329,10 @@ public class QueryTest {
 
         @Test
         public void testAskTrigTrueInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesAskTrue = Paths.get(resultsPath, "ask", "beatles-ask-trig-true.trig").toString();
-                String pathQueryBeatlesAskTrue = Paths.get(queriesPath, "ask", "beatlesTrue.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesAskTrue = resultPath.resolve("ask").resolve("beatles-ask-trig-true.trig")
+                                .toString();
+                String pathQueryBeatlesAskTrue = queriesPath.resolve("ask").resolve("beatlesTrue.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "trig", "-o", pathResBeatlesAskTrue, "-q",
                                 pathQueryBeatlesAskTrue);
@@ -337,10 +348,10 @@ public class QueryTest {
 
         @Test
         public void testAskTrigFalseInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesAskFalse = Paths.get(resultsPath, "ask", "beatles-ask-trig-false.trig")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesAskFalse = resultPath.resolve("ask").resolve("beatles-ask-trig-false.trig")
                                 .toString();
-                String pathQueryBeatlesAskFalse = Paths.get(queriesPath, "ask", "beatlesFalse.rq").toString();
+                String pathQueryBeatlesAskFalse = queriesPath.resolve("ask").resolve("beatlesFalse.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "trig", "-o", pathResBeatlesAskFalse, "-q",
                                 pathQueryBeatlesAskFalse);
@@ -356,10 +367,10 @@ public class QueryTest {
 
         @Test
         public void testAskTrueJsonldInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesAskTrue = Paths.get(resultsPath, "ask", "beatles-ask-jsonld-true.jsonld")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesAskTrue = resultPath.resolve("ask").resolve("beatles-ask-jsonld-true.jsonld")
                                 .toString();
-                String pathQueryBeatlesAskTrue = Paths.get(queriesPath, "ask", "beatlesTrue.rq").toString();
+                String pathQueryBeatlesAskTrue = queriesPath.resolve("ask").resolve("beatlesTrue.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "jsonld", "-o", pathResBeatlesAskTrue, "-q",
                                 pathQueryBeatlesAskTrue);
@@ -375,10 +386,10 @@ public class QueryTest {
 
         @Test
         public void testAskFalseJsonldInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesAskFalse = Paths.get(resultsPath, "ask", "beatles-ask-jsonld-false.jsonld")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesAskFalse = resultPath.resolve("ask").resolve("beatles-ask-jsonld-false.jsonld")
                                 .toString();
-                String pathQueryBeatlesAskFalse = Paths.get(queriesPath, "ask", "beatlesFalse.rq").toString();
+                String pathQueryBeatlesAskFalse = queriesPath.resolve("ask").resolve("beatlesFalse.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "jsonld", "-o", pathResBeatlesAskFalse, "-q",
                                 pathQueryBeatlesAskFalse);
@@ -394,12 +405,12 @@ public class QueryTest {
 
         @Test
         public void testAskTrueBidingXml() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesAskXml = Paths.get(referencesPath, "ask", "beatles-ask-bidingxml-true.xml")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesAskXml = referencesPath.resolve("ask").resolve("beatles-ask-bidingxml-true.xml")
                                 .toString();
-                String pathResBeatlesAskTrue = Paths.get(resultsPath, "ask", "beatles-ask-bidingxml-true.xml")
+                String pathResBeatlesAskTrue = resultPath.resolve("ask").resolve("beatles-ask-bidingxml-true.xml")
                                 .toString();
-                String pathQueryBeatlesAskTrue = Paths.get(queriesPath, "ask", "beatlesTrue.rq").toString();
+                String pathQueryBeatlesAskTrue = queriesPath.resolve("ask").resolve("beatlesTrue.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "xml", "-o", pathResBeatlesAskTrue, "-q",
                                 pathQueryBeatlesAskTrue);
@@ -412,12 +423,12 @@ public class QueryTest {
 
         @Test
         public void testAskFalseBidingXml() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesAskXml = Paths.get(referencesPath, "ask", "beatles-ask-bidingxml-false.xml")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesAskXml = referencesPath.resolve("ask").resolve("beatles-ask-bidingxml-false.xml")
                                 .toString();
-                String pathResBeatlesAskFalse = Paths.get(resultsPath, "ask", "beatles-ask-bidingxml-false.xml")
+                String pathResBeatlesAskFalse = resultPath.resolve("ask").resolve("beatles-ask-bidingxml-false.xml")
                                 .toString();
-                String pathQueryBeatlesAskFalse = Paths.get(queriesPath, "ask", "beatlesFalse.rq").toString();
+                String pathQueryBeatlesAskFalse = queriesPath.resolve("ask").resolve("beatlesFalse.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "xml", "-o", pathResBeatlesAskFalse, "-q",
                                 pathQueryBeatlesAskFalse);
@@ -430,12 +441,12 @@ public class QueryTest {
 
         @Test
         public void testAskTrueBidingJson() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesAskJSON = Paths.get(referencesPath, "ask", "beatles-ask-bidingjson-true.json")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesAskJSON = referencesPath.resolve("ask").resolve("beatles-ask-bidingjson-true.json")
                                 .toString();
-                String pathResBeatlesAskTrue = Paths.get(resultsPath, "ask", "beatles-ask-bidingjson-true.json")
+                String pathResBeatlesAskTrue = resultPath.resolve("ask").resolve("beatles-ask-bidingjson-true.json")
                                 .toString();
-                String pathQueryBeatlesAskTrue = Paths.get(queriesPath, "ask", "beatlesTrue.rq").toString();
+                String pathQueryBeatlesAskTrue = queriesPath.resolve("ask").resolve("beatlesTrue.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "json", "-o", pathResBeatlesAskTrue, "-q",
                                 pathQueryBeatlesAskTrue);
@@ -448,12 +459,13 @@ public class QueryTest {
 
         @Test
         public void testAskFalseBidingJson() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesAskJSON = Paths.get(referencesPath, "ask", "beatles-ask-bidingjson-false.json")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesAskJSON = referencesPath.resolve("ask")
+                                .resolve("beatles-ask-bidingjson-false.json")
                                 .toString();
-                String pathResBeatlesAskFalse = Paths.get(resultsPath, "ask", "beatles-ask-bidingjson-false.json")
+                String pathResBeatlesAskFalse = resultPath.resolve("ask").resolve("beatles-ask-bidingjson-false.json")
                                 .toString();
-                String pathQueryBeatlesAskFalse = Paths.get(queriesPath, "ask", "beatlesFalse.rq").toString();
+                String pathQueryBeatlesAskFalse = queriesPath.resolve("ask").resolve("beatlesFalse.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "json", "-o", pathResBeatlesAskFalse, "-q",
                                 pathQueryBeatlesAskFalse);
@@ -466,12 +478,12 @@ public class QueryTest {
 
         @Test
         public void testAskTrueBidingCsv() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesAskCSV = Paths.get(referencesPath, "ask", "beatles-ask-bidingcsv-true.csv")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesAskCSV = referencesPath.resolve("ask").resolve("beatles-ask-bidingcsv-true.csv")
                                 .toString();
-                String pathResBeatlesAskTrue = Paths.get(resultsPath, "ask", "beatles-ask-bidingcsv-true.csv")
+                String pathResBeatlesAskTrue = resultPath.resolve("ask").resolve("beatles-ask-bidingcsv-true.csv")
                                 .toString();
-                String pathQueryBeatlesAskTrue = Paths.get(queriesPath, "ask", "beatlesTrue.rq").toString();
+                String pathQueryBeatlesAskTrue = queriesPath.resolve("ask").resolve("beatlesTrue.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "csv", "-o", pathResBeatlesAskTrue, "-q",
                                 pathQueryBeatlesAskTrue);
@@ -484,12 +496,12 @@ public class QueryTest {
 
         @Test
         public void testAskFalseBidingCsv() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesAskCSV = Paths.get(referencesPath, "ask", "beatles-ask-bidingcsv-false.csv")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesAskCSV = referencesPath.resolve("ask").resolve("beatles-ask-bidingcsv-false.csv")
                                 .toString();
-                String pathResBeatlesAskFalse = Paths.get(resultsPath, "ask", "beatles-ask-bidingcsv-false.csv")
+                String pathResBeatlesAskFalse = resultPath.resolve("ask").resolve("beatles-ask-bidingcsv-false.csv")
                                 .toString();
-                String pathQueryBeatlesAskFalse = Paths.get(queriesPath, "ask", "beatlesFalse.rq").toString();
+                String pathQueryBeatlesAskFalse = queriesPath.resolve("ask").resolve("beatlesFalse.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "csv", "-o", pathResBeatlesAskFalse, "-q",
                                 pathQueryBeatlesAskFalse);
@@ -502,12 +514,12 @@ public class QueryTest {
 
         @Test
         public void testAskTrueBidingTsv() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesAskTSV = Paths.get(referencesPath, "ask", "beatles-ask-bidingtsv-true.tsv")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesAskTSV = referencesPath.resolve("ask").resolve("beatles-ask-bidingtsv-true.tsv")
                                 .toString();
-                String pathResBeatlesAskTrue = Paths.get(resultsPath, "ask", "beatles-ask-bidingtsv-true.tsv")
+                String pathResBeatlesAskTrue = resultPath.resolve("ask").resolve("beatles-ask-bidingtsv-true.tsv")
                                 .toString();
-                String pathQueryBeatlesAskTrue = Paths.get(queriesPath, "ask", "beatlesTrue.rq").toString();
+                String pathQueryBeatlesAskTrue = queriesPath.resolve("ask").resolve("beatlesTrue.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "tsv", "-o", pathResBeatlesAskTrue, "-q",
                                 pathQueryBeatlesAskTrue);
@@ -520,12 +532,12 @@ public class QueryTest {
 
         @Test
         public void testAskFalseBidingTsv() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesAskTSV = Paths.get(referencesPath, "ask", "beatles-ask-bidingtsv-false.tsv")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesAskTSV = referencesPath.resolve("ask").resolve("beatles-ask-bidingtsv-false.tsv")
                                 .toString();
-                String pathResBeatlesAskFalse = Paths.get(resultsPath, "ask", "beatles-ask-bidingtsv-false.tsv")
+                String pathResBeatlesAskFalse = resultPath.resolve("ask").resolve("beatles-ask-bidingtsv-false.tsv")
                                 .toString();
-                String pathQueryBeatlesAskFalse = Paths.get(queriesPath, "ask", "beatlesFalse.rq").toString();
+                String pathQueryBeatlesAskFalse = queriesPath.resolve("ask").resolve("beatlesFalse.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "tsv", "-o", pathResBeatlesAskFalse, "-q",
                                 pathQueryBeatlesAskFalse);
@@ -538,12 +550,12 @@ public class QueryTest {
 
         @Test
         public void testAskTrueBidingMarkdown() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesAskMarkdown = Paths
-                                .get(referencesPath, "ask", "beatles-ask-bidingmarkdown-true.md").toString();
-                String pathResBeatlesAskTrue = Paths.get(resultsPath, "ask", "beatles-ask-bidingmarkdown-true.md")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesAskMarkdown = referencesPath.resolve("ask")
+                                .resolve("beatles-ask-bidingmarkdown-true.md").toString();
+                String pathResBeatlesAskTrue = resultPath.resolve("ask").resolve("beatles-ask-bidingmarkdown-true.md")
                                 .toString();
-                String pathQueryBeatlesAskTrue = Paths.get(queriesPath, "ask", "beatlesTrue.rq").toString();
+                String pathQueryBeatlesAskTrue = queriesPath.resolve("ask").resolve("beatlesTrue.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "markdown", "-o", pathResBeatlesAskTrue, "-q",
                                 pathQueryBeatlesAskTrue);
@@ -556,12 +568,12 @@ public class QueryTest {
 
         @Test
         public void testAskFalseBidingMarkdown() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesAskMarkdown = Paths
-                                .get(referencesPath, "ask", "beatles-ask-bidingmarkdown-false.md").toString();
-                String pathResBeatlesAskFalse = Paths.get(resultsPath, "ask", "beatles-ask-bidingmarkdown-false.md")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesAskMarkdown = referencesPath.resolve("ask")
+                                .resolve("beatles-ask-bidingmarkdown-false.md").toString();
+                String pathResBeatlesAskFalse = resultPath.resolve("ask").resolve("beatles-ask-bidingmarkdown-false.md")
                                 .toString();
-                String pathQueryBeatlesAskFalse = Paths.get(queriesPath, "ask", "beatlesFalse.rq").toString();
+                String pathQueryBeatlesAskFalse = queriesPath.resolve("ask").resolve("beatlesFalse.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "markdown", "-o", pathResBeatlesAskFalse,
                                 "-q",
@@ -575,12 +587,13 @@ public class QueryTest {
 
         @Test
         public void testInsertRdfxml() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesInsert = Paths.get(referencesPath, "insert", "beatles-insert-rdfxml.xml")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesInsert = referencesPath.resolve("insert").resolve("beatles-insert-rdfxml.xml")
                                 .toString();
-                String pathResBeatlesInsert = Paths.get(resultsPath, "insert", "beatles-insert-rdfxml.xml")
+                String pathResBeatlesInsert = resultPath.resolve("insert").resolve("beatles-insert-rdfxml.xml")
                                 .toString();
-                String pathQueryBeatlesInsert = Paths.get(queriesPath, "insert", "beatlesInsertRock.rq").toString();
+                String pathQueryBeatlesInsert = queriesPath.resolve("insert").resolve("beatlesInsertRock.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "rdfxml", "-o", pathResBeatlesInsert, "-q",
                                 pathQueryBeatlesInsert);
@@ -593,12 +606,13 @@ public class QueryTest {
 
         @Test
         public void testInsertTurtle() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesInsert = Paths.get(referencesPath, "insert", "beatles-insert-turtle.ttl")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesInsert = referencesPath.resolve("insert").resolve("beatles-insert-turtle.ttl")
                                 .toString();
-                String pathResBeatlesInsert = Paths.get(resultsPath, "insert", "beatles-insert-turtle.ttl")
+                String pathResBeatlesInsert = resultPath.resolve("insert").resolve("beatles-insert-turtle.ttl")
                                 .toString();
-                String pathQueryBeatlesInsert = Paths.get(queriesPath, "insert", "beatlesInsertRock.rq").toString();
+                String pathQueryBeatlesInsert = queriesPath.resolve("insert").resolve("beatlesInsertRock.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "turtle", "-o", pathResBeatlesInsert, "-q",
                                 pathQueryBeatlesInsert);
@@ -611,12 +625,13 @@ public class QueryTest {
 
         @Test
         public void testInsertTrig() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesInsert = Paths.get(referencesPath, "insert", "beatles-insert-trig.trig")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesInsert = referencesPath.resolve("insert").resolve("beatles-insert-trig.trig")
                                 .toString();
-                String pathResBeatlesInsert = Paths.get(resultsPath, "insert", "beatles-insert-trig.trig")
+                String pathResBeatlesInsert = resultPath.resolve("insert").resolve("beatles-insert-trig.trig")
                                 .toString();
-                String pathQueryBeatlesInsert = Paths.get(queriesPath, "insert", "beatlesInsertRock.rq").toString();
+                String pathQueryBeatlesInsert = queriesPath.resolve("insert").resolve("beatlesInsertRock.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "trig", "-o", pathResBeatlesInsert, "-q",
                                 pathQueryBeatlesInsert);
@@ -629,12 +644,13 @@ public class QueryTest {
 
         @Test
         public void testInsertJsonld() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesInsert = Paths.get(referencesPath, "insert", "beatles-insert-jsonld.jsonld")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesInsert = referencesPath.resolve("insert").resolve("beatles-insert-jsonld.jsonld")
                                 .toString();
-                String pathResBeatlesInsert = Paths.get(resultsPath, "insert", "beatles-insert-jsonld.jsonld")
+                String pathResBeatlesInsert = resultPath.resolve("insert").resolve("beatles-insert-jsonld.jsonld")
                                 .toString();
-                String pathQueryBeatlesInsert = Paths.get(queriesPath, "insert", "beatlesInsertRock.rq").toString();
+                String pathQueryBeatlesInsert = queriesPath.resolve("insert").resolve("beatlesInsertRock.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "jsonld", "-o", pathResBeatlesInsert, "-q",
                                 pathQueryBeatlesInsert);
@@ -647,10 +663,11 @@ public class QueryTest {
 
         @Test
         public void testInsertBidingXmlInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesInsert = Paths.get(resultsPath, "insert", "beatles-insert-bidingrdfxml.xml")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesInsert = resultPath.resolve("insert").resolve("beatles-insert-bidingrdfxml.xml")
                                 .toString();
-                String pathQueryBeatlesInsert = Paths.get(queriesPath, "insert", "beatlesInsertRock.rq").toString();
+                String pathQueryBeatlesInsert = queriesPath.resolve("insert").resolve("beatlesInsertRock.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "xml", "-o", pathResBeatlesInsert, "-q",
                                 pathQueryBeatlesInsert);
@@ -666,10 +683,11 @@ public class QueryTest {
 
         @Test
         public void testInsertBidingJsonInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesInsert = Paths.get(resultsPath, "insert", "beatles-insert-bidingjsonld.jsonld")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesInsert = resultPath.resolve("insert").resolve("beatles-insert-bidingjsonld.jsonld")
                                 .toString();
-                String pathQueryBeatlesInsert = Paths.get(queriesPath, "insert", "beatlesInsertRock.rq").toString();
+                String pathQueryBeatlesInsert = queriesPath.resolve("insert").resolve("beatlesInsertRock.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "json", "-o",
                                 pathResBeatlesInsert, "-q",
@@ -686,10 +704,11 @@ public class QueryTest {
 
         @Test
         public void testInsertBidingCsvInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesInsert = Paths.get(resultsPath, "insert", "beatles-insert-bidingrdfxml.xml")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesInsert = resultPath.resolve("insert").resolve("beatles-insert-bidingrdfxml.xml")
                                 .toString();
-                String pathQueryBeatlesInsert = Paths.get(queriesPath, "insert", "beatlesInsertRock.rq").toString();
+                String pathQueryBeatlesInsert = queriesPath.resolve("insert").resolve("beatlesInsertRock.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "csv", "-o",
                                 pathResBeatlesInsert, "-q",
@@ -706,10 +725,11 @@ public class QueryTest {
 
         @Test
         public void testInsertBidingTsvInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesInsert = Paths.get(resultsPath, "insert", "beatles-insert-bidingrdfxml.xml")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesInsert = resultPath.resolve("insert").resolve("beatles-insert-bidingrdfxml.xml")
                                 .toString();
-                String pathQueryBeatlesInsert = Paths.get(queriesPath, "insert", "beatlesInsertRock.rq").toString();
+                String pathQueryBeatlesInsert = queriesPath.resolve("insert").resolve("beatlesInsertRock.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "tsv", "-o",
                                 pathResBeatlesInsert, "-q",
@@ -726,10 +746,11 @@ public class QueryTest {
 
         @Test
         public void testInsertBidingMarkdownInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesInsert = Paths.get(resultsPath, "insert", "beatles-insert-bidingrdfxml.xml")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesInsert = resultPath.resolve("insert").resolve("beatles-insert-bidingrdfxml.xml")
                                 .toString();
-                String pathQueryBeatlesInsert = Paths.get(queriesPath, "insert", "beatlesInsertRock.rq").toString();
+                String pathQueryBeatlesInsert = queriesPath.resolve("insert").resolve("beatlesInsertRock.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "markdown", "-o",
                                 pathResBeatlesInsert, "-q", pathQueryBeatlesInsert);
@@ -745,12 +766,13 @@ public class QueryTest {
 
         @Test
         public void testInsertWhereRdfxml() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesInsertwhere = Paths
-                                .get(referencesPath, "insert-where", "beatles-insertwhere-bidingrdfxml.xml").toString();
-                String pathResBeatlesInsertwhere = Paths
-                                .get(resultsPath, "insert-where", "beatles-insertwhere-bidingrdfxml.xml").toString();
-                String pathQueryBeatlesInsertwhere = Paths.get(queriesPath, "insert-where", "beatlesAge.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesInsertwhere = referencesPath.resolve("insert-where")
+                                .resolve("beatles-insertwhere-bidingrdfxml.xml").toString();
+                String pathResBeatlesInsertwhere = resultPath.resolve("insert-where")
+                                .resolve("beatles-insertwhere-bidingrdfxml.xml").toString();
+                String pathQueryBeatlesInsertwhere = queriesPath.resolve("insert-where").resolve("beatlesAge.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "rdfxml", "-o", pathResBeatlesInsertwhere,
                                 "-q",
@@ -764,12 +786,13 @@ public class QueryTest {
 
         @Test
         public void testInsertWhereTurtle() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesInsertwhere = Paths
-                                .get(referencesPath, "insert-where", "beatles-insertwhere-bidingturtle.ttl").toString();
-                String pathResBeatlesInsertwhere = Paths
-                                .get(resultsPath, "insert-where", "beatles-insertwhere-bidingturtle.ttl").toString();
-                String pathQueryBeatlesInsertwhere = Paths.get(queriesPath, "insert-where", "beatlesAge.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesInsertwhere = referencesPath.resolve("insert-where")
+                                .resolve("beatles-insertwhere-bidingturtle.ttl").toString();
+                String pathResBeatlesInsertwhere = resultPath.resolve("insert-where")
+                                .resolve("beatles-insertwhere-bidingturtle.ttl").toString();
+                String pathQueryBeatlesInsertwhere = queriesPath.resolve("insert-where").resolve("beatlesAge.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "turtle", "-o", pathResBeatlesInsertwhere,
                                 "-q",
@@ -783,12 +806,13 @@ public class QueryTest {
 
         @Test
         public void testInsertWhereTrig() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesInsertwhere = Paths
-                                .get(referencesPath, "insert-where", "beatles-insertwhere-bidingtrig.trig").toString();
-                String pathResBeatlesInsertwhere = Paths
-                                .get(resultsPath, "insert-where", "beatles-insertwhere-bidingtrig.trig").toString();
-                String pathQueryBeatlesInsertwhere = Paths.get(queriesPath, "insert-where", "beatlesAge.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesInsertwhere = referencesPath.resolve("insert-where")
+                                .resolve("beatles-insertwhere-bidingtrig.trig").toString();
+                String pathResBeatlesInsertwhere = resultPath.resolve("insert-where")
+                                .resolve("beatles-insertwhere-bidingtrig.trig").toString();
+                String pathQueryBeatlesInsertwhere = queriesPath.resolve("insert-where").resolve("beatlesAge.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "trig", "-o", pathResBeatlesInsertwhere, "-q",
                                 pathQueryBeatlesInsertwhere);
@@ -801,13 +825,14 @@ public class QueryTest {
 
         @Test
         public void testInsertWhereJsonLd() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesInsertwhere = Paths
-                                .get(referencesPath, "insert-where", "beatles-insertwhere-bidingjsonld.jsonld")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesInsertwhere = referencesPath.resolve("insert-where")
+                                .resolve("beatles-insertwhere-bidingjsonld.jsonld")
                                 .toString();
-                String pathResBeatlesInsertwhere = Paths
-                                .get(resultsPath, "insert-where", "beatles-insertwhere-bidingjsonld.jsonld").toString();
-                String pathQueryBeatlesInsertwhere = Paths.get(queriesPath, "insert-where", "beatlesAge.rq").toString();
+                String pathResBeatlesInsertwhere = resultPath.resolve("insert-where")
+                                .resolve("beatles-insertwhere-bidingjsonld.jsonld").toString();
+                String pathQueryBeatlesInsertwhere = queriesPath.resolve("insert-where").resolve("beatlesAge.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "jsonld", "-o", pathResBeatlesInsertwhere,
                                 "-q",
@@ -821,10 +846,11 @@ public class QueryTest {
 
         @Test
         public void testInsertWhereBidingxmlInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesInsertwhere = Paths
-                                .get(resultsPath, "insert-where", "beatles-insertwhere-bidingrdfxml.xml").toString();
-                String pathQueryBeatlesInsertwhere = Paths.get(queriesPath, "insert-where", "beatlesAge.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesInsertwhere = resultPath.resolve("insert-where")
+                                .resolve("beatles-insertwhere-bidingrdfxml.xml").toString();
+                String pathQueryBeatlesInsertwhere = queriesPath.resolve("insert-where").resolve("beatlesAge.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "xml", "-o",
                                 pathResBeatlesInsertwhere, "-q",
@@ -841,10 +867,11 @@ public class QueryTest {
 
         @Test
         public void testInsertWhereBidingjsonInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathResBeatlesInsertwhere = Paths
-                                .get(resultsPath, "insert-where", "beatles-insertwhere-bidingrdfxml.xml").toString();
-                String pathQueryBeatlesInsertwhere = Paths.get(queriesPath, "insert-where", "beatlesAge.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathResBeatlesInsertwhere = resultPath.resolve("insert-where")
+                                .resolve("beatles-insertwhere-bidingrdfxml.xml").toString();
+                String pathQueryBeatlesInsertwhere = queriesPath.resolve("insert-where").resolve("beatlesAge.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "json", "-o",
                                 pathResBeatlesInsertwhere, "-q",
@@ -861,8 +888,9 @@ public class QueryTest {
 
         @Test
         public void testInsertWhereBidingCsvInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesInsertwhere = Paths.get(queriesPath, "insert-where", "beatlesAge.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesInsertwhere = queriesPath.resolve("insert-where").resolve("beatlesAge.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "csv", "-o",
                                 "references/insert-where/beatles-insertwhere-bidingcsv.csv", "-q",
@@ -879,8 +907,9 @@ public class QueryTest {
 
         @Test
         public void testInsertWhereBidingTsvInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesInsertwhere = Paths.get(queriesPath, "insert-where", "beatlesAge.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesInsertwhere = queriesPath.resolve("insert-where").resolve("beatlesAge.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "tsv", "-o",
                                 "references/insert-where/beatles-insertwhere-bidingtsv.tsv", "-q",
@@ -897,8 +926,9 @@ public class QueryTest {
 
         @Test
         public void testInsertWhereBidingMarkdownInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesInsertwhere = Paths.get(queriesPath, "insert-where", "beatlesAge.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesInsertwhere = queriesPath.resolve("insert-where").resolve("beatlesAge.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "markdown", "-o",
                                 "references/insert-where/beatles-insertwhere-bidingmarkdown.md", "-q",
@@ -915,11 +945,12 @@ public class QueryTest {
 
         @Test
         public void testDeleteRdfxml() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesDelete = Paths.get(referencesPath, "delete", "beatles-delete-rdfxml.xml")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesDelete = referencesPath.resolve("delete").resolve("beatles-delete-rdfxml.xml")
                                 .toString();
-                String pathResBeatlesDelete = Paths.get(resultsPath, "delete", "beatles-delete-rdfxml.xml").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete", "deleteMcCartney.rq").toString();
+                String pathResBeatlesDelete = resultPath.resolve("delete").resolve("beatles-delete-rdfxml.xml")
+                                .toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete").resolve("deleteMcCartney.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "rdfxml", "-o", pathResBeatlesDelete, "-q",
                                 pathQueryBeatlesDelete);
@@ -932,11 +963,12 @@ public class QueryTest {
 
         @Test
         public void testDeleteTurtle() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesDelete = Paths.get(referencesPath, "delete", "beatles-delete-turtle.ttl")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesDelete = referencesPath.resolve("delete").resolve("beatles-delete-turtle.ttl")
                                 .toString();
-                String pathResBeatlesDelete = Paths.get(resultsPath, "delete", "beatles-delete-turtle.ttl").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete", "deleteMcCartney.rq").toString();
+                String pathResBeatlesDelete = resultPath.resolve("delete").resolve("beatles-delete-turtle.ttl")
+                                .toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete").resolve("deleteMcCartney.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "turtle", "-o", pathResBeatlesDelete, "-q",
                                 pathQueryBeatlesDelete);
@@ -949,11 +981,12 @@ public class QueryTest {
 
         @Test
         public void testDeleteTrig() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesDelete = Paths.get(referencesPath, "delete", "beatles-delete-trig.trig")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesDelete = referencesPath.resolve("delete").resolve("beatles-delete-trig.trig")
                                 .toString();
-                String pathResBeatlesDelete = Paths.get(resultsPath, "delete", "beatles-delete-trig.trig").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete", "deleteMcCartney.rq").toString();
+                String pathResBeatlesDelete = resultPath.resolve("delete").resolve("beatles-delete-trig.trig")
+                                .toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete").resolve("deleteMcCartney.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "trig", "-o", pathResBeatlesDelete, "-q",
                                 pathQueryBeatlesDelete);
@@ -966,12 +999,12 @@ public class QueryTest {
 
         @Test
         public void testDeleteJsonld() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesDelete = Paths.get(referencesPath, "delete", "beatles-delete-jsonld.jsonld")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesDelete = referencesPath.resolve("delete").resolve("beatles-delete-jsonld.jsonld")
                                 .toString();
-                String pathResBeatlesDelete = Paths.get(resultsPath, "delete", "beatles-delete-jsonld.jsonld")
+                String pathResBeatlesDelete = resultPath.resolve("delete").resolve("beatles-delete-jsonld.jsonld")
                                 .toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete", "deleteMcCartney.rq").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete").resolve("deleteMcCartney.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "jsonld", "-o", pathResBeatlesDelete, "-q",
                                 pathQueryBeatlesDelete);
@@ -984,8 +1017,8 @@ public class QueryTest {
 
         @Test
         public void testDeleteBidingXmlInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete", "deleteMcCartney.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete").resolve("deleteMcCartney.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "xml", "-o",
                                 "references/delete/beatles-delete-xml.xml", "-q",
@@ -1002,8 +1035,8 @@ public class QueryTest {
 
         @Test
         public void testDeleteBidingJsonInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete", "deleteMcCartney.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete").resolve("deleteMcCartney.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "json", "-o",
                                 "references/delete/beatles-delete-jsonld.jsonld", "-q",
@@ -1020,8 +1053,8 @@ public class QueryTest {
 
         @Test
         public void testDeleteBidingCsvInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete", "deleteMcCartney.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete").resolve("deleteMcCartney.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "csv", "-o",
                                 "references/delete/beatles-delete-csv.csv", "-q",
@@ -1038,8 +1071,8 @@ public class QueryTest {
 
         @Test
         public void testDeleteBidingTsvInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete", "deleteMcCartney.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete").resolve("deleteMcCartney.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "tsv", "-o",
                                 "references/delete/beatles-delete-tsv.tsv", "-q",
@@ -1056,8 +1089,8 @@ public class QueryTest {
 
         @Test
         public void testDeleteBidingMarkdownInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete", "deleteMcCartney.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete").resolve("deleteMcCartney.rq").toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "markdown", "-o",
                                 "references/delete/beatles-delete-markdown.md", "-q",
@@ -1074,13 +1107,15 @@ public class QueryTest {
 
         @Test
         public void testDeleteWhereRdfxml() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesDelete = Paths
-                                .get(referencesPath, "delete-where", "beatles-delete-where-rdfxml.xml")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesDelete = referencesPath.resolve("delete-where")
+                                .resolve("beatles-delete-where-rdfxml.xml")
                                 .toString();
-                String pathResBeatlesDelete = Paths.get(resultsPath, "delete-where", "beatles-delete-where-rdfxml.xml")
+                String pathResBeatlesDelete = resultPath.resolve("delete-where")
+                                .resolve("beatles-delete-where-rdfxml.xml")
                                 .toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete-where", "deleteLenon.rq").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete-where").resolve("deleteLenon.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "rdfxml", "-o", pathResBeatlesDelete, "-q",
                                 pathQueryBeatlesDelete);
@@ -1093,13 +1128,15 @@ public class QueryTest {
 
         @Test
         public void testDeleteWhereTurtle() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesDelete = Paths
-                                .get(referencesPath, "delete-where", "beatles-delete-where-turtle.ttl")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesDelete = referencesPath.resolve("delete-where")
+                                .resolve("beatles-delete-where-turtle.ttl")
                                 .toString();
-                String pathResBeatlesDelete = Paths.get(resultsPath, "delete-where", "beatles-delete-where-turtle.ttl")
+                String pathResBeatlesDelete = resultPath.resolve("delete-where")
+                                .resolve("beatles-delete-where-turtle.ttl")
                                 .toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete-where", "deleteLenon.rq").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete-where").resolve("deleteLenon.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "turtle", "-o", pathResBeatlesDelete, "-q",
                                 pathQueryBeatlesDelete);
@@ -1112,13 +1149,15 @@ public class QueryTest {
 
         @Test
         public void testDeleteWhereTrig() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesDelete = Paths
-                                .get(referencesPath, "delete-where", "beatles-delete-where-trig.trig")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesDelete = referencesPath.resolve("delete-where")
+                                .resolve("beatles-delete-where-trig.trig")
                                 .toString();
-                String pathResBeatlesDelete = Paths.get(resultsPath, "delete-where", "beatles-delete-where-trig.trig")
+                String pathResBeatlesDelete = resultPath.resolve("delete-where")
+                                .resolve("beatles-delete-where-trig.trig")
                                 .toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete-where", "deleteLenon.rq").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete-where").resolve("deleteLenon.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "trig", "-o", pathResBeatlesDelete, "-q",
                                 pathQueryBeatlesDelete);
@@ -1131,14 +1170,15 @@ public class QueryTest {
 
         @Test
         public void testDeleteWhereJsonld() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesDelete = Paths
-                                .get(referencesPath, "delete-where", "beatles-delete-where-jsonld.jsonld")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesDelete = referencesPath.resolve("delete-where")
+                                .resolve("beatles-delete-where-jsonld.jsonld")
                                 .toString();
-                String pathResBeatlesDelete = Paths
-                                .get(resultsPath, "delete-where", "beatles-delete-where-jsonld.jsonld")
+                String pathResBeatlesDelete = resultPath.resolve("delete-where")
+                                .resolve("beatles-delete-where-jsonld.jsonld")
                                 .toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete-where", "deleteLenon.rq").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete-where").resolve("deleteLenon.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "jsonld", "-o", pathResBeatlesDelete, "-q",
                                 pathQueryBeatlesDelete);
@@ -1151,8 +1191,9 @@ public class QueryTest {
 
         @Test
         public void testDeleteWhereBidingXmlInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete-where", "deleteLenon.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete-where").resolve("deleteLenon.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "xml", "-o",
                                 "references/delete-where/beatles-delete-where-xml.xml", "-q",
@@ -1169,8 +1210,9 @@ public class QueryTest {
 
         @Test
         public void testDeleteWhereBidingJsonInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete-where", "deleteLenon.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete-where").resolve("deleteLenon.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "json", "-o",
                                 "references/delete-where/beatles-delete-where-json.json", "-q",
@@ -1187,8 +1229,9 @@ public class QueryTest {
 
         @Test
         public void testDeleteWhereBidingCsvInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete-where", "deleteLenon.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete-where").resolve("deleteLenon.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "csv", "-o",
                                 "references/delete-where/beatles-delete-where-csv.csv", "-q",
@@ -1205,8 +1248,9 @@ public class QueryTest {
 
         @Test
         public void testDeleteWhereBidingTsvInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete-where", "deleteLenon.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete-where").resolve("deleteLenon.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "tsv", "-o",
                                 "references/delete-where/beatles-delete-where-tsv.tsv", "-q",
@@ -1223,8 +1267,9 @@ public class QueryTest {
 
         @Test
         public void testDeleteWhereBidingMarkdownInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDelete = Paths.get(queriesPath, "delete-where", "deleteLenon.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDelete = queriesPath.resolve("delete-where").resolve("deleteLenon.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "markdown", "-o",
                                 "references/delete-where/beatles-delete-where-markdown.md", "-q",
@@ -1241,12 +1286,14 @@ public class QueryTest {
 
         @Test
         public void testConstructRdfxml() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesConstruct = Paths.get(referencesPath, "construct", "beatles-construct-rdfxml.xml")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesConstruct = referencesPath.resolve("construct")
+                                .resolve("beatles-construct-rdfxml.xml")
                                 .toString();
-                String pathResBeatlesConstruct = Paths.get(resultsPath, "construct", "beatles-construct-rdfxml.xml")
+                String pathResBeatlesConstruct = resultPath.resolve("construct").resolve("beatles-construct-rdfxml.xml")
                                 .toString();
-                String pathQueryBeatlesConstruct = Paths.get(queriesPath, "construct", "albumBeatles.rq").toString();
+                String pathQueryBeatlesConstruct = queriesPath.resolve("construct").resolve("albumBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "rdfxml", "-o", pathResBeatlesConstruct, "-q",
                                 pathQueryBeatlesConstruct);
@@ -1259,12 +1306,14 @@ public class QueryTest {
 
         @Test
         public void testConstructTurtle() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesConstruct = Paths.get(referencesPath, "construct", "beatles-construct-turtle.ttl")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesConstruct = referencesPath.resolve("construct")
+                                .resolve("beatles-construct-turtle.ttl")
                                 .toString();
-                String pathResBeatlesConstruct = Paths.get(resultsPath, "construct", "beatles-construct-turtle.ttl")
+                String pathResBeatlesConstruct = resultPath.resolve("construct").resolve("beatles-construct-turtle.ttl")
                                 .toString();
-                String pathQueryBeatlesConstruct = Paths.get(queriesPath, "construct", "albumBeatles.rq").toString();
+                String pathQueryBeatlesConstruct = queriesPath.resolve("construct").resolve("albumBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "turtle", "-o", pathResBeatlesConstruct, "-q",
                                 pathQueryBeatlesConstruct);
@@ -1277,12 +1326,14 @@ public class QueryTest {
 
         @Test
         public void testConstructTrig() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesConstruct = Paths.get(referencesPath, "construct", "beatles-construct-trig.trig")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesConstruct = referencesPath.resolve("construct")
+                                .resolve("beatles-construct-trig.trig")
                                 .toString();
-                String pathResBeatlesConstruct = Paths.get(resultsPath, "construct", "beatles-construct-trig.trig")
+                String pathResBeatlesConstruct = resultPath.resolve("construct").resolve("beatles-construct-trig.trig")
                                 .toString();
-                String pathQueryBeatlesConstruct = Paths.get(queriesPath, "construct", "albumBeatles.rq").toString();
+                String pathQueryBeatlesConstruct = queriesPath.resolve("construct").resolve("albumBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "trig", "-o", pathResBeatlesConstruct, "-q",
                                 pathQueryBeatlesConstruct);
@@ -1295,13 +1346,15 @@ public class QueryTest {
 
         @Test
         public void testConstructJsonld() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesConstruct = Paths
-                                .get(referencesPath, "construct", "beatles-construct-jsonld.jsonld")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesConstruct = referencesPath.resolve("construct")
+                                .resolve("beatles-construct-jsonld.jsonld")
                                 .toString();
-                String pathResBeatlesConstruct = Paths.get(resultsPath, "construct", "beatles-construct-jsonld.jsonld")
+                String pathResBeatlesConstruct = resultPath.resolve("construct")
+                                .resolve("beatles-construct-jsonld.jsonld")
                                 .toString();
-                String pathQueryBeatlesConstruct = Paths.get(queriesPath, "construct", "albumBeatles.rq").toString();
+                String pathQueryBeatlesConstruct = queriesPath.resolve("construct").resolve("albumBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "jsonld", "-o", pathResBeatlesConstruct, "-q",
                                 pathQueryBeatlesConstruct);
@@ -1314,8 +1367,9 @@ public class QueryTest {
 
         @Test
         public void testBidingConstructXmlInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesConstruct = Paths.get(queriesPath, "construct", "albumBeatles.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesConstruct = queriesPath.resolve("construct").resolve("albumBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "xml", "-o",
                                 "references/construct/beatles-construct-xml.xml", "-q", pathQueryBeatlesConstruct);
@@ -1331,8 +1385,9 @@ public class QueryTest {
 
         @Test
         public void testBidingConstructJsonInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesConstruct = Paths.get(queriesPath, "construct", "albumBeatles.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesConstruct = queriesPath.resolve("construct").resolve("albumBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "json", "-o",
                                 "references/construct/beatles-construct-jsonld.jsonld", "-q",
@@ -1349,8 +1404,9 @@ public class QueryTest {
 
         @Test
         public void testBidingConstructCsvInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesConstruct = Paths.get(queriesPath, "construct", "albumBeatles.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesConstruct = queriesPath.resolve("construct").resolve("albumBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "csv", "-o",
                                 "references/construct/beatles-construct-csv.csv", "-q", pathQueryBeatlesConstruct);
@@ -1366,8 +1422,9 @@ public class QueryTest {
 
         @Test
         public void testBidingConstructTsvInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesConstruct = Paths.get(queriesPath, "construct", "albumBeatles.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesConstruct = queriesPath.resolve("construct").resolve("albumBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "tsv", "-o",
                                 "references/construct/beatles-construct-tsv.tsv", "-q", pathQueryBeatlesConstruct);
@@ -1383,8 +1440,9 @@ public class QueryTest {
 
         @Test
         public void testBidingConstructMarkdownInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesConstruct = Paths.get(queriesPath, "construct", "albumBeatles.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesConstruct = queriesPath.resolve("construct").resolve("albumBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "markdown", "-o",
                                 "references/construct/beatles-construct-markdown.md", "-q", pathQueryBeatlesConstruct);
@@ -1400,12 +1458,14 @@ public class QueryTest {
 
         @Test
         public void testDescribeRdfxml() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesDescribe = Paths.get(referencesPath, "describe", "beatles-describe-rdfxml.xml")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesDescribe = referencesPath.resolve("describe")
+                                .resolve("beatles-describe-rdfxml.xml")
                                 .toString();
-                String pathResBeatlesDescribe = Paths.get(resultsPath, "describe", "beatles-describe-rdfxml.xml")
+                String pathResBeatlesDescribe = resultPath.resolve("describe").resolve("beatles-describe-rdfxml.xml")
                                 .toString();
-                String pathQueryBeatlesDescribe = Paths.get(queriesPath, "describe", "describeBeatles.rq").toString();
+                String pathQueryBeatlesDescribe = queriesPath.resolve("describe").resolve("describeBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "rdfxml", "-o", pathResBeatlesDescribe, "-q",
                                 pathQueryBeatlesDescribe);
@@ -1418,12 +1478,14 @@ public class QueryTest {
 
         @Test
         public void testDescribeTurtle() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesDescribe = Paths.get(referencesPath, "describe", "beatles-describe-turtle.ttl")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesDescribe = referencesPath.resolve("describe")
+                                .resolve("beatles-describe-turtle.ttl")
                                 .toString();
-                String pathResBeatlesDescribe = Paths.get(resultsPath, "describe", "beatles-describe-turtle.ttl")
+                String pathResBeatlesDescribe = resultPath.resolve("describe").resolve("beatles-describe-turtle.ttl")
                                 .toString();
-                String pathQueryBeatlesDescribe = Paths.get(queriesPath, "describe", "describeBeatles.rq").toString();
+                String pathQueryBeatlesDescribe = queriesPath.resolve("describe").resolve("describeBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "turtle", "-o", pathResBeatlesDescribe, "-q",
                                 pathQueryBeatlesDescribe);
@@ -1436,12 +1498,13 @@ public class QueryTest {
 
         @Test
         public void testDescribeTrigl() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesDescribe = Paths.get(referencesPath, "describe", "beatles-describe-trig.trig")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesDescribe = referencesPath.resolve("describe").resolve("beatles-describe-trig.trig")
                                 .toString();
-                String pathResBeatlesDescribe = Paths.get(resultsPath, "describe", "beatles-describe-trig.trig")
+                String pathResBeatlesDescribe = resultPath.resolve("describe").resolve("beatles-describe-trig.trig")
                                 .toString();
-                String pathQueryBeatlesDescribe = Paths.get(queriesPath, "describe", "describeBeatles.rq").toString();
+                String pathQueryBeatlesDescribe = queriesPath.resolve("describe").resolve("describeBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "trig", "-o", pathResBeatlesDescribe, "-q",
                                 pathQueryBeatlesDescribe);
@@ -1454,12 +1517,14 @@ public class QueryTest {
 
         @Test
         public void testDescribeJsonld() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefBeatlesDescribe = Paths.get(referencesPath, "describe", "beatles-describe-jsonld.jsonld")
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathRefBeatlesDescribe = referencesPath.resolve("describe")
+                                .resolve("beatles-describe-jsonld.jsonld")
                                 .toString();
-                String pathResBeatlesDescribe = Paths.get(resultsPath, "describe", "beatles-describe-jsonld.jsonld")
+                String pathResBeatlesDescribe = resultPath.resolve("describe").resolve("beatles-describe-jsonld.jsonld")
                                 .toString();
-                String pathQueryBeatlesDescribe = Paths.get(queriesPath, "describe", "describeBeatles.rq").toString();
+                String pathQueryBeatlesDescribe = queriesPath.resolve("describe").resolve("describeBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "jsonld", "-o", pathResBeatlesDescribe, "-q",
                                 pathQueryBeatlesDescribe);
@@ -1472,8 +1537,9 @@ public class QueryTest {
 
         @Test
         public void testBidingDescribeXmlInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDescribe = Paths.get(queriesPath, "describe", "describeBeatles.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDescribe = queriesPath.resolve("describe").resolve("describeBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "xml", "-o",
                                 "references/describe/beatles-describe-xml.xml", "-q", pathQueryBeatlesDescribe);
@@ -1489,8 +1555,9 @@ public class QueryTest {
 
         @Test
         public void testBidingDescribeJsonInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDescribe = Paths.get(queriesPath, "describe", "describeBeatles.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDescribe = queriesPath.resolve("describe").resolve("describeBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "json", "-o",
                                 "references/describe/beatles-describe-json.json", "-q", pathQueryBeatlesDescribe);
@@ -1506,8 +1573,9 @@ public class QueryTest {
 
         @Test
         public void testBidingDescribeCsvInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDescribe = Paths.get(queriesPath, "describe", "describeBeatles.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDescribe = queriesPath.resolve("describe").resolve("describeBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "csv", "-o",
                                 "references/describe/beatles-describe-csv.csv", "-q", pathQueryBeatlesDescribe);
@@ -1523,8 +1591,9 @@ public class QueryTest {
 
         @Test
         public void testBidingDescribeTsvInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDescribe = Paths.get(queriesPath, "describe", "describeBeatles.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDescribe = queriesPath.resolve("describe").resolve("describeBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "tsv", "-o",
                                 "references/describe/beatles-describe-tsv.tsv", "-q", pathQueryBeatlesDescribe);
@@ -1540,8 +1609,9 @@ public class QueryTest {
 
         @Test
         public void testBidingDescribeMarkdownInvalid() throws IOException {
-                String pathInpBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathQueryBeatlesDescribe = Paths.get(queriesPath, "describe", "describeBeatles.rq").toString();
+                String pathInpBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+                String pathQueryBeatlesDescribe = queriesPath.resolve("describe").resolve("describeBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", pathInpBeatlesTTL, "-r", "markdown", "-o",
                                 "references/describe/beatles-describe-markdown.md", "-q", pathQueryBeatlesDescribe);
@@ -1558,7 +1628,8 @@ public class QueryTest {
         @Test
         public void testExecute_WhenInputFileDoesNotExist_ThrowsException() {
                 String nonExistentFile = "non_existent_file.rq";
-                String pathQueryBeatlesConstruct = Paths.get(queriesPath, "construct", "albumBeatles.rq").toString();
+                String pathQueryBeatlesConstruct = queriesPath.resolve("construct").resolve("albumBeatles.rq")
+                                .toString();
 
                 int exitCode = cmd.execute("-i", nonExistentFile, "-f", "turtle", "-o", "output.ttl", "-q",
                                 pathQueryBeatlesConstruct);
@@ -1570,7 +1641,7 @@ public class QueryTest {
         @Test
         public void testExecute_WhenQueryFileDoesNotExist_ThrowsException() {
                 String nonExistentQueryFile = "non_existent_query_file.rq";
-                String validInputFile = Paths.get(inputPath, "beatles.ttl").toString();
+                String validInputFile = inputPath.resolve("beatles.ttl").toString();
 
                 int exitCode = cmd.execute("-i", validInputFile, "-f", "turtle", "-r", "turtle", "-o",
                                 "output.ttl", "-q", nonExistentQueryFile);
@@ -1581,7 +1652,7 @@ public class QueryTest {
 
         @Test
         public void testExecute_WhenInvalidQuery_ThrowsException() {
-                String validInputFile = Paths.get(inputPath, "beatles.ttl").toString();
+                String validInputFile = inputPath.resolve("beatles.ttl").toString();
 
                 int exitCode = cmd.execute("-i", validInputFile, "-f", "turtle", "-r", "turtle", "-o",
                                 "output.ttl", "-q", "SERRORELECT * WHERE { ?s ?p ?o }");
@@ -1592,9 +1663,9 @@ public class QueryTest {
 
         @Test
         public void testLoadUniqFiles() throws IOException {
-                String beatlesFile = Paths.get(inputPath, "beatles.ttl").toString();
-                String pathRefMultiFile = Paths.get(referencesPath, "count", "beatles.md").toString();
-                String pathResMultiFile = Paths.get(resultsPath, "count", "beatles.md").toString();
+                String beatlesFile = inputPath.resolve("beatles.ttl").toString();
+                String pathRefMultiFile = referencesPath.resolve("count").resolve("beatles.md").toString();
+                String pathResMultiFile = resultPath.resolve("count").resolve("beatles.md").toString();
 
                 int exitCode = cmd.execute("-i", beatlesFile, "-q", "SELECT (COUNT(*) AS ?count) WHERE { ?s ?p ?o }",
                                 "-o", pathResMultiFile);
@@ -1605,10 +1676,10 @@ public class QueryTest {
 
         @Test
         public void testLoadMutiFiles() throws IOException {
-                String beatlesFile = Paths.get(inputPath, "beatles.ttl").toString();
-                String cityFile = Paths.get(inputPath, "city.ttl").toString();
-                String pathRefMultiFile = Paths.get(referencesPath, "count", "beatles+city.md").toString();
-                String pathResMultiFile = Paths.get(resultsPath, "count", "beatles+city.md").toString();
+                String beatlesFile = inputPath.resolve("beatles.ttl").toString();
+                String cityFile = inputPath.resolve("city.ttl").toString();
+                String pathRefMultiFile = referencesPath.resolve("count").resolve("beatles+city.md").toString();
+                String pathResMultiFile = resultPath.resolve("count").resolve("beatles+city.md").toString();
 
                 int exitCode = cmd.execute("-i", beatlesFile, cityFile, "-q",
                                 "SELECT (COUNT(*) AS ?count) WHERE { ?s ?p ?o }", "-o", pathResMultiFile);
@@ -1619,9 +1690,9 @@ public class QueryTest {
 
         @Test
         public void testLoadMutiFilesRepertory() throws IOException {
-                String input = Paths.get(inputPath).toString();
-                String pathRefMultiFile = Paths.get(referencesPath, "count", "repertory.md").toString();
-                String pathResMultiFile = Paths.get(resultsPath, "count", "repertory.md").toString();
+                String input = inputPath.toString();
+                String pathRefMultiFile = referencesPath.resolve("count").resolve("repertory.md").toString();
+                String pathResMultiFile = resultPath.resolve("count").resolve("repertory.md").toString();
 
                 int exitCode = cmd.execute("-i", input, "-q", "SELECT (COUNT(*) AS ?count) WHERE { ?s ?p ?o }", "-o",
                                 pathResMultiFile);
@@ -1632,9 +1703,9 @@ public class QueryTest {
 
         @Test
         public void testLoadMutiFilesRepertoryRecursive() throws IOException {
-                String input = Paths.get(inputPath).toString();
-                String pathRefMultiFile = Paths.get(referencesPath, "count", "repertoryRecursive.md").toString();
-                String pathResMultiFile = Paths.get(resultsPath, "count", "repertoryRecursive.md").toString();
+                String input = inputPath.toString();
+                String pathRefMultiFile = referencesPath.resolve("count").resolve("repertoryRecursive.md").toString();
+                String pathResMultiFile = resultPath.resolve("count").resolve("repertoryRecursive.md").toString();
 
                 int exitCode = cmd.execute("-i", input, "-q", "SELECT (COUNT(*) AS ?count) WHERE { ?s ?p ?o }", "-o",
                                 pathResMultiFile, "-R");
@@ -1648,8 +1719,8 @@ public class QueryTest {
                 String rdfData = "https://files.inria.fr/corese/data/unit-test/beatles.ttl";
                 String sparqlQuery = "https://files.inria.fr/corese/data/unit-test/spo.rq";
 
-                String pathRefMultiFile = Paths.get(referencesPath, "select", "url.md").toString();
-                String pathResMultiFile = Paths.get(resultsPath, "select", "url.md").toString();
+                String pathRefMultiFile = referencesPath.resolve("select").resolve("url.md").toString();
+                String pathResMultiFile = resultPath.resolve("select").resolve("url.md").toString();
 
                 int exitCode = cmd.execute("-i", rdfData, "-q", sparqlQuery, "-o", pathResMultiFile);
 
