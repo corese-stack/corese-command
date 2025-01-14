@@ -1,6 +1,8 @@
 
 package fr.inria.corese.command.utils.exporter;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.nio.file.Path;
 
 import fr.inria.corese.core.Graph;
@@ -117,14 +119,17 @@ public abstract class AbstractExporter {
      * @param formatName   Name of the format.
      * @param ResultFormat Result formater.
      */
-    private void exportToFile(Path path, 
+    private void exportToFile(Path path,
             ResultFormatDef.format coreseFormat, String formatName, ResultFormat resultFormater) {
 
         resultFormater.setSelectFormat(coreseFormat);
         resultFormater.setConstructFormat(coreseFormat);
 
-        try {
-            resultFormater.write(path.toString());
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path.toString()))) {
+            // Avoid using `resultFormater.write(path)` directly because in canonical mode,
+            // the result must be written with Unix line endings.
+            String str = resultFormater.toString().replaceAll("\r?\n", "\n");
+            writer.write(str);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to open export file: " + path.toString(), e);
         }
@@ -139,7 +144,7 @@ public abstract class AbstractExporter {
     /**
      * Export the result to standard output.
      * 
-     * @param coreseFormat   Corese format.
+     * @param coreseFormat Corese format.
      * @param formatName   Name of the format.
      * @param ResultFormat Result formater.
      */
