@@ -41,7 +41,7 @@ public class RdfDataExporter extends AbstractExporter {
     public void export(Graph graph, EnumRdfOutputFormat format) {
 
         if (this.outputIsDefined) {
-            Path path = this.needToAppendExtension ? Path.of(this.output + format.getExtention()) : this.output;
+            Path path = this.needToAppendExtension ? Path.of(this.output + "." + format.getExtention()) : this.output;
             exportToFile(path, format.getCoreseFormat(), format.toString(), graph);
         } else {
             exportToStdout(format.getCoreseFormat(), format.toString(), graph);
