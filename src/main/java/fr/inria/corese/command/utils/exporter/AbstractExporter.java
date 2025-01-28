@@ -1,8 +1,6 @@
 
 package fr.inria.corese.command.utils.exporter;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.nio.file.Path;
 
 import fr.inria.corese.core.Graph;
@@ -125,11 +123,8 @@ public abstract class AbstractExporter {
         resultFormater.setSelectFormat(coreseFormat);
         resultFormater.setConstructFormat(coreseFormat);
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path.toString()))) {
-            // Avoid using `resultFormater.write(path)` directly because in canonical mode,
-            // the result must be written with Unix line endings.
-            String str = resultFormater.toString().replaceAll("\r?\n", "\n");
-            writer.write(str);
+        try {
+            resultFormater.write(path.toString());
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to open export file: " + path.toString(), e);
         }
