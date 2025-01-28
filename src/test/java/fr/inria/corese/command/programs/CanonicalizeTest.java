@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -48,7 +49,7 @@ public class CanonicalizeTest {
 
     private String getStringContent(String path) {
         try {
-            return new String(java.nio.file.Files.readAllBytes(Paths.get(path)));
+            return Files.readString(Paths.get(path));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
