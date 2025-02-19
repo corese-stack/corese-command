@@ -1,17 +1,17 @@
-PREFIX : <http://example.com/>
+PREFIX ex: <http://example.com/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 CONSTRUCT {
-  ?album rdf:type :Album .
-  ?album :name ?name .
-  ?album :date ?date .
-  ?album :artist :The_Beatles .
+  ?album rdf:type ex:Album .
+  ?album ex:name ?name .
+  ?album ex:date ?date .
+  ?album ex:artist ex:The_Beatles .
 }
 WHERE {
-  ?album rdf:type :Album .
-  ?album :artist :The_Beatles .
-  ?album :name ?name .
-  ?album :date ?date .
+  ?album rdf:type ex:Album .
+  ?album ex:artist ex:The_Beatles .
+  ?album ex:name ?name .
+  ?album ex:date ?date .
 }
 

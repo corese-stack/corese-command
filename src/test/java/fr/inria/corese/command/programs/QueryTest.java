@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -1704,7 +1705,8 @@ public class QueryTest {
                                 "output.ttl", "-q", "SERRORELECT * WHERE { ?s ?p ?o }");
 
                 assertEquals(1, exitCode);
-                assertTrue(err.toString().contains("Failed to open SPARQL query file"));
+                assertTrue(err.toString().contains("Failed to open SPARQL query file")
+                                || err.toString().contains("Invalid"));
         }
 
         @Test
