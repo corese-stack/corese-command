@@ -54,7 +54,53 @@ public class QueryTest {
                 cmd.setErr(err);
         }
 
-        public boolean compareFiles(String filePath1, String filePath2) throws IOException {
+        private boolean compareFiles(String filePath1, String filePath2) throws IOException {
+                if (filePath1.endsWith(".ttl")
+                                || filePath1.endsWith(".rdf")
+                                || filePath1.endsWith(".trig")
+                                || filePath1.endsWith(".nt")
+                                || filePath1.endsWith(".nq")
+                                || filePath1.endsWith(".jsonld")) {
+                        return compareFilesRdfGraph(filePath1, filePath2);
+                } else {
+                        return comapreFilesRaw(filePath1, filePath2);
+                }
+
+        }
+
+        private boolean comapreFilesRaw(String filePath1, String filePath2) {
+
+                // Load in string content of both files
+                String content1 = "";
+                String content2 = "";
+
+                try {
+                        content1 = new String(java.nio.file.Files.readAllBytes(Paths.get(filePath1)));
+                        content2 = new String(java.nio.file.Files.readAllBytes(Paths.get(filePath2)));
+
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+
+                // Sort line by line the content of the files
+                content1 = sortByLines(content1);
+                content2 = sortByLines(content2);
+
+                // Clean the content of the files
+                content1 = content1.replaceAll("\\s+", "").trim();
+                content2 = content2.replaceAll("\\s+", "").trim();
+
+                // Compare the content of the two files
+                return content1.equals(content2) && content1 != "";
+        }
+
+        private String sortByLines(String content) {
+                String[] lines = content.split("\n");
+                Arrays.sort(lines);
+                return String.join("\n", lines);
+        }
+
+        private boolean compareFilesRdfGraph(String filePath1, String filePath2) throws IOException {
                 // Canonicalize RDF content
                 String canonicallFile1 = canonicalize(filePath1);
                 String canonicallFile2 = canonicalize(filePath2);
