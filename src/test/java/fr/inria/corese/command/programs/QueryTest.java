@@ -105,7 +105,7 @@ public class QueryTest {
                 String canonicallFile1 = canonicalize(filePath1);
                 String canonicallFile2 = canonicalize(filePath2);
 
-                return canonicallFile1.equals(canonicallFile2);
+                return canonicallFile1.equals(canonicallFile2) && canonicallFile1 != "";
         }
 
         private String canonicalize(String filePath) {
