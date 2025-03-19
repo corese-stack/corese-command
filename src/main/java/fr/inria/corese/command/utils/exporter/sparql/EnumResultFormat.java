@@ -44,11 +44,11 @@ public enum EnumResultFormat {
     NQ("nq", ResultFormatDef.format.NQUADS_FORMAT, "nq", false),
 
     // Rdfc-1.0-sha256
-    RDFC10("rdfc-1.0", ResultFormatDef.format.RDFC10_FORMAT, "nq", false),
-    RDFC10SHA256("rdfc-1.0-sha256", ResultFormatDef.format.RDFC10_FORMAT, "nq", false),
+    RDFC10("rdfc-1.0", ResultFormatDef.format.RDFC10_FORMAT, "nt", false),
+    RDFC10SHA256("rdfc-1.0-sha256", ResultFormatDef.format.RDFC10_FORMAT, "nt", false),
 
     // Rdfc-1.0-sha384
-    RDFC10SHA384("rdfc-1.0-sha384", ResultFormatDef.format.RDFC10_SHA384_FORMAT, "nq", false),
+    RDFC10SHA384("rdfc-1.0-sha384", ResultFormatDef.format.RDFC10_SHA384_FORMAT, "nt", false),
 
     /////////////////////
     // Mapping Formats //

@@ -35,11 +35,11 @@ public enum EnumRdfOutputFormat {
     NQ("nq", ResultFormatDef.format.NQUADS_FORMAT, "nq"),
 
     // Rdfc-1.0-sha256
-    RDFC10("rdfc-1.0", ResultFormatDef.format.RDFC10_FORMAT, "nq"),
-    RDFC10SHA256("rdfc-1.0-sha256", ResultFormatDef.format.RDFC10_FORMAT, "nq"),
+    RDFC10("rdfc-1.0", ResultFormatDef.format.RDFC10_FORMAT, "nt"),
+    RDFC10SHA256("rdfc-1.0-sha256", ResultFormatDef.format.RDFC10_FORMAT, "nt"),
 
     // Rdfc-1.0-sha384
-    RDFC10SHA384("rdfc-1.0-sha384", ResultFormatDef.format.RDFC10_SHA384_FORMAT, "nq");
+    RDFC10SHA384("rdfc-1.0-sha384", ResultFormatDef.format.RDFC10_SHA384_FORMAT, "nt");
 
     private final String name;
     private final ResultFormatDef.format coreseFormat;
