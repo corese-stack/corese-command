@@ -64,7 +64,7 @@ repositories {
 
 // Define dependencies
 dependencies {
-    implementation("fr.inria.corese:corese-core:4.6.1") // Core module of Corese
+    implementation("fr.inria.corese:corese-core:4.6.3") // Core module of Corese
     implementation("info.picocli:picocli:4.7.6") // Library for building a Command-Line Interface (CLI)
     implementation("org.apache.commons:commons-lang3:3.17.0") // Library for utility functions (e.g., StringUtils)
     implementation("com.github.jsonld-java:jsonld-java:0.13.6") // Library for JSON-LD support

@@ -47,8 +47,8 @@ public abstract class AbstractCommand implements Callable<Integer> {
     protected boolean verbose = false;
 
     @Option(names = { "-w",
-            "--owl-import" }, description = "Disables the automatic importation of ontologies specified in 'owl:imports' statements. When this flag is set, the application will not fetch and include referenced ontologies. Default is '${DEFAULT-VALUE}'.", required = false, defaultValue = "false", negatable = true)
-    private boolean noOwlImport;
+            "--owl-import" }, description = "Enables the automatic importation of ontologies specified in 'owl:imports' statements. When this flag is set, the application will fetch and include referenced ontologies. Default is '${DEFAULT-VALUE}'.", required = false, defaultValue = "false")
+    private boolean owlImport;
 
     ////////////////
     // Properties //
@@ -77,7 +77,7 @@ public abstract class AbstractCommand implements Callable<Integer> {
         }
 
         // Set owl import
-        Property.set(Value.DISABLE_OWL_AUTO_IMPORT, this.noOwlImport);
+        Property.set(Value.OWL_AUTO_IMPORT, this.owlImport);
 
         return 0;
     }
