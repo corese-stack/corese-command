@@ -1,5 +1,7 @@
 package fr.inria.corese.command.utils;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -18,8 +20,8 @@ public class ConvertString {
      */
     public static Optional<URL> toUrl(String input) {
         try {
-            return Optional.of(new URL(input));
-        } catch (Exception e) {
+            return Optional.of(URI.create(input).toURL());
+        } catch (IllegalArgumentException | MalformedURLException e) {
             return Optional.empty();
         }
     }
