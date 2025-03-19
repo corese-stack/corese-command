@@ -41,7 +41,7 @@ public class RdfDataCanonicalizer extends AbstractExporter {
     public void export(Graph graph, EnumCanonicAlgo format) {
 
         if (this.outputIsDefined) {
-            Path path = this.needToAppendExtension ? Path.of(this.output + format.getExtention()) : this.output;
+            Path path = this.needToAppendExtension ? Path.of(this.output + "." + format.getExtention()) : this.output;
             exportToFile(path, format.getCoreseFormat(), format.toString(), graph);
         } else {
             exportToStdout(format.getCoreseFormat(), format.toString(), graph);

@@ -117,7 +117,7 @@ public abstract class AbstractExporter {
      * @param formatName   Name of the format.
      * @param ResultFormat Result formater.
      */
-    private void exportToFile(Path path, 
+    private void exportToFile(Path path,
             ResultFormatDef.format coreseFormat, String formatName, ResultFormat resultFormater) {
 
         resultFormater.setSelectFormat(coreseFormat);
@@ -139,7 +139,7 @@ public abstract class AbstractExporter {
     /**
      * Export the result to standard output.
      * 
-     * @param coreseFormat   Corese format.
+     * @param coreseFormat Corese format.
      * @param formatName   Name of the format.
      * @param ResultFormat Result formater.
      */

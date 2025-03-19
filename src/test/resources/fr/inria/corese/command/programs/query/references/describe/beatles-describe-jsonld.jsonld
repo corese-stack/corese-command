@@ -1,37 +1,37 @@
 {
 	"@context": {
-		"": "http://example.com/",
 		"xsd": "http://www.w3.org/2001/XMLSchema#",
+		"ex": "http://example.com/",
 		"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	},
 	"@graph": [
 		{
-			"@id": ":Please_Please_Me",
-			":artist": {
-				"@id": ":The_Beatles"
+			"@id": "ex:Please_Please_Me",
+			"ex:artist": {
+				"@id": "ex:The_Beatles"
 			}
 		},
 		{
-			"@id": ":The_Beatles",
-			":name": {
+			"@id": "ex:The_Beatles",
+			"ex:member": [
+				{
+					"@id": "ex:Paul_McCartney"
+				},
+				{
+					"@id": "ex:John_Lennon"
+				},
+				{
+					"@id": "ex:Ringo_Starr"
+				},
+				{
+					"@id": "ex:George_Harrison"
+				}
+			],
+			"ex:name": {
 				"@value": "The Beatles",
 				"@type": "xsd:string"
 			},
-			":member": [
-				{
-					"@id": ":John_Lennon"
-				},
-				{
-					"@id": ":Paul_McCartney"
-				},
-				{
-					"@id": ":Ringo_Starr"
-				},
-				{
-					"@id": ":George_Harrison"
-				}
-			],
-			"@type": ":Band"
+			"@type": "ex:Band"
 		}
 	]
 }

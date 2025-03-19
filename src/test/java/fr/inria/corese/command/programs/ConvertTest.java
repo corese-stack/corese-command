@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -28,15 +29,20 @@ public class ConvertTest {
     private StringWriter out = new StringWriter();
     private StringWriter err = new StringWriter();
 
-    private String inputPath = ConvertTest.class
-            .getResource("/fr/inria/corese/command/programs/convert/input/")
-            .getPath();
-    private String referencesPath = ConvertTest.class
-            .getResource("/fr/inria/corese/command/programs/convert/references/")
-            .getPath();
-    private String resultPath = ConvertTest.class
-            .getResource("/fr/inria/corese/command/programs/convert/results/")
-            .getPath();
+    Path inputPath;
+    Path referencesPath;
+    Path resultPath;
+
+    public ConvertTest() throws URISyntaxException {
+        this.inputPath = Paths
+                .get(ConvertTest.class.getResource("/fr/inria/corese/command/programs/convert/input/").toURI());
+
+        this.referencesPath = Paths.get(
+                ConvertTest.class.getResource("/fr/inria/corese/command/programs/convert/references/").toURI());
+
+        this.resultPath = Paths.get(
+                ConvertTest.class.getResource("/fr/inria/corese/command/programs/convert/results/").toURI());
+    }
 
     private String canonicalize(String path) {
         Graph graph = Graph.create();
@@ -61,9 +67,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertTurtleToxml() {
-        String pathinputBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-        String pathRefBeatlesXML = Paths.get(referencesPath, "ttl.beatles.rdf").toString();
-        String pathOutBeatlesXML = Paths.get(resultPath, "ttl.beatles.rdf").toString();
+        String pathinputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+        String pathRefBeatlesXML = referencesPath.resolve("ttl.beatles.rdf").toString();
+        String pathOutBeatlesXML = resultPath.resolve("ttl.beatles.rdf").toString();
 
         int exitCode = cmd.execute("-i", pathinputBeatlesTTL, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
@@ -77,9 +83,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertTurtleToJsonld() {
-        String pathInputBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-        String pathRefBeatlesJSON = Paths.get(referencesPath, "ttl.beatles.jsonld").toString();
-        String pathOutBeatlesJSON = Paths.get(resultPath, "ttl.beatles.jsonld").toString();
+        String pathInputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+        String pathRefBeatlesJSON = referencesPath.resolve("ttl.beatles.jsonld").toString();
+        String pathOutBeatlesJSON = resultPath.resolve("ttl.beatles.jsonld").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesTTL, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
@@ -93,9 +99,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertTurtleToTrig() {
-        String pathInputBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-        String pathRefBeatlesTRIG = Paths.get(referencesPath, "ttl.beatles.trig").toString();
-        String pathOutBeatlesTRIG = Paths.get(resultPath, "ttl.beatles.trig").toString();
+        String pathInputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+        String pathRefBeatlesTRIG = referencesPath.resolve("ttl.beatles.trig").toString();
+        String pathOutBeatlesTRIG = resultPath.resolve("ttl.beatles.trig").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesTTL, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
@@ -109,9 +115,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertTurtleToTurtle() {
-        String pathInputBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-        String pathRefBeatlesTTL = Paths.get(referencesPath, "ttl.beatles.ttl").toString();
-        String pathOutBeatlesTTL = Paths.get(resultPath, "ttl.beatles.ttl").toString();
+        String pathInputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+        String pathRefBeatlesTTL = referencesPath.resolve("ttl.beatles.ttl").toString();
+        String pathOutBeatlesTTL = resultPath.resolve("ttl.beatles.ttl").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesTTL, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
@@ -125,9 +131,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertTurtleToNt() {
-        String pathInputBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-        String pathRefBeatlesNT = Paths.get(referencesPath, "ttl.beatles.nt").toString();
-        String pathOutBeatlesNT = Paths.get(resultPath, "ttl.beatles.nt").toString();
+        String pathInputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+        String pathRefBeatlesNT = referencesPath.resolve("ttl.beatles.nt").toString();
+        String pathOutBeatlesNT = resultPath.resolve("ttl.beatles.nt").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesTTL, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
@@ -141,9 +147,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertTurtleToNq() {
-        String pathInputBeatlesTTL = Paths.get(inputPath, "beatles.ttl").toString();
-        String pathRefBeatlesNQ = Paths.get(referencesPath, "ttl.beatles.nq").toString();
-        String pathOutBeatlesNQ = Paths.get(resultPath, "ttl.beatles.nq").toString();
+        String pathInputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+        String pathRefBeatlesNQ = referencesPath.resolve("ttl.beatles.nq").toString();
+        String pathOutBeatlesNQ = resultPath.resolve("ttl.beatles.nq").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesTTL, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
@@ -157,9 +163,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertXmltoXml() {
-        String pathInputBeatlesXML = Paths.get(inputPath, "beatles.rdf").toString();
-        String pathRefBeatlesXML = Paths.get(referencesPath, "rdf.beatles.rdf").toString();
-        String pathOutBeatlesXML = Paths.get(resultPath, "rdf.beatles.rdf").toString();
+        String pathInputBeatlesXML = inputPath.resolve("beatles.rdf").toString();
+        String pathRefBeatlesXML = referencesPath.resolve("rdf.beatles.rdf").toString();
+        String pathOutBeatlesXML = resultPath.resolve("rdf.beatles.rdf").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesXML, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
@@ -173,9 +179,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertXmlToJsonld() {
-        String pathInputBeatlesXML = Paths.get(inputPath, "beatles.rdf").toString();
-        String pathRefBeatlesJSON = Paths.get(referencesPath, "rdf.beatles.jsonld").toString();
-        String pathOutBeatlesJSON = Paths.get(resultPath, "rdf.beatles.jsonld").toString();
+        String pathInputBeatlesXML = inputPath.resolve("beatles.rdf").toString();
+        String pathRefBeatlesJSON = referencesPath.resolve("rdf.beatles.jsonld").toString();
+        String pathOutBeatlesJSON = resultPath.resolve("rdf.beatles.jsonld").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesXML, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
@@ -189,9 +195,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertXmlToTrig() {
-        String pathInputBeatlesXML = Paths.get(inputPath, "beatles.rdf").toString();
-        String pathRefBeatlesTRIG = Paths.get(referencesPath, "rdf.beatles.trig").toString();
-        String pathOutBeatlesTRIG = Paths.get(resultPath, "rdf.beatles.trig").toString();
+        String pathInputBeatlesXML = inputPath.resolve("beatles.rdf").toString();
+        String pathRefBeatlesTRIG = referencesPath.resolve("rdf.beatles.trig").toString();
+        String pathOutBeatlesTRIG = resultPath.resolve("rdf.beatles.trig").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesXML, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
@@ -205,9 +211,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertXmlTiTurtle() {
-        String pathInputBeatlesXML = Paths.get(inputPath, "beatles.rdf").toString();
-        String pathRefBeatlesTTL = Paths.get(referencesPath, "rdf.beatles.ttl").toString();
-        String pathOutBeatlesTTL = Paths.get(resultPath, "rdf.beatles.ttl").toString();
+        String pathInputBeatlesXML = inputPath.resolve("beatles.rdf").toString();
+        String pathRefBeatlesTTL = referencesPath.resolve("rdf.beatles.ttl").toString();
+        String pathOutBeatlesTTL = resultPath.resolve("rdf.beatles.ttl").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesXML, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
@@ -221,9 +227,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertXmlToNt() {
-        String pathInputBeatlesXML = Paths.get(inputPath, "beatles.rdf").toString();
-        String pathRefBeatlesNT = Paths.get(referencesPath, "rdf.beatles.nt").toString();
-        String pathOutBeatlesNT = Paths.get(resultPath, "rdf.beatles.nt").toString();
+        String pathInputBeatlesXML = inputPath.resolve("beatles.rdf").toString();
+        String pathRefBeatlesNT = referencesPath.resolve("rdf.beatles.nt").toString();
+        String pathOutBeatlesNT = resultPath.resolve("rdf.beatles.nt").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesXML, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
@@ -237,9 +243,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertXmlToNq() {
-        String pathInputBeatlesXML = Paths.get(inputPath, "beatles.rdf").toString();
-        String pathRefBeatlesNQ = Paths.get(referencesPath, "rdf.beatles.nq").toString();
-        String pathOutBeatlesNQ = Paths.get(resultPath, "rdf.beatles.nq").toString();
+        String pathInputBeatlesXML = inputPath.resolve("beatles.rdf").toString();
+        String pathRefBeatlesNQ = referencesPath.resolve("rdf.beatles.nq").toString();
+        String pathOutBeatlesNQ = resultPath.resolve("rdf.beatles.nq").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesXML, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
@@ -253,9 +259,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertTrigToXml() {
-        String pathInputBeatlesTRIG = Paths.get(inputPath, "beatles.trig").toString();
-        String pathRefBeatlesXML = Paths.get(referencesPath, "trig.beatles.rdf").toString();
-        String pathOutBeatlesXML = Paths.get(resultPath, "trig.beatles.rdf").toString();
+        String pathInputBeatlesTRIG = inputPath.resolve("beatles.trig").toString();
+        String pathRefBeatlesXML = referencesPath.resolve("trig.beatles.rdf").toString();
+        String pathOutBeatlesXML = resultPath.resolve("trig.beatles.rdf").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesTRIG, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
@@ -269,9 +275,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertTrigToJsonld() {
-        String pathInputBeatlesTRIG = Paths.get(inputPath, "beatles.trig").toString();
-        String pathRefBeatlesJSON = Paths.get(referencesPath, "trig.beatles.jsonld").toString();
-        String pathOutBeatlesJSON = Paths.get(resultPath, "trig.beatles.jsonld").toString();
+        String pathInputBeatlesTRIG = inputPath.resolve("beatles.trig").toString();
+        String pathRefBeatlesJSON = referencesPath.resolve("trig.beatles.jsonld").toString();
+        String pathOutBeatlesJSON = resultPath.resolve("trig.beatles.jsonld").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesTRIG, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
@@ -285,9 +291,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertTrigToTrig() {
-        String pathInputBeatlesTRIG = Paths.get(inputPath, "beatles.trig").toString();
-        String pathExpectBeatlesTRIG = Paths.get(referencesPath, "trig.beatles.trig").toString();
-        String pathOutBeatlesTRIG = Paths.get(resultPath, "trig.beatles.trig").toString();
+        String pathInputBeatlesTRIG = inputPath.resolve("beatles.trig").toString();
+        String pathExpectBeatlesTRIG = referencesPath.resolve("trig.beatles.trig").toString();
+        String pathOutBeatlesTRIG = resultPath.resolve("trig.beatles.trig").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesTRIG, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
@@ -301,9 +307,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertTrigToTurtle() {
-        String pathInputBeatlesTRIG = Paths.get(inputPath, "beatles.trig").toString();
-        String pathRefBeatlesTTL = Paths.get(referencesPath, "trig.beatles.ttl").toString();
-        String pathOutBeatlesTTL = Paths.get(resultPath, "trig.beatles.ttl").toString();
+        String pathInputBeatlesTRIG = inputPath.resolve("beatles.trig").toString();
+        String pathRefBeatlesTTL = referencesPath.resolve("trig.beatles.ttl").toString();
+        String pathOutBeatlesTTL = resultPath.resolve("trig.beatles.ttl").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesTRIG, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
@@ -317,9 +323,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertTrigToNt() {
-        String pathInputBeatlesTRIG = Paths.get(inputPath, "beatles.trig").toString();
-        String pathRefBeatlesNT = Paths.get(referencesPath, "trig.beatles.nt").toString();
-        String pathOutBeatlesNT = Paths.get(resultPath, "trig.beatles.nt").toString();
+        String pathInputBeatlesTRIG = inputPath.resolve("beatles.trig").toString();
+        String pathRefBeatlesNT = referencesPath.resolve("trig.beatles.nt").toString();
+        String pathOutBeatlesNT = resultPath.resolve("trig.beatles.nt").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesTRIG, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
@@ -333,9 +339,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertTrigToNq() {
-        String pathInputBeatlesTRIG = Paths.get(inputPath, "beatles.trig").toString();
-        String pathRefBeatlesNQ = Paths.get(referencesPath, "trig.beatles.nq").toString();
-        String pathOutBeatlesNQ = Paths.get(resultPath, "trig.beatles.nq").toString();
+        String pathInputBeatlesTRIG = inputPath.resolve("beatles.trig").toString();
+        String pathRefBeatlesNQ = referencesPath.resolve("trig.beatles.nq").toString();
+        String pathOutBeatlesNQ = resultPath.resolve("trig.beatles.nq").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesTRIG, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
@@ -349,9 +355,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertJsonldToXml() {
-        String pathInputBeatlesJSONLD = Paths.get(inputPath, "beatles.jsonld").toString();
-        String pathRefBeatlesXML = Paths.get(referencesPath, "jsonld.beatles.rdf").toString();
-        String pathOutBeatlesXML = Paths.get(resultPath, "jsonld.beatles.rdf").toString();
+        String pathInputBeatlesJSONLD = inputPath.resolve("beatles.jsonld").toString();
+        String pathRefBeatlesXML = referencesPath.resolve("jsonld.beatles.rdf").toString();
+        String pathOutBeatlesXML = resultPath.resolve("jsonld.beatles.rdf").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
@@ -365,9 +371,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertJsonldToJsonld() {
-        String pathInputBeatlesJSONLD = Paths.get(inputPath, "beatles.jsonld").toString();
-        String pathRefBeatlesJSON = Paths.get(referencesPath, "jsonld.beatles.jsonld").toString();
-        String pathOutBeatlesJSON = Paths.get(resultPath, "jsonld.beatles.jsonld").toString();
+        String pathInputBeatlesJSONLD = inputPath.resolve("beatles.jsonld").toString();
+        String pathRefBeatlesJSON = referencesPath.resolve("jsonld.beatles.jsonld").toString();
+        String pathOutBeatlesJSON = resultPath.resolve("jsonld.beatles.jsonld").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
@@ -381,9 +387,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertJsonldToTrig() {
-        String pathInputBeatlesJSONLD = Paths.get(inputPath, "beatles.jsonld").toString();
-        String pathRefBeatlesTRIG = Paths.get(referencesPath, "jsonld.beatles.trig").toString();
-        String pathOutBeatlesTRIG = Paths.get(resultPath, "jsonld.beatles.trig").toString();
+        String pathInputBeatlesJSONLD = inputPath.resolve("beatles.jsonld").toString();
+        String pathRefBeatlesTRIG = referencesPath.resolve("jsonld.beatles.trig").toString();
+        String pathOutBeatlesTRIG = resultPath.resolve("jsonld.beatles.trig").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
@@ -397,9 +403,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertJsonldToTurtle() {
-        String pathInputBeatlesJSONLD = Paths.get(inputPath, "beatles.jsonld").toString();
-        String pathRefBeatlesTTL = Paths.get(referencesPath, "jsonld.beatles.ttl").toString();
-        String pathOutBeatlesTTL = Paths.get(resultPath, "jsonld.beatles.ttl").toString();
+        String pathInputBeatlesJSONLD = inputPath.resolve("beatles.jsonld").toString();
+        String pathRefBeatlesTTL = referencesPath.resolve("jsonld.beatles.ttl").toString();
+        String pathOutBeatlesTTL = resultPath.resolve("jsonld.beatles.ttl").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
@@ -413,9 +419,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertJsonldToNt() {
-        String pathInputBeatlesJSONLD = Paths.get(inputPath, "beatles.jsonld").toString();
-        String pathRefBeatlesNT = Paths.get(referencesPath, "jsonld.beatles.nt").toString();
-        String pathOutBeatlesNT = Paths.get(resultPath, "jsonld.beatles.nt").toString();
+        String pathInputBeatlesJSONLD = inputPath.resolve("beatles.jsonld").toString();
+        String pathRefBeatlesNT = referencesPath.resolve("jsonld.beatles.nt").toString();
+        String pathOutBeatlesNT = resultPath.resolve("jsonld.beatles.nt").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
@@ -429,9 +435,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertJsonldToNq() {
-        String pathInputBeatlesJSONLD = Paths.get(inputPath, "beatles.jsonld").toString();
-        String pathRefBeatlesNQ = Paths.get(referencesPath, "jsonld.beatles.nq").toString();
-        String pathOutBeatlesNQ = Paths.get(resultPath, "jsonld.beatles.nq").toString();
+        String pathInputBeatlesJSONLD = inputPath.resolve("beatles.jsonld").toString();
+        String pathRefBeatlesNQ = referencesPath.resolve("jsonld.beatles.nq").toString();
+        String pathOutBeatlesNQ = resultPath.resolve("jsonld.beatles.nq").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
@@ -445,9 +451,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertNtToXml() {
-        String pathInputBeatlesNT = Paths.get(inputPath, "beatles.nt").toString();
-        String pathRefBeatlesXML = Paths.get(referencesPath, "nt.beatles.rdf").toString();
-        String pathOutBeatlesXML = Paths.get(resultPath, "nt.beatles.rdf").toString();
+        String pathInputBeatlesNT = inputPath.resolve("beatles.nt").toString();
+        String pathRefBeatlesXML = referencesPath.resolve("nt.beatles.rdf").toString();
+        String pathOutBeatlesXML = resultPath.resolve("nt.beatles.rdf").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesNT, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
@@ -461,9 +467,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertNtToJsonld() {
-        String pathInputBeatlesNT = Paths.get(inputPath, "beatles.nt").toString();
-        String pathRefBeatlesJSON = Paths.get(referencesPath, "nt.beatles.jsonld").toString();
-        String pathOutBeatlesJSON = Paths.get(resultPath, "nt.beatles.jsonld").toString();
+        String pathInputBeatlesNT = inputPath.resolve("beatles.nt").toString();
+        String pathRefBeatlesJSON = referencesPath.resolve("nt.beatles.jsonld").toString();
+        String pathOutBeatlesJSON = resultPath.resolve("nt.beatles.jsonld").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesNT, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
@@ -477,9 +483,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertNtToTrig() {
-        String pathInputBeatlesNT = Paths.get(inputPath, "beatles.nt").toString();
-        String pathRefBeatlesTRIG = Paths.get(referencesPath, "nt.beatles.trig").toString();
-        String pathOutBeatlesTRIG = Paths.get(resultPath, "nt.beatles.trig").toString();
+        String pathInputBeatlesNT = inputPath.resolve("beatles.nt").toString();
+        String pathRefBeatlesTRIG = referencesPath.resolve("nt.beatles.trig").toString();
+        String pathOutBeatlesTRIG = resultPath.resolve("nt.beatles.trig").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesNT, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
@@ -493,9 +499,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertNtToTurtle() {
-        String pathInputBeatlesNT = Paths.get(inputPath, "beatles.nt").toString();
-        String pathRefBeatlesTTL = Paths.get(referencesPath, "nt.beatles.ttl").toString();
-        String pathOutBeatlesTTL = Paths.get(resultPath, "nt.beatles.ttl").toString();
+        String pathInputBeatlesNT = inputPath.resolve("beatles.nt").toString();
+        String pathRefBeatlesTTL = referencesPath.resolve("nt.beatles.ttl").toString();
+        String pathOutBeatlesTTL = resultPath.resolve("nt.beatles.ttl").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesNT, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
@@ -509,9 +515,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertNtToNt() {
-        String pathInputBeatlesNT = Paths.get(inputPath, "beatles.nt").toString();
-        String pathRefBeatlesNT = Paths.get(referencesPath, "nt.beatles.nt").toString();
-        String pathOutBeatlesNT = Paths.get(resultPath, "nt.beatles.nt").toString();
+        String pathInputBeatlesNT = inputPath.resolve("beatles.nt").toString();
+        String pathRefBeatlesNT = referencesPath.resolve("nt.beatles.nt").toString();
+        String pathOutBeatlesNT = resultPath.resolve("nt.beatles.nt").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesNT, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
@@ -525,9 +531,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertNtToNq() {
-        String pathInputBeatlesNT = Paths.get(inputPath, "beatles.nt").toString();
-        String pathRefBeatlesNQ = Paths.get(referencesPath, "nt.beatles.nq").toString();
-        String pathOutBeatlesNQ = Paths.get(resultPath, "nt.beatles.nq").toString();
+        String pathInputBeatlesNT = inputPath.resolve("beatles.nt").toString();
+        String pathRefBeatlesNQ = referencesPath.resolve("nt.beatles.nq").toString();
+        String pathOutBeatlesNQ = resultPath.resolve("nt.beatles.nq").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesNT, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
@@ -541,9 +547,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertNqToXml() {
-        String pathInputBeatlesNQ = Paths.get(inputPath, "beatles.nq").toString();
-        String pathRefBeatlesXML = Paths.get(referencesPath, "nq.beatles.rdf").toString();
-        String pathOutBeatlesXML = Paths.get(resultPath, "nq.beatles.rdf").toString();
+        String pathInputBeatlesNQ = inputPath.resolve("beatles.nq").toString();
+        String pathRefBeatlesXML = referencesPath.resolve("nq.beatles.rdf").toString();
+        String pathOutBeatlesXML = resultPath.resolve("nq.beatles.rdf").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesNQ, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
@@ -557,9 +563,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertNqToJsonld() {
-        String pathInputBeatlesNQ = Paths.get(inputPath, "beatles.nq").toString();
-        String pathRefBeatlesJSON = Paths.get(referencesPath, "nq.beatles.jsonld").toString();
-        String pathOutBeatlesJSON = Paths.get(resultPath, "nq.beatles.jsonld").toString();
+        String pathInputBeatlesNQ = inputPath.resolve("beatles.nq").toString();
+        String pathRefBeatlesJSON = referencesPath.resolve("nq.beatles.jsonld").toString();
+        String pathOutBeatlesJSON = resultPath.resolve("nq.beatles.jsonld").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesNQ, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
@@ -573,9 +579,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertNqToTrig() {
-        String pathInputBeatlesNQ = Paths.get(inputPath, "beatles.nq").toString();
-        String pathRefBeatlesTRIG = Paths.get(referencesPath, "nq.beatles.trig").toString();
-        String pathOutBeatlesTRIG = Paths.get(resultPath, "nq.beatles.trig").toString();
+        String pathInputBeatlesNQ = inputPath.resolve("beatles.nq").toString();
+        String pathRefBeatlesTRIG = referencesPath.resolve("nq.beatles.trig").toString();
+        String pathOutBeatlesTRIG = resultPath.resolve("nq.beatles.trig").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesNQ, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
@@ -589,9 +595,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertNqToTurtle() {
-        String pathInputBeatlesNQ = Paths.get(inputPath, "beatles.nq").toString();
-        String pathRefBeatlesTTL = Paths.get(referencesPath, "nq.beatles.ttl").toString();
-        String pathOutBeatlesTTL = Paths.get(resultPath, "nq.beatles.ttl").toString();
+        String pathInputBeatlesNQ = inputPath.resolve("beatles.nq").toString();
+        String pathRefBeatlesTTL = referencesPath.resolve("nq.beatles.ttl").toString();
+        String pathOutBeatlesTTL = resultPath.resolve("nq.beatles.ttl").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesNQ, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
@@ -605,9 +611,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertNqToNt() {
-        String pathInputBeatlesNQ = Paths.get(inputPath, "beatles.nq").toString();
-        String pathRefBeatlesNT = Paths.get(referencesPath, "nq.beatles.nt").toString();
-        String pathOutBeatlesNT = Paths.get(resultPath, "nq.beatles.nt").toString();
+        String pathInputBeatlesNQ = inputPath.resolve("beatles.nq").toString();
+        String pathRefBeatlesNT = referencesPath.resolve("nq.beatles.nt").toString();
+        String pathOutBeatlesNT = resultPath.resolve("nq.beatles.nt").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesNQ, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
@@ -621,9 +627,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertNqToNq() {
-        String pathInputBeatlesNQ = Paths.get(inputPath, "beatles.nq").toString();
-        String pathRefBeatlesNQ = Paths.get(referencesPath, "nq.beatles.nq").toString();
-        String pathOutBeatlesNQ = Paths.get(resultPath, "nq.beatles.nq").toString();
+        String pathInputBeatlesNQ = inputPath.resolve("beatles.nq").toString();
+        String pathRefBeatlesNQ = referencesPath.resolve("nq.beatles.nq").toString();
+        String pathOutBeatlesNQ = resultPath.resolve("nq.beatles.nq").toString();
 
         int exitCode = cmd.execute("-i", pathInputBeatlesNQ, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
@@ -637,9 +643,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertRdfaToXml() {
-        String pathInputStringHtml = Paths.get(inputPath, "beatles.html").toString();
-        String pathRefBeatlesXML = Paths.get(referencesPath, "html.beatles.rdf").toString();
-        String pathOutBeatlesXML = Paths.get(resultPath, "html.beatles.rdf").toString();
+        String pathInputStringHtml = inputPath.resolve("beatles.html").toString();
+        String pathRefBeatlesXML = referencesPath.resolve("html.beatles.rdf").toString();
+        String pathOutBeatlesXML = resultPath.resolve("html.beatles.rdf").toString();
 
         int exitCode = cmd.execute("-i", pathInputStringHtml, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
@@ -653,9 +659,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertRdfaToJsonld() {
-        String pathInputStringHtml = Paths.get(inputPath, "beatles.html").toString();
-        String pathRefBeatlesJSON = Paths.get(referencesPath, "html.beatles.jsonld").toString();
-        String pathOutBeatlesJSON = Paths.get(resultPath, "html.beatles.jsonld").toString();
+        String pathInputStringHtml = inputPath.resolve("beatles.html").toString();
+        String pathRefBeatlesJSON = referencesPath.resolve("html.beatles.jsonld").toString();
+        String pathOutBeatlesJSON = resultPath.resolve("html.beatles.jsonld").toString();
 
         int exitCode = cmd.execute("-i", pathInputStringHtml, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
@@ -669,9 +675,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertRdfaToTrig() {
-        String pathInputStringHtml = Paths.get(inputPath, "beatles.html").toString();
-        String pathRefBeatlesTRIG = Paths.get(referencesPath, "html.beatles.trig").toString();
-        String pathOutBeatlesTRIG = Paths.get(resultPath, "html.beatles.trig").toString();
+        String pathInputStringHtml = inputPath.resolve("beatles.html").toString();
+        String pathRefBeatlesTRIG = referencesPath.resolve("html.beatles.trig").toString();
+        String pathOutBeatlesTRIG = resultPath.resolve("html.beatles.trig").toString();
 
         int exitCode = cmd.execute("-i", pathInputStringHtml, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
@@ -685,9 +691,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertRdfaToTurtle() {
-        String pathInputStringHtml = Paths.get(inputPath, "beatles.html").toString();
-        String pathRefBeatlesTTL = Paths.get(referencesPath, "html.beatles.ttl").toString();
-        String pathOutBeatlesTTL = Paths.get(resultPath, "html.beatles.ttl").toString();
+        String pathInputStringHtml = inputPath.resolve("beatles.html").toString();
+        String pathRefBeatlesTTL = referencesPath.resolve("html.beatles.ttl").toString();
+        String pathOutBeatlesTTL = resultPath.resolve("html.beatles.ttl").toString();
 
         int exitCode = cmd.execute("-i", pathInputStringHtml, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
@@ -701,9 +707,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertRdfaToNt() {
-        String pathInputStringHtml = Paths.get(inputPath, "beatles.html").toString();
-        String pathRefBeatlesNT = Paths.get(referencesPath, "html.beatles.nt").toString();
-        String pathOutBeatlesNT = Paths.get(resultPath, "html.beatles.nt").toString();
+        String pathInputStringHtml = inputPath.resolve("beatles.html").toString();
+        String pathRefBeatlesNT = referencesPath.resolve("html.beatles.nt").toString();
+        String pathOutBeatlesNT = resultPath.resolve("html.beatles.nt").toString();
 
         int exitCode = cmd.execute("-i", pathInputStringHtml, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
@@ -717,9 +723,9 @@ public class ConvertTest {
 
     @Test
     public void testConvertRdfaToNq() {
-        String pathInputStringHtml = Paths.get(inputPath, "beatles.html").toString();
-        String pathRefBeatlesNQ = Paths.get(referencesPath, "html.beatles.nq").toString();
-        String pathOutBeatlesNQ = Paths.get(resultPath, "html.beatles.nq").toString();
+        String pathInputStringHtml = inputPath.resolve("beatles.html").toString();
+        String pathRefBeatlesNQ = referencesPath.resolve("html.beatles.nq").toString();
+        String pathOutBeatlesNQ = resultPath.resolve("html.beatles.nq").toString();
 
         int exitCode = cmd.execute("-i", pathInputStringHtml, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
@@ -733,7 +739,7 @@ public class ConvertTest {
 
     @Test
     public void testConvertWithSameInputAndOutputPath() {
-        String inputPath = Paths.get(referencesPath, "beatles.ttl").toString();
+        String inputPath = referencesPath.resolve("beatles.ttl").toString();
         int exitCode = cmd.execute("-i", inputPath, "-of", "TURTLE", "-o", inputPath);
         assertEquals(1, exitCode);
         assertEquals(out.toString(), "");
@@ -743,7 +749,7 @@ public class ConvertTest {
     @Test
     public void testConvertWithInvalidInputPath() {
         String inputPath = "invalid_path.ttl";
-        String outputPath = Paths.get(resultPath, "ttlbeatles.ttl").toString();
+        String outputPath = resultPath.resolve("ttlbeatles.ttl").toString();
 
         int exitCode = cmd.execute("-i", inputPath, "-of", "TURTLE", "-o", outputPath);
         assertEquals(1, exitCode);
@@ -753,7 +759,7 @@ public class ConvertTest {
 
     @Test
     public void testConvertWithInvalidOutputPath() {
-        String inputPath = Paths.get(referencesPath, "beatles.ttl").toString();
+        String inputPath = referencesPath.resolve("beatles.ttl").toString();
         String outputPath = "/invalid/path/for/output.ttl";
 
         int exitCode = cmd.execute("-i", inputPath, "-of", "TURTLE", "-o", outputPath);
@@ -764,7 +770,7 @@ public class ConvertTest {
 
     @Test
     public void testGraphUtilsLoadWithInvalidFormat() {
-        Path inputPath = Paths.get(referencesPath, "beatles.ttl");
+        Path inputPath = referencesPath.resolve("beatles.ttl");
 
         try {
             RdfDataLoader loader = new RdfDataLoader(null, false);

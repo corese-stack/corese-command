@@ -2,6 +2,7 @@ package fr.inria.corese.command.programs;
 
 import java.nio.file.Path;
 
+import fr.inria.corese.command.utils.ConvertString;
 import picocli.CommandLine.Option;
 
 public abstract class AbstractInputCommand extends AbstractCommand {
@@ -32,6 +33,13 @@ public abstract class AbstractInputCommand extends AbstractCommand {
     private void checkInputValues() throws IllegalArgumentException {
         if (this.inputsRdfData != null && this.output != null) {
             for (String input : this.inputsRdfData) {
+
+                // if input is URL it's impossible to be the same as output
+                if (ConvertString.toUrl(input).isPresent()) {
+                    return;
+                }
+
+                // if input is path, check if it's the same as output
                 if (Path.of(input).compareTo(this.output) == 0) {
                     throw new IllegalArgumentException("Input path cannot be same as output path: " + input);
                 }

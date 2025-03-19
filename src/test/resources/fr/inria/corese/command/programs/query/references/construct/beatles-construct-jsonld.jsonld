@@ -1,24 +1,24 @@
 {
 	"@context": {
-		"": "http://example.com/",
+		"ex": "http://example.com/",
 		"xsd": "http://www.w3.org/2001/XMLSchema#",
 		"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	},
 	"@graph": [
 		{
-			"@id": ":Please_Please_Me",
-			":artist": {
-				"@id": ":The_Beatles"
+			"@id": "ex:Please_Please_Me",
+			"ex:artist": {
+				"@id": "ex:The_Beatles"
 			},
-			":date": {
+			"ex:date": {
 				"@value": "1963-03-22",
 				"@type": "xsd:date"
 			},
-			":name": {
+			"ex:name": {
 				"@value": "Please Please Me",
 				"@type": "xsd:string"
 			},
-			"@type": ":Album"
+			"@type": "ex:Album"
 		}
 	]
 }
