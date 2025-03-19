@@ -15,11 +15,11 @@ import picocli.CommandLine.Option;
 public class Query extends AbstractInputCommand {
 
     @Option(names = { "-f", "-if",
-            "--input-format" }, description = "Specifies the RDF serialization format of the input file. Possible values are: :@|fg(225) ${COMPLETION-CANDIDATES}|@.")
+            "--input-format" }, description = "Specifies the RDF serialization format of the input file. Possible values are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
     private EnumRdfInputFormat inputFormat = null;
 
     @Option(names = { "-r", "-of",
-            "--result-format" }, description = "Specifies the format of the result file. Possible values are: :@|fg(225) ${COMPLETION-CANDIDATES}|@.")
+            "--result-format" }, description = "Specifies the format of the result file. Possible values are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
     private EnumResultFormat resultFormat = null;
 
     @Option(names = { "-q",

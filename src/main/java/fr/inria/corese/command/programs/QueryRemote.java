@@ -31,7 +31,7 @@ public class QueryRemote extends AbstractCommand {
     private String accept;
 
     @Option(names = { "-m",
-            "--request-method" }, description = "Specifies the HTTP request method to use. Possible values are: :@|fg(225) ${COMPLETION-CANDIDATES}|@.")
+            "--request-method" }, description = "Specifies the HTTP request method to use. Possible values are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
     private EnumRequestMethod requestMethod;
 
     @Option(names = { "-r",
