@@ -10,7 +10,7 @@ fi
 json_output_file="$1"
 html_output_file="$2"
 
-# Set minimal version  (before which no documentation would be generated in a compatible way)
+# Set minimal version (before which no documentation would be generated in a compatible way)
 minimal_version="4.6.0"
 
 # Get all Git tags and filter by the form vX.Y.Z (semantic versioning)
@@ -32,7 +32,7 @@ html_content="<html>
 # Function to compare versions to minimal version
 version_greater_equal() {
     # Use sort -V for natural version comparison
-    test "$(echo -e "$1\n$2" | sort -V | head -n 1)" = $2
+    test "$(echo -e "$1\n$2" | sort -V | head -n 1)" = "$2"
 }
 
 # Initialize the first flag to identify the latest tag
@@ -65,31 +65,16 @@ for tag in $tags; do
     "preferred": $preferred
 }
 EOF
-                   )
+        )
+
         # Add the JSON object to the array
         json_array+=("$json_object")
 
-        # Add HTML list item for the version
-        if [ "$preferred" == "true" ]; then
-            html_content="$html_content
-    <li><a href=\"https://corese-stack.github.io/corese-command/$tag/\">$tag (latest)</a></li>"
-        else
-            html_content="$html_content
-    <li><a href=\"https://corese-stack.github.io/corese-command/$tag/\">$tag</a></li>"
-        fi
+        # Add HTML list item
+        html_content="$html_content
+    <li><a href=\"https://corese-stack.github.io/corese-command/$tag/\">$name</a></li>"
     fi
 done
-
-json_object=$(cat <<EOF
-{
-    "name": "dev",
-    "version": "unstable",
-    "url": "https://corese-stack.github.io/corese-command/dev/",
-    "preferred": false
-}
-EOF
-)
-json_array+=("$json_object")
 
 # Close the HTML content
 html_content="$html_content
@@ -98,16 +83,14 @@ html_content="$html_content
 </body>
 </html>"
 
-# Join the JSON objects into a single array
+# Combine JSON objects into array format
 json_output=$(printf ",\n%s" "${json_array[@]}")
-
-# Write the JSON output to the provided file
 echo -e "[\n${json_output:2}\n]" > "$json_output_file"
 
-# Write the HTML output to the provided file
-html_content=$(echo "$html_content" | sed "s/{{ latest_version }}/$latest_version/")
+# Finalize and write HTML file
+html_content="${html_content//\{\{ latest_version \}\}/$latest_version}"
 echo "$html_content" > "$html_output_file"
 
-# Print confirmation messages
+# Print confirmation
 echo "JSON data has been written to $json_output_file"
 echo "HTML landing page has been written to $html_output_file"

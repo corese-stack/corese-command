@@ -4,15 +4,46 @@
    contain the root `toctree` directive.
 
 
-.. image:: _static/corese.svg
+.. image:: _static/logo/corese-command_doc_light.svg
    :align: center
    :width: 400px
 
-.. centered:: Software platform for the Semantic Web of Linked Data
+Corese is a software platform that implements and extends the standards of the Semantic Web. It enables users to create, manipulate, parse, serialize, query, reason about, and validate RDF data.
 
-Corese is a software platform implementing and extending the standards of the Semantic Web. It allows to create, manipulate, parse, serialize, query, reason and validate RDF data.
+Corese-Command is a command-line interface (CLI) for the Corese Semantic Web platform. It provides an easy way to interact with Corese features directly from the terminal.
+It enables users to convert RDF formats, execute SPARQL queries, interogate SPARQL endpoints, validate RDF datasets using SHACL and canonicalize RDF files.
 
 
+.. grid:: 2
+   :gutter: 2
+
+   .. grid-item::
+      
+      .. image:: _static/screenshots/convert.png
+         :alt: Screenshot of corese convert
+         :width: 100%
+         :class: sd-rounded-2
+
+   .. grid-item::
+      
+      .. image:: _static/screenshots/query.png
+         :alt: Screenshot of corese query
+         :width: 100%
+         :class: sd-rounded-2
+
+   .. grid-item::
+      
+      .. image:: _static/screenshots/validate.png
+         :alt: Screenshot of corese validate
+         :width: 100%
+         :class: sd-rounded-2
+
+   .. grid-item::
+      
+      .. image:: _static/screenshots/help.png
+         :alt: Screenshot of help
+         :width: 100%
+         :class: sd-rounded-2
 
 .. Define named hyperlinks for the references of W3C standards
 .. _RDF: https://www.w3.org/RDF/
@@ -59,21 +90,22 @@ Corese is a software platform implementing and extending the standards of the Se
    
       Corese offers several interfaces
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      * `Corese-library <user_guide.html#corese-library>`_: Java library to process RDF data and use Corese features via an API.
-      * `Corese-server  <user_guide.html#corese-server>`_: Tool to easily create, configure and manage SPARQL endpoints.
-      * `Corese-GUI <install.html#corese-gui>`_: Graphical interface that allows an easy and visual use of Corese features.
-      * `Corese-Python (beta) <user_guide.html#corese-python>`_: Python wrapper for accessing and manipulating RDF data with Corese features using py4j.
-      * `Corese-Command (beta)  <user_guide.html#corese-command>`_: Command Line Interface for Corese that allows users to interact with Corese features from the terminal.
+      * `corese-core <https://corese-stack.github.io/corese-core/>`_: Java library to process RDF data and use Corese features via an API.
+      * `corese-server <https://corese-stack.github.io/corese-server/>`_: Tool to easily create, configure and manage SPARQL endpoints.
+      * `corese-gui <https://corese-stack.github.io/corese-gui/>`_: Graphical interface that allows an easy and visual use of Corese features.
+      * `corese-command <https://corese-stack.github.io/corese-command/>`_: Command Line Interface for Corese that allows users to interact with Corese features from the terminal.
+      * `corese-python (beta) <https://corese-stack.github.io/corese-python/>`_: Python wrapper for accessing and manipulating RDF data with Corese features using py4j.
 
 .. raw:: html
 
-   <h3>Contributions and discussions</h3>
 
-.. _discussion forum: https://github.com/Wimmics/corese/discussions/
-.. _issue reports: https://github.com/Wimmics/corese/issues/
-.. _pull requests: https://github.com/Wimmics/corese/pulls/
+   <h3>Contributions and discussions about Corese-Command</h3>
 
-For support questions, comments, and any ideas for improvements you’d like to discuss, please use our `discussion forum`_. We welcome everyone to contribute to `issue reports`_, suggest new features, and create `pull requests`_.
+.. _discussion forum: https://github.com/orgs/corese-stack/discussions
+.. _issue reports: https://github.com/corese-stack/corese-command/issues
+.. _pull requests: https://github.com/corese-stack/corese-command/pulls
+
+For support questions, comments, and any ideas for improvements you`d like to discuss, please use our `discussion forum`_. We welcome everyone to contribute to `issue reports`_, suggest new features, and create `pull requests`_.
 
 
 .. #############################################################################
@@ -86,7 +118,7 @@ For support questions, comments, and any ideas for improvements you’d like to 
 
    <div style="visibility: hidden;">
 
-CORESE documentation
+Home Page
 ===================================
 
 .. raw:: html
@@ -96,8 +128,6 @@ CORESE documentation
 .. toctree::
    :hidden:
 
+   Home <index.rst>
    Installation <install.md>
-   User Guide <user_guide>
-   API Reference <apis>
-   Demo <https://corese.inria.fr/>
-
+   User Guide <user_guide.md>

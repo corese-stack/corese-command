@@ -22,8 +22,8 @@ sphinx-multiversion docs/source build/html
 
 ## Switcher generation
 
-- To navigate between versions by means of the switcher (the dropdown list indicating the available version), the switcher.json object must be generated. 
-- To improve navigability, a landing page must also be generated to redirect to the latest version of the documentation. 
+- To navigate between versions by means of the switcher (the dropdown list indicating the available version), the switcher.json object must be generated.
+- To improve navigability, a landing page must also be generated to redirect to the latest version of the documentation.
 
 To this end a script must be executed and write the output to the output html directory:
 
