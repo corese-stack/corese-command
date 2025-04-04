@@ -46,6 +46,9 @@ public class RdfDataLoader {
     /**
      * Load RDF data into a Corese Graph.
      * 
+     * Load from standard input if no input is provided.
+     * Load from URL or file if input is a valid URL or file path.
+     * 
      * @param inputs      Paths or URLs of the files to load.
      * @param inputFormat Input file serialization format.
      * @param recursive   If true, load RDF data from subdirectories.
@@ -54,36 +57,38 @@ public class RdfDataLoader {
     public Graph load(String[] inputs, EnumRdfInputFormat inputFormat, boolean recursive)
             throws IllegalArgumentException {
 
+        // If no input is provided, load from standard input
         if (inputs == null || inputs.length == 0) {
             return this.LoadFromStdin(inputFormat);
-        } else {
-            Graph graph = Graph.create();
-            for (String input : inputs) {
-                Optional<URL> url = ConvertString.toUrl(input);
-                Optional<Path> path = ConvertString.toPath(input);
-
-                if (url.isPresent()) {
-                    // Load RDF data from URL
-                    Graph resultGraph = this.loadFromURL(url.get(), inputFormat);
-                    graph.merge(resultGraph);
-                } else if (path.isPresent()) {
-                    // Load RDF data from file or directory
-                    File file = path.get().toFile();
-                    if (file.isDirectory()) {
-                        // Load RDF data from directory
-                        Graph resultGraph = this.loadFromDirectory(path.get(), inputFormat, recursive);
-                        graph.merge(resultGraph);
-                    } else {
-                        // Load RDF data from file
-                        Graph resultGraph = this.loadFromFile(path.get(), inputFormat);
-                        graph.merge(resultGraph);
-                    }
-                } else {
-                    throw new IllegalArgumentException("Invalid input: " + input);
-                }
-            }
-            return graph;
         }
+
+        // If input is provided, load from URL or file
+        Graph graph = Graph.create();
+        for (String input : inputs) {
+            Optional<URL> url = ConvertString.toUrl(input);
+            Optional<Path> path = ConvertString.toPath(input);
+
+            if (url.isPresent()) {
+                // Load RDF data from URL
+                Graph resultGraph = this.loadFromURL(url.get(), inputFormat);
+                graph.merge(resultGraph);
+            } else if (path.isPresent()) {
+                // Load RDF data from file or directory
+                File file = path.get().toFile();
+                if (file.isDirectory()) {
+                    // Load RDF data from directory
+                    Graph resultGraph = this.loadFromDirectory(path.get(), inputFormat, recursive);
+                    graph.merge(resultGraph);
+                } else {
+                    // Load RDF data from file
+                    Graph resultGraph = this.loadFromFile(path.get(), inputFormat);
+                    graph.merge(resultGraph);
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid input: " + input);
+            }
+        }
+        return graph;
     }
 
     /////////////////////
