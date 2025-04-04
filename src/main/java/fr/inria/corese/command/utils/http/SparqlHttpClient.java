@@ -1,12 +1,10 @@
 package fr.inria.corese.command.utils.http;
 
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -34,7 +32,7 @@ import picocli.CommandLine.Model.CommandSpec;
  */
 public class SparqlHttpClient {
 
-    private CommandSpec spec;
+    private final SparqlHttpPrinter printer;
 
     private final String endpointUrl;
     private EnumRequestMethod requestMethod = EnumRequestMethod.GET;
@@ -57,7 +55,7 @@ public class SparqlHttpClient {
      * @param endpointUrl URL of the SPARQL endpoint to send the request to.
      */
     public SparqlHttpClient(CommandSpec spec, String endpointUrl) {
-        this.spec = spec;
+        this.printer = new SparqlHttpPrinter(spec);
         if (endpointUrl == null || endpointUrl.isEmpty()) {
             throw new IllegalArgumentException("Endpoint URL must be specified");
         }
@@ -116,7 +114,7 @@ public class SparqlHttpClient {
     public void addHeader(String key, String value) {
         // Check if the key and value are not null or empty
         if (key == null || key.isBlank() || value == null || value.isBlank()) {
-            return; 
+            return;
         }
         this.headers.add(Pair.of(key.trim(), value.trim()));
     }
@@ -152,7 +150,7 @@ public class SparqlHttpClient {
 
         // If the "User-Agent" header is not present, add it
         if (!this.headers.stream().anyMatch(header -> header.getLeft().equalsIgnoreCase("User-Agent"))) {
-        this.addHeader("User-Agent", this.USERAGENT);
+            this.addHeader("User-Agent", this.USERAGENT);
         }
 
         // Fix parameters
@@ -188,7 +186,7 @@ public class SparqlHttpClient {
             String newLocation = this.getRedirectLocation(response);
 
             if (this.verbose) {
-                this.spec.commandLine().getErr().println("Redirecting to: " + newLocation);
+                this.printer.printRedirect(newLocation);
             }
 
             webTarget = this.buildWebTarget(newLocation, query, defaultGraphUris, namedGraphUris);
@@ -199,7 +197,7 @@ public class SparqlHttpClient {
 
         // Print the response if verbose mode is enabled
         if (this.verbose) {
-            this.printResponse(response);
+            this.printer.printResponse(response);
         }
 
         // Validate the response
@@ -212,111 +210,6 @@ public class SparqlHttpClient {
     /////////////////////
     // Private methods //
     /////////////////////
-
-    /**
-     * Prints the response details.
-     * 
-     * @param response the response to print
-     */
-    private void printResponse(Response response) {
-        PrintWriter err = this.spec.commandLine().getErr();
-
-        err.println("╔════════════════════════════════╗");
-        err.println("║         RESPONSE DETAILS       ║");
-        err.println("╚════════════════════════════════╝\n");
-
-        if (response == null) {
-            err.println("No response available.\n");
-            err.println("──────────────────────────────────");
-            return;
-        }
-
-        // HTTP code
-        err.println("► HTTP CODE");
-        err.println("  " + response.getStatus());
-
-        // Status info
-        if (response.getStatusInfo() != null) {
-            err.println("\n► STATUS INFO");
-            err.println("  " + response.getStatusInfo().toString());
-        }
-
-        // Headers
-        Map<String, List<Object>> headers = response.getHeaders();
-        if (!headers.isEmpty()) {
-            err.println("\n► HEADERS");
-            for (Map.Entry<String, List<Object>> header : headers.entrySet()) {
-                for (Object value : header.getValue()) {
-                    err.println("  " + header.getKey() + ": " + value);
-                }
-            }
-        }
-
-        // Do not display the response body here
-
-        err.println("\n──────────────────────────────────");
-    }
-
-    /**
-     * Prints the request details.
-     * 
-     * @param webTarget   the web target of the request
-     * @param bodyContent the body content of the request
-     * @param contentType the content type of the request
-     */
-    private void printRequest(WebTarget webTarget, String bodyContent, String contentType) {
-        PrintWriter err = this.spec.commandLine().getErr();
-
-        err.println("╔════════════════════════════════╗");
-        err.println("║        REQUEST DETAILS         ║");
-        err.println("╚════════════════════════════════╝\n");
-
-        // URL
-        if (webTarget != null && webTarget.getUri() != null) {
-            err.println("► URL");
-            err.println("  " + webTarget.getUri());
-        }
-
-        // Method
-        if (this.requestMethod != null) {
-            err.println("\n► METHOD");
-            err.println("  " + this.requestMethod);
-        }
-
-        // Query parameters
-        if (webTarget != null && webTarget.getUri() != null && webTarget.getUri().getQuery() != null
-                && !webTarget.getUri().getQuery().isEmpty()) {
-            err.println("\n► QUERY PARAMETERS");
-            String[] queryLines = webTarget.getUri().getQuery().split("\n");
-            for (String line : queryLines) {
-                err.println("  " + line);
-            }
-        }
-
-        // Headers
-        if ((this.headers != null && !this.headers.isEmpty()) || (contentType != null && !contentType.isEmpty())) {
-            err.println("\n► HEADERS");
-
-            for (Pair<String, String> header : this.headers) {
-                err.println("  " + header.getKey() + ": " + header.getValue());
-            }
-
-            if (contentType != null && !contentType.isEmpty()) {
-                err.println("  Content-Type: " + contentType);
-            }
-        }
-
-        // Body content
-        if (bodyContent != null && !bodyContent.isEmpty()) {
-            err.println("\n► REQUEST BODY");
-            String[] bodyLines = bodyContent.split("\n");
-            for (String line : bodyLines) {
-                err.println("  " + line);
-            }
-        }
-
-        err.println("\n──────────────────────────────────");
-    }
 
     /**
      * Validates the query. The query must be defined and must be a valid SPARQL
@@ -518,7 +411,7 @@ public class SparqlHttpClient {
 
         // Print query and body content if verbose mode is enabled
         if (this.verbose) {
-            this.printRequest(webTarget, bodyContent, contentType);
+            this.printer.printRequest(webTarget, bodyContent, contentType, headers, requestMethod);
         }
 
         // Send the request
