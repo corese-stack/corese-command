@@ -114,7 +114,11 @@ public class SparqlHttpClient {
      * @param value the value of the header
      */
     public void addHeader(String key, String value) {
-        this.headers.add(Pair.of(key, value));
+        // Check if the key and value are not null or empty
+        if (key == null || key.isBlank() || value == null || value.isBlank()) {
+            return; 
+        }
+        this.headers.add(Pair.of(key.trim(), value.trim()));
     }
 
     /////////////////////////
