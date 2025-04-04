@@ -419,93 +419,22 @@ public class SparqlHttpClient {
     }
 
     /**
-     * Validates the response. If the response is not valid, an exception is thrown.
-     * 
+     * Validates the response. Throws an exception if the HTTP status code is not
+     * 2xx.
+     *
      * @param response the response to validate
-     * @throws Exception if the response is not valid
+     * @throws Exception if the response status is not successful
      */
     private void validateResponse(Response response) throws Exception {
         int status = response.getStatus();
 
         if (status < 200 || status >= 300) {
-            String errorMessage = response.readEntity(String.class);
+            String body = response.readEntity(String.class);
+            String reason = response.getStatusInfo().getReasonPhrase();
 
-            String detailedMessage;
-            switch (status) {
-                case 301:
-                    detailedMessage = "Moved Permanently. The requested resource has been assigned a new permanent URI and any future references to this resource SHOULD use one of the returned URIs. Try to increase the number of max redirections.";
-                    break;
-                case 302:
-                    detailedMessage = "Found. The requested resource has been assigned a new permanent URI and any future references to this resource SHOULD use one of the returned URIs. Try to increase the number of max redirections.";
-                    break;
-                case 303:
-                    detailedMessage = "See Other. The response to the request can be found under another URI using a GET method. Try to increase the number of max redirections.";
-                    break;
-                case 400:
-                    detailedMessage = "Bad Request. The request could not be understood or was missing required parameters.";
-                    break;
-                case 401:
-                    detailedMessage = "Unauthorized. Authentication failed or user does not have permissions for the requested operation.";
-                    break;
-                case 403:
-                    detailedMessage = "Forbidden. Authentication succeeded but authenticated user does not have access to the resource.";
-                    break;
-                case 404:
-                    detailedMessage = "Not Found. The requested resource could not be found.";
-                    break;
-                case 406:
-                    detailedMessage = "Not Acceptable. The server cannot produce a response matching the list of acceptable values defined in the request's headers.";
-                    break;
-                case 408:
-                    detailedMessage = "Request Timeout. The server would like to shut down this unused connection.";
-                    break;
-                case 429:
-                    detailedMessage = "Too Many Requests. The user has sent too many requests in a given amount of time.";
-                    break;
-                case 500:
-                    detailedMessage = "Internal Server Error. An error occurred on the server.";
-                    break;
-                case 502:
-                    detailedMessage = "Bad Gateway. The server received an invalid response from the upstream server.";
-                    break;
-                case 503:
-                    detailedMessage = "Service Unavailable. The server is currently unavailable.";
-                    break;
-                case 504:
-                    detailedMessage = "Gateway Timeout. The gateway did not receive a timely response from the upstream server or some other auxiliary server.";
-                    break;
-                default:
-                    detailedMessage = "Unexpected error.";
-            }
-
-            throw new Exception(
-                    "HTTP error code: " + status + ".\n"
-                            + "Error message: " + errorMessage + ".\n"
-                            + "Detailed message: " + detailedMessage);
+            throw new Exception("HTTP " + status + " " + reason + "\n" +
+                    "Response body:\n" + body);
         }
-    }
-
-    /**
-     * Checks if the response is a redirection.
-     * 
-     * @param response the response to check
-     * @return true if the response is a redirection, false otherwise
-     */
-    private boolean isRedirection(Response response) {
-        int status = response.getStatus();
-        return status == Response.Status.MOVED_PERMANENTLY.getStatusCode()
-                || status == Response.Status.FOUND.getStatusCode()
-                || status == Response.Status.SEE_OTHER.getStatusCode();
-    }
-
-    /**
-     * Gets the location of the redirection.
-     * 
-     * @param response the response to check
-     * @return the location of the redirection
-     */
-    private String getRedirectLocation(Response response) {
-        return response.getHeaderString("Location");
     }
 
 }
