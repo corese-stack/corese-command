@@ -150,8 +150,10 @@ public class SparqlHttpClient {
             boolean ignoreQueryValidation)
             throws Exception {
 
-        // Add the user agent
+        // If the "User-Agent" header is not present, add it
+        if (!this.headers.stream().anyMatch(header -> header.getLeft().equalsIgnoreCase("User-Agent"))) {
         this.addHeader("User-Agent", this.USERAGENT);
+        }
 
         // Fix parameters
         if (defaultGraphUris == null) {
