@@ -35,10 +35,6 @@ public class QueryRemote extends AbstractCommand {
             "--request-method" }, description = "Specifies the HTTP request method to use. Possible values are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
     private EnumRequestMethod requestMethod;
 
-    @Option(names = { "-r",
-            "--max-redirection" }, description = "Specifies the maximum number of redirections to follow. Default value: ${DEFAULT-VALUE}.", defaultValue = "5")
-    private int maxRedirection;
-
     @Option(names = { "-d",
             "--default-graph" }, description = "Specifies the default graph URI. Multiple URIs can be specified.", arity = "0..")
     private List<String> default_graph;
@@ -112,7 +108,6 @@ public class QueryRemote extends AbstractCommand {
         this.parseHeader(client);
         client.setRequestMethod(this.requestMethod);
         client.setVerbose(this.verbose);
-        client.setMaxRedirection(this.maxRedirection);
 
         return client.sendRequest(this.query, this.default_graph, this.named_graph, this.ignoreQueryValidation);
     }

@@ -41,8 +41,6 @@ public class SparqlHttpClient {
 
     private boolean verbose = false;
 
-    private int redirectCount = 0;
-    private int maxRedirects = 5;
     private final String USERAGENT = "Corese-Command/" + VersionProvider.getCommandVersion();
 
     /////////////////
@@ -85,15 +83,6 @@ public class SparqlHttpClient {
      */
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
-    }
-
-    /**
-     * Sets the maximum number of redirections to follow.
-     * 
-     * @param maxRedirection the maximum number of redirections to follow
-     */
-    public void setMaxRedirection(int maxRedirection) {
-        this.maxRedirects = maxRedirection;
     }
 
     /**
@@ -174,26 +163,9 @@ public class SparqlHttpClient {
         String bodyContent = this.buildRequestBody(query, defaultGraphUris, namedGraphUris);
 
         Response response;
-        this.redirectCount = 0;
 
         // Execute the request
         response = this.executeRequest(webTarget, bodyContent);
-
-        // Follow redirections
-        while (this.isRedirection(response) && this.redirectCount < this.maxRedirects) {
-            this.redirectCount++;
-
-            String newLocation = this.getRedirectLocation(response);
-
-            if (this.verbose) {
-                this.printer.printRedirect(newLocation);
-            }
-
-            webTarget = this.buildWebTarget(newLocation, query, defaultGraphUris, namedGraphUris);
-
-            // Execute the redirection request
-            response = this.executeRequest(webTarget, bodyContent);
-        }
 
         // Print the response if verbose mode is enabled
         if (this.verbose) {
