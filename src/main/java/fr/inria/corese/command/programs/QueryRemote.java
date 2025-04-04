@@ -62,7 +62,7 @@ public class QueryRemote extends AbstractCommand {
         try {
 
             // if accept is not defined, set it to text/csv
-            if (this.accept == null && !this.containAcceptHeader(this.headers)) {
+            if (this.accept == null && !this.containsAcceptHeader(this.headers)) {
                 this.accept = DEFAULT_ACCEPT_HEADER;
             }
 
@@ -90,19 +90,9 @@ public class QueryRemote extends AbstractCommand {
      * @param headers The headers to check.
      * @return True if the headers contain an accept header, false otherwise.
      */
-    private Boolean containAcceptHeader(List<String> headers) {
-        if (headers == null) {
-            return false;
-        }
-        for (String header : headers) {
-            String[] headerParts = header.split(":", 2);
-            if (headerParts.length == 2) {
-                if (headerParts[0].toLowerCase().equals("accept")) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    private boolean containsAcceptHeader(List<String> headers) {
+        return headers != null && headers.stream().anyMatch(
+                header -> header.trim().toLowerCase().startsWith("accept:"));
     }
 
     /**
