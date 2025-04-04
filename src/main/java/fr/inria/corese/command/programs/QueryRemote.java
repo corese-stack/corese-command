@@ -2,6 +2,7 @@ package fr.inria.corese.command.programs;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 
 import com.github.jsonldjava.shaded.com.google.common.io.Files;
@@ -61,10 +62,13 @@ public class QueryRemote extends AbstractCommand {
 
         try {
 
-            // if accept is not defined, set it to text/csv
-            if ((this.accept == null || this.accept.isEmpty()) && this.headers != null
-                    && !containsAcceptHeader(this.headers)) {
+            // Set default Accept header if not defined
+            if ((this.accept == null || this.accept.isEmpty()) && !containsAcceptHeader(this.headers)) {
                 this.accept = List.of(this.DEFAULT_ACCEPT_HEADER);
+            } else if (this.accept == null) {
+                // If accept is null but headers are defined in headers, set accept to empty
+                // list
+                this.accept = Collections.emptyList();
             }
 
             // Load query
