@@ -119,19 +119,17 @@ public class QueryRemote extends AbstractCommand {
      */
     private void parseHeader(SparqlHttpClient client) {
 
-        // Add accept header
-        if (this.accept != null) {
+        // Add Accept header
             client.addHeader("Accept", this.accept);
-        }
 
-        // Add other headers
+        // Add custom headers
         if (this.headers != null) {
             for (String header : this.headers) {
                 String[] headerParts = header.split(":", 2);
                 if (headerParts.length == 2) {
                     client.addHeader(headerParts[0], headerParts[1]);
                 } else {
-                    throw new RuntimeException("Invalid header: " + header);
+                    throw new RuntimeException("Invalid header format (expected key: value): " + header);
                 }
             }
         }
