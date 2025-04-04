@@ -92,15 +92,6 @@ public class SparqlHttpClient {
     /**
      * Sets the maximum number of redirections to follow.
      * 
-     * @param maxRedirects the maximum number of redirections to follow
-     */
-    public void setMaxRedirects(int maxRedirects) {
-        this.maxRedirects = maxRedirects;
-    }
-
-    /**
-     * Sets the maximum number of redirections to follow.
-     * 
      * @param maxRedirection the maximum number of redirections to follow
      */
     public void setMaxRedirection(int maxRedirection) {
