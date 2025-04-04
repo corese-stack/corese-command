@@ -27,8 +27,8 @@ public class QueryRemote extends AbstractCommand {
     private List<String> headers;
 
     @Option(names = { "-a", "-of",
-            "--accept" }, description = "Specifies the Accept header value for the HTTP request.")
-    private String accept;
+            "--accept" }, description = "Specifies the Accept header value for the HTTP request.", arity = "0..")
+    private List<String> accept;
 
     @Option(names = { "-m",
             "--request-method" }, description = "Specifies the HTTP request method to use. Possible values are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
@@ -62,8 +62,9 @@ public class QueryRemote extends AbstractCommand {
         try {
 
             // if accept is not defined, set it to text/csv
-            if (this.accept == null && !this.containsAcceptHeader(this.headers)) {
-                this.accept = DEFAULT_ACCEPT_HEADER;
+            if ((this.accept == null || this.accept.isEmpty()) && this.headers != null
+                    && !containsAcceptHeader(this.headers)) {
+                this.accept = List.of(this.DEFAULT_ACCEPT_HEADER);
             }
 
             // Load query
@@ -120,7 +121,9 @@ public class QueryRemote extends AbstractCommand {
     private void parseHeader(SparqlHttpClient client) {
 
         // Add Accept header
-            client.addHeader("Accept", this.accept);
+        for (String accept : this.accept) {
+            client.addHeader("Accept", accept);
+        }
 
         // Add custom headers
         if (this.headers != null) {
