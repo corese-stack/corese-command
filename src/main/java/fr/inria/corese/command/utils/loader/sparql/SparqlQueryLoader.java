@@ -5,10 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Optional;
 
 import fr.inria.corese.command.utils.ConvertString;
-import fr.inria.corese.command.utils.TestType;
+import fr.inria.corese.command.utils.InputTypeDetector;
 import picocli.CommandLine.Model.CommandSpec;
 
 /**
@@ -55,20 +54,20 @@ public class SparqlQueryLoader {
             return this.loadFromStdin();
         }
 
-        // If input is a valid URL or file path, load from URL or file
-        // Otherwise, treat it as a SPARQL query
-        Optional<Path> path = ConvertString.toPath(input);
-        Optional<URL> url = ConvertString.toUrl(input);
-        Boolean isSparqlQuery = TestType.isSparqlQuery(input);
+        InputTypeDetector.InputType type = InputTypeDetector.detect(input);
 
-        if (isSparqlQuery) {
-            return input;
-        } else if (url.isPresent()) {
-            return this.loadFromUrl(url.get());
-        } else if (path.isPresent()) {
-            return this.loadFromFile(path.get());
-        } else {
-            throw new IllegalArgumentException("Invalid input: " + input);
+        switch (type) {
+            case SPARQL:
+                return input;
+
+            case URL:
+                return this.loadFromUrl(ConvertString.toUrlOrThrow(input));
+
+            case FILE_PATH:
+                return this.loadFromFile(ConvertString.toPathOrThrow(input));
+
+            default:
+                throw new IllegalArgumentException("Unrecognized input format: " + input);
         }
     }
 

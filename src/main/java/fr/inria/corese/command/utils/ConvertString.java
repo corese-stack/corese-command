@@ -3,41 +3,49 @@ package fr.inria.corese.command.utils;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.util.Optional;
 
 /**
- * Utility class to convert strings to other types.
+ * Utility class to convert strings to other types like URL and Path.
  */
 public class ConvertString {
 
     /**
-     * Convert a string to a URL.
+     * Convert a string to a URL, throwing an exception if invalid.
      *
      * @param input String to convert.
-     * @return The URL if the conversion was successful, an empty Optional
-     *         otherwise.
+     * @return The converted URL.
+     * @throws IllegalArgumentException If the input is not a valid URL.
      */
-    public static Optional<URL> toUrl(String input) {
+    public static URL toUrlOrThrow(String input) {
+        if (input == null || input.isBlank()) {
+            throw new IllegalArgumentException("URL input is blank");
+        }
+
         try {
-            return Optional.of(URI.create(input).toURL());
+            return URI.create(input).toURL();
         } catch (IllegalArgumentException | MalformedURLException e) {
-            return Optional.empty();
+            throw new IllegalArgumentException("Invalid URL: " + input, e);
         }
     }
 
     /**
-     * Convert a string to a Path.
+     * Convert a string to a Path, throwing an exception if invalid.
      *
      * @param input String to convert.
-     * @return The Path if the conversion was successful, an empty Optional
-     *         otherwise.
+     * @return The converted Path.
+     * @throws IllegalArgumentException If the input is not a valid Path.
      */
-    public static Optional<Path> toPath(String input) {
+    public static Path toPathOrThrow(String input) {
+        if (input == null || input.isBlank()) {
+            throw new IllegalArgumentException("Path input is blank");
+        }
+
         try {
-            return Optional.of(Path.of(input));
-        } catch (Exception e) {
-            return Optional.empty();
+            return Path.of(input);
+        } catch (InvalidPathException e) {
+            throw new IllegalArgumentException("Invalid path: " + input, e);
         }
     }
 }

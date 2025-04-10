@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import fr.inria.corese.command.utils.ConvertString;
+import fr.inria.corese.command.utils.InputTypeDetector;
+import fr.inria.corese.command.utils.InputTypeDetector.InputType;
 import fr.inria.corese.core.Graph;
 import fr.inria.corese.core.load.Load;
 import fr.inria.corese.core.load.LoadFormat;
@@ -62,32 +64,35 @@ public class RdfDataLoader {
             return this.LoadFromStdin(inputFormat);
         }
 
-        // If input is provided, load from URL or file
         Graph graph = Graph.create();
-        for (String input : inputs) {
-            Optional<URL> url = ConvertString.toUrl(input);
-            Optional<Path> path = ConvertString.toPath(input);
 
-            if (url.isPresent()) {
-                // Load RDF data from URL
-                Graph resultGraph = this.loadFromURL(url.get(), inputFormat);
-                graph.merge(resultGraph);
-            } else if (path.isPresent()) {
-                // Load RDF data from file or directory
-                File file = path.get().toFile();
-                if (file.isDirectory()) {
-                    // Load RDF data from directory
-                    Graph resultGraph = this.loadFromDirectory(path.get(), inputFormat, recursive);
+        for (String input : inputs) {
+            InputType type = InputTypeDetector.detect(input);
+
+            switch (type) {
+                case URL:
+                    Graph resultGraphUrl = this.loadFromURL(ConvertString.toUrlOrThrow(input), inputFormat);
+                    graph.merge(resultGraphUrl);
+                    break;
+
+                case FILE_PATH:
+                    Path path = ConvertString.toPathOrThrow(input);
+                    File file = path.toFile();
+                    Graph resultGraph;
+
+                    if (file.isDirectory()) {
+                        resultGraph = this.loadFromDirectory(path, inputFormat, recursive);
+                    } else {
+                        resultGraph = this.loadFromFile(path, inputFormat);
+                    }
                     graph.merge(resultGraph);
-                } else {
-                    // Load RDF data from file
-                    Graph resultGraph = this.loadFromFile(path.get(), inputFormat);
-                    graph.merge(resultGraph);
-                }
-            } else {
-                throw new IllegalArgumentException("Invalid input: " + input);
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Invalid input: " + input);
             }
         }
+
         return graph;
     }
 

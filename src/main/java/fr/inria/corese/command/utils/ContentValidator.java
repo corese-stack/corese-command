@@ -8,17 +8,17 @@ import fr.inria.corese.core.sparql.datatype.DatatypeMap;
 import fr.inria.corese.core.sparql.exceptions.EngineException;
 
 /**
- * Utility class to test the type of a string.
+ * Utility class for validating SPARQL queries and checking for SHACL shapes
  */
-public class TestType {
+public class ContentValidator {
 
     /**
-     * Detect if a string is a possible SPARQL query.
+     * Check if the input string is a valid SPARQL query.
      *
      * @param input String to check.
-     * @return True if the string seems to be a SPARQL query, false otherwise.
+     * @return True if the input is a valid SPARQL query, false otherwise.
      */
-    public static boolean isSparqlQuery(String input) {
+    public static boolean isValidSparqlQuery(String input) {
         if (input == null || input.trim().isEmpty()) {
             return false;
         }
@@ -40,7 +40,7 @@ public class TestType {
      * @param graph Graph to check.
      * @return True if the graph contains SHACL shapes, false otherwise.
      */
-    public static boolean isShacl(Graph graph) {
+    public static boolean containsShaclShapes(Graph graph) {
         if (graph == null || graph.size() == 0) {
             return false;
         }

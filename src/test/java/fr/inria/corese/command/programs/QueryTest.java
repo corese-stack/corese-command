@@ -1705,8 +1705,7 @@ public class QueryTest {
                                 "output.ttl", "-q", "SERRORELECT * WHERE { ?s ?p ?o }");
 
                 assertEquals(1, exitCode);
-                assertTrue(err.toString().contains("Failed to open SPARQL query file")
-                                || err.toString().contains("Invalid"));
+                assertTrue(err.toString().contains("Error when executing SPARQL query"));
         }
 
         @Test

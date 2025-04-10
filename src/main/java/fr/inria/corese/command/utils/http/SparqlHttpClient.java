@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 import fr.inria.corese.command.VersionProvider;
-import fr.inria.corese.command.utils.TestType;
+import fr.inria.corese.command.utils.ContentValidator;
 import fr.inria.corese.core.Graph;
 import fr.inria.corese.core.kgram.core.Query;
 import fr.inria.corese.core.query.QueryProcess;
@@ -199,7 +199,7 @@ public class SparqlHttpClient {
         }
 
         // Check if the query is a valid SPARQL query
-        if (!TestType.isSparqlQuery(queryString)) {
+        if (!ContentValidator.isValidSparqlQuery(queryString)) {
             throw new IllegalArgumentException("Invalid SPARQL query");
         }
 
