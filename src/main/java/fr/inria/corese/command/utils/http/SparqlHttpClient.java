@@ -1,12 +1,10 @@
 package fr.inria.corese.command.utils.http;
 
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -34,7 +32,7 @@ import picocli.CommandLine.Model.CommandSpec;
  */
 public class SparqlHttpClient {
 
-    private CommandSpec spec;
+    private final SparqlHttpPrinter printer;
 
     private final String endpointUrl;
     private EnumRequestMethod requestMethod = EnumRequestMethod.GET;
@@ -43,8 +41,6 @@ public class SparqlHttpClient {
 
     private boolean verbose = false;
 
-    private int redirectCount = 0;
-    private int maxRedirects = 5;
     private final String USERAGENT = "Corese-Command/" + VersionProvider.getCommandVersion();
 
     /////////////////
@@ -57,7 +53,7 @@ public class SparqlHttpClient {
      * @param endpointUrl URL of the SPARQL endpoint to send the request to.
      */
     public SparqlHttpClient(CommandSpec spec, String endpointUrl) {
-        this.spec = spec;
+        this.printer = new SparqlHttpPrinter(spec);
         if (endpointUrl == null || endpointUrl.isEmpty()) {
             throw new IllegalArgumentException("Endpoint URL must be specified");
         }
@@ -90,24 +86,6 @@ public class SparqlHttpClient {
     }
 
     /**
-     * Sets the maximum number of redirections to follow.
-     * 
-     * @param maxRedirects the maximum number of redirections to follow
-     */
-    public void setMaxRedirects(int maxRedirects) {
-        this.maxRedirects = maxRedirects;
-    }
-
-    /**
-     * Sets the maximum number of redirections to follow.
-     * 
-     * @param maxRedirection the maximum number of redirections to follow
-     */
-    public void setMaxRedirection(int maxRedirection) {
-        this.maxRedirects = maxRedirection;
-    }
-
-    /**
      * Gets the endpoint URL.
      * 
      * @return the endpoint URL
@@ -123,7 +101,11 @@ public class SparqlHttpClient {
      * @param value the value of the header
      */
     public void addHeader(String key, String value) {
-        this.headers.add(Pair.of(key, value));
+        // Check if the key and value are not null or empty
+        if (key == null || key.isBlank() || value == null || value.isBlank()) {
+            return;
+        }
+        this.headers.add(Pair.of(key.trim(), value.trim()));
     }
 
     /////////////////////////
@@ -155,8 +137,10 @@ public class SparqlHttpClient {
             boolean ignoreQueryValidation)
             throws Exception {
 
-        // Add the user agent
-        this.addHeader("User-Agent", this.USERAGENT);
+        // If the "User-Agent" header is not present, add it
+        if (!this.headers.stream().anyMatch(header -> header.getLeft().equalsIgnoreCase("User-Agent"))) {
+            this.addHeader("User-Agent", this.USERAGENT);
+        }
 
         // Fix parameters
         if (defaultGraphUris == null) {
@@ -179,30 +163,13 @@ public class SparqlHttpClient {
         String bodyContent = this.buildRequestBody(query, defaultGraphUris, namedGraphUris);
 
         Response response;
-        this.redirectCount = 0;
 
         // Execute the request
         response = this.executeRequest(webTarget, bodyContent);
 
-        // Follow redirections
-        while (this.isRedirection(response) && this.redirectCount < this.maxRedirects) {
-            this.redirectCount++;
-
-            String newLocation = this.getRedirectLocation(response);
-
-            if (this.verbose) {
-                this.spec.commandLine().getErr().println("Redirecting to: " + newLocation);
-            }
-
-            webTarget = this.buildWebTarget(newLocation, query, defaultGraphUris, namedGraphUris);
-
-            // Execute the redirection request
-            response = this.executeRequest(webTarget, bodyContent);
-        }
-
         // Print the response if verbose mode is enabled
         if (this.verbose) {
-            this.printResponse(response);
+            this.printer.printResponse(response);
         }
 
         // Validate the response
@@ -215,111 +182,6 @@ public class SparqlHttpClient {
     /////////////////////
     // Private methods //
     /////////////////////
-
-    /**
-     * Prints the response details.
-     * 
-     * @param response the response to print
-     */
-    private void printResponse(Response response) {
-        PrintWriter err = this.spec.commandLine().getErr();
-
-        err.println("╔════════════════════════════════╗");
-        err.println("║         RESPONSE DETAILS       ║");
-        err.println("╚════════════════════════════════╝\n");
-
-        if (response == null) {
-            err.println("No response available.\n");
-            err.println("──────────────────────────────────");
-            return;
-        }
-
-        // HTTP code
-        err.println("► HTTP CODE");
-        err.println("  " + response.getStatus());
-
-        // Status info
-        if (response.getStatusInfo() != null) {
-            err.println("\n► STATUS INFO");
-            err.println("  " + response.getStatusInfo().toString());
-        }
-
-        // Headers
-        Map<String, List<Object>> headers = response.getHeaders();
-        if (!headers.isEmpty()) {
-            err.println("\n► HEADERS");
-            for (Map.Entry<String, List<Object>> header : headers.entrySet()) {
-                for (Object value : header.getValue()) {
-                    err.println("  " + header.getKey() + ": " + value);
-                }
-            }
-        }
-
-        // Do not display the response body here
-
-        err.println("\n──────────────────────────────────");
-    }
-
-    /**
-     * Prints the request details.
-     * 
-     * @param webTarget   the web target of the request
-     * @param bodyContent the body content of the request
-     * @param contentType the content type of the request
-     */
-    private void printRequest(WebTarget webTarget, String bodyContent, String contentType) {
-        PrintWriter err = this.spec.commandLine().getErr();
-
-        err.println("╔════════════════════════════════╗");
-        err.println("║        REQUEST DETAILS         ║");
-        err.println("╚════════════════════════════════╝\n");
-
-        // URL
-        if (webTarget != null && webTarget.getUri() != null) {
-            err.println("► URL");
-            err.println("  " + webTarget.getUri());
-        }
-
-        // Method
-        if (this.requestMethod != null) {
-            err.println("\n► METHOD");
-            err.println("  " + this.requestMethod);
-        }
-
-        // Query parameters
-        if (webTarget != null && webTarget.getUri() != null && webTarget.getUri().getQuery() != null
-                && !webTarget.getUri().getQuery().isEmpty()) {
-            err.println("\n► QUERY PARAMETERS");
-            String[] queryLines = webTarget.getUri().getQuery().split("\n");
-            for (String line : queryLines) {
-                err.println("  " + line);
-            }
-        }
-
-        // Headers
-        if ((this.headers != null && !this.headers.isEmpty()) || (contentType != null && !contentType.isEmpty())) {
-            err.println("\n► HEADERS");
-
-            for (Pair<String, String> header : this.headers) {
-                err.println("  " + header.getKey() + ": " + header.getValue());
-            }
-
-            if (contentType != null && !contentType.isEmpty()) {
-                err.println("  Content-Type: " + contentType);
-            }
-        }
-
-        // Body content
-        if (bodyContent != null && !bodyContent.isEmpty()) {
-            err.println("\n► REQUEST BODY");
-            String[] bodyLines = bodyContent.split("\n");
-            for (String line : bodyLines) {
-                err.println("  " + line);
-            }
-        }
-
-        err.println("\n──────────────────────────────────");
-    }
 
     /**
      * Validates the query. The query must be defined and must be a valid SPARQL
@@ -521,7 +383,7 @@ public class SparqlHttpClient {
 
         // Print query and body content if verbose mode is enabled
         if (this.verbose) {
-            this.printRequest(webTarget, bodyContent, contentType);
+            this.printer.printRequest(webTarget, bodyContent, contentType, headers, requestMethod);
         }
 
         // Send the request
@@ -557,93 +419,22 @@ public class SparqlHttpClient {
     }
 
     /**
-     * Validates the response. If the response is not valid, an exception is thrown.
-     * 
+     * Validates the response. Throws an exception if the HTTP status code is not
+     * 2xx.
+     *
      * @param response the response to validate
-     * @throws Exception if the response is not valid
+     * @throws Exception if the response status is not successful
      */
     private void validateResponse(Response response) throws Exception {
         int status = response.getStatus();
 
         if (status < 200 || status >= 300) {
-            String errorMessage = response.readEntity(String.class);
+            String body = response.readEntity(String.class);
+            String reason = response.getStatusInfo().getReasonPhrase();
 
-            String detailedMessage;
-            switch (status) {
-                case 301:
-                    detailedMessage = "Moved Permanently. The requested resource has been assigned a new permanent URI and any future references to this resource SHOULD use one of the returned URIs. Try to increase the number of max redirections.";
-                    break;
-                case 302:
-                    detailedMessage = "Found. The requested resource has been assigned a new permanent URI and any future references to this resource SHOULD use one of the returned URIs. Try to increase the number of max redirections.";
-                    break;
-                case 303:
-                    detailedMessage = "See Other. The response to the request can be found under another URI using a GET method. Try to increase the number of max redirections.";
-                    break;
-                case 400:
-                    detailedMessage = "Bad Request. The request could not be understood or was missing required parameters.";
-                    break;
-                case 401:
-                    detailedMessage = "Unauthorized. Authentication failed or user does not have permissions for the requested operation.";
-                    break;
-                case 403:
-                    detailedMessage = "Forbidden. Authentication succeeded but authenticated user does not have access to the resource.";
-                    break;
-                case 404:
-                    detailedMessage = "Not Found. The requested resource could not be found.";
-                    break;
-                case 406:
-                    detailedMessage = "Not Acceptable. The server cannot produce a response matching the list of acceptable values defined in the request's headers.";
-                    break;
-                case 408:
-                    detailedMessage = "Request Timeout. The server would like to shut down this unused connection.";
-                    break;
-                case 429:
-                    detailedMessage = "Too Many Requests. The user has sent too many requests in a given amount of time.";
-                    break;
-                case 500:
-                    detailedMessage = "Internal Server Error. An error occurred on the server.";
-                    break;
-                case 502:
-                    detailedMessage = "Bad Gateway. The server received an invalid response from the upstream server.";
-                    break;
-                case 503:
-                    detailedMessage = "Service Unavailable. The server is currently unavailable.";
-                    break;
-                case 504:
-                    detailedMessage = "Gateway Timeout. The gateway did not receive a timely response from the upstream server or some other auxiliary server.";
-                    break;
-                default:
-                    detailedMessage = "Unexpected error.";
-            }
-
-            throw new Exception(
-                    "HTTP error code: " + status + ".\n"
-                            + "Error message: " + errorMessage + ".\n"
-                            + "Detailed message: " + detailedMessage);
+            throw new Exception("HTTP " + status + " " + reason + "\n" +
+                    "Response body:\n" + body);
         }
-    }
-
-    /**
-     * Checks if the response is a redirection.
-     * 
-     * @param response the response to check
-     * @return true if the response is a redirection, false otherwise
-     */
-    private boolean isRedirection(Response response) {
-        int status = response.getStatus();
-        return status == Response.Status.MOVED_PERMANENTLY.getStatusCode()
-                || status == Response.Status.FOUND.getStatusCode()
-                || status == Response.Status.SEE_OTHER.getStatusCode();
-    }
-
-    /**
-     * Gets the location of the redirection.
-     * 
-     * @param response the response to check
-     * @return the location of the redirection
-     */
-    private String getRedirectLocation(Response response) {
-        return response.getHeaderString("Location");
     }
 
 }

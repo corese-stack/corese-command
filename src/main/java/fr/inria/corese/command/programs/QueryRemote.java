@@ -2,6 +2,7 @@ package fr.inria.corese.command.programs;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 
 import com.github.jsonldjava.shaded.com.google.common.io.Files;
@@ -27,16 +28,12 @@ public class QueryRemote extends AbstractCommand {
     private List<String> headers;
 
     @Option(names = { "-a", "-of",
-            "--accept" }, description = "Specifies the Accept header value for the HTTP request.")
-    private String accept;
+            "--accept" }, description = "Specifies the Accept header value for the HTTP request.", arity = "0..")
+    private List<String> accept;
 
     @Option(names = { "-m",
             "--request-method" }, description = "Specifies the HTTP request method to use. Possible values are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
     private EnumRequestMethod requestMethod;
-
-    @Option(names = { "-r",
-            "--max-redirection" }, description = "Specifies the maximum number of redirections to follow. Default value: ${DEFAULT-VALUE}.", defaultValue = "5")
-    private int maxRedirection;
 
     @Option(names = { "-d",
             "--default-graph" }, description = "Specifies the default graph URI. Multiple URIs can be specified.", arity = "0..")
@@ -61,9 +58,13 @@ public class QueryRemote extends AbstractCommand {
 
         try {
 
-            // if accept is not defined, set it to text/csv
-            if (this.accept == null && !this.containAcceptHeader(this.headers)) {
-                this.accept = DEFAULT_ACCEPT_HEADER;
+            // Set default Accept header if not defined
+            if ((this.accept == null || this.accept.isEmpty()) && !containsAcceptHeader(this.headers)) {
+                this.accept = List.of(this.DEFAULT_ACCEPT_HEADER);
+            } else if (this.accept == null) {
+                // If accept is null but headers are defined in headers, set accept to empty
+                // list
+                this.accept = Collections.emptyList();
             }
 
             // Load query
@@ -90,19 +91,9 @@ public class QueryRemote extends AbstractCommand {
      * @param headers The headers to check.
      * @return True if the headers contain an accept header, false otherwise.
      */
-    private Boolean containAcceptHeader(List<String> headers) {
-        if (headers == null) {
-            return false;
-        }
-        for (String header : headers) {
-            String[] headerParts = header.split(":", 2);
-            if (headerParts.length == 2) {
-                if (headerParts[0].toLowerCase().equals("accept")) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    private boolean containsAcceptHeader(List<String> headers) {
+        return headers != null && headers.stream().anyMatch(
+                header -> header.trim().toLowerCase().startsWith("accept:"));
     }
 
     /**
@@ -117,7 +108,6 @@ public class QueryRemote extends AbstractCommand {
         this.parseHeader(client);
         client.setRequestMethod(this.requestMethod);
         client.setVerbose(this.verbose);
-        client.setMaxRedirection(this.maxRedirection);
 
         return client.sendRequest(this.query, this.default_graph, this.named_graph, this.ignoreQueryValidation);
     }
@@ -129,19 +119,19 @@ public class QueryRemote extends AbstractCommand {
      */
     private void parseHeader(SparqlHttpClient client) {
 
-        // Add accept header
-        if (this.accept != null) {
-            client.addHeader("Accept", this.accept);
+        // Add Accept header
+        for (String accept : this.accept) {
+            client.addHeader("Accept", accept);
         }
 
-        // Add other headers
+        // Add custom headers
         if (this.headers != null) {
             for (String header : this.headers) {
                 String[] headerParts = header.split(":", 2);
                 if (headerParts.length == 2) {
                     client.addHeader(headerParts[0], headerParts[1]);
                 } else {
-                    throw new RuntimeException("Invalid header: " + header);
+                    throw new RuntimeException("Invalid header format (expected key: value): " + header);
                 }
             }
         }
