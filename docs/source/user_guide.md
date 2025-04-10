@@ -724,7 +724,7 @@ corese canonicalize -h
 Example of the `query-remote` command with the verbose `-v` flag:
 
 ```shell
-> corese query-remote -q example-file/query/spo.rq -e "https://dbpedia.org/sparql" -v                                                                                         17:54:11
+> corese query-remote -q example-file/query/spo.rq -e "https://dbpedia.org/sparql" -v
 Loaded default config
 Loaded SPAQRL query file: example-file/query/spo.rq
 ╔════════════════════════════════╗
@@ -746,7 +746,7 @@ Loaded SPAQRL query file: example-file/query/spo.rq
 
 ► HEADERS
   Accept: text/csv
-  User-Agent: Corese-Command/4.5.1
+  User-Agent: Corese-Command/4.6.0
 
 ──────────────────────────────────
 ╔════════════════════════════════╗
