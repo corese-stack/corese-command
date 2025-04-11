@@ -136,6 +136,37 @@
     </screenshots>
 
     <releases>
+        <release version="4.6.0" date="2025-04-11">
+            <description>
+                <ul>
+                    <li>Added verbose query visualization in the `query-remote` command.</li>
+                    <li>Introduced `canonicalize` command for RDF canonicalization.</li>
+                    <li>Renamed commands: `sparql` → `query`, `shacl` → `validate`, `remote-sparql`
+                        → `query-remote`.</li>
+                    <li>Changed default behavior: `--owl-import` must now be explicitly set to
+                        enable owl:imports (default is false).</li>
+                    <li>Updated Corese-Core dependency to version 4.6.3.</li>
+                    <li>Improved visibility by changing completion suggestion color to magenta.</li>
+                    <li>Fixed missing `.` when automatically adding file extensions.</li>
+                    <li>Removed redirection options from the `query-remote` command.</li>
+                </ul>
+                <!-- French translation -->
+                <ul xml:lang="fr">
+                    <li>Ajout de la visualisation verbeuse des requêtes dans la commande
+                        `query-remote`.</li>
+                    <li>Nouvelle commande `canonicalize` pour la canonicalisation des fichiers RDF.</li>
+                    <li>Renommage des commandes : `sparql` → `query`, `shacl` → `validate`,
+                        `remote-sparql` → `query-remote`.</li>
+                    <li>Changement de comportement par défaut : l'option `--owl-import` doit être
+                        explicitement activée pour importer les ontologies (désactivée par défaut).</li>
+                    <li>Mise à jour de Corese-Core en version 4.6.3.</li>
+                    <li>Amélioration de la lisibilité en changeant la couleur des complétions en
+                        magenta.</li>
+                    <li>Correction de l'oubli du `.` lors de l'ajout automatique d'une extension.</li>
+                    <li>Suppression des options de redirection dans `query-remote`.</li>
+                </ul>
+            </description>
+        </release>
         <release version="4.5.0" date="2023-12-14">
             <description>
                 <ul>
