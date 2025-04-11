@@ -10,5 +10,5 @@ Exec=/app/bin/run.sh
 Terminal=true
 StartupNotify=false
 Keywords=semantic web;RDF;SPARQL;OWL;SHACL;LDScript;STTL;SPARQL Rule;SPARQL*;RDF*;SPARQL Query;SPARQL Update;SPARQL Graph;SPARQL Template;
-X-GNOME-FullName=Corese-Command 4.4
+X-GNOME-FullName=Corese-Command
 DBusActivatable=false
