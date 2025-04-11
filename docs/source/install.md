@@ -1,8 +1,9 @@
 <!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD041 -->
 
-# Installation
+## Installation
 
-## Linux
+**Linux:**
 
 <a href="https://flathub.org/fr/apps/fr.inria.corese.CoreseCommand">
   <img src="./_static/logo/badge_flathub.svg" alt="Flathub" width="140">
@@ -12,19 +13,19 @@
 curl -fsSL https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/scripts/install-linux.sh -o /tmp/corese.sh && bash /tmp/corese.sh
 ```
 
-## macOS
+**macOS:**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/scripts/install-macos.sh -o /tmp/corese.sh && bash /tmp/corese.sh
 ```
 
-## Windows
+**Windows:**
 
 ```powershell
 iwr -useb https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/scripts/install-windows.ps1 | iex
 ```
 
-## Manual / Cross-platform Installation
+**Manual / Cross-platform Installation:**
 
 Use Corese CLI as a standalone `.jar`, or add it to your Java project via Maven.  
 > Requires Java 11 or higher.
