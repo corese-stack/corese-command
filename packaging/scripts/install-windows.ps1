@@ -1,11 +1,60 @@
 # Corese-Command Windows Installer & Updater
 
+<#
+.SYNOPSIS
+    Corese-Command CLI installer for Windows
+
+.DESCRIPTION
+    This PowerShell script installs, updates, or uninstalls the Corese-Command CLI on Windows.
+    It checks for Java 11 or higher, prompts the user if Java is not found,
+    and fetches the requested release from GitHub. It also adds Corese to the user's PATH.
+
+.PARAMETER --install <version>
+    Installs the specified version of Corese-Command (e.g., v4.4.1).
+
+.PARAMETER --install-latest
+    Automatically installs the latest available version.
+
+.PARAMETER --uninstall
+    Completely removes Corese-Command and cleans up the user's PATH.
+
+.PARAMETER --help
+    Displays usage instructions.
+
+.EXAMPLE
+    powershell -ExecutionPolicy Bypass -File install-windows.ps1 --install v4.4.1
+
+.NOTES
+    This script supports both interactive mode and CLI arguments.
+    It should be executed with appropriate permissions to modify PATH.
+#>
+
 $InstallDir = "$env:USERPROFILE\.corese-command"
 $BinName = "corese"
 $JarName = "corese-command-standalone.jar"
 $WrapperPath = "$InstallDir\$BinName.cmd"
 $GitHubRepo = "corese-stack/corese-command"
 $ReleaseApi = "https://api.github.com/repos/$GitHubRepo/releases"
+
+# Argument parsing (for iex compatibility)
+$Install = ""
+$InstallLatest = $false
+$Uninstall = $false
+$Help = $false
+
+for ($i = 0; $i -lt $args.Length; $i++) {
+    switch ($args[$i]) {
+        "--install" {
+            if ($i + 1 -lt $args.Length) {
+                $Install = $args[$i + 1]
+                $i++
+            }
+        }
+        "--install-latest" { $InstallLatest = $true }
+        "--uninstall"      { $Uninstall = $true }
+        "--help"           { $Help = $true }
+    }
+}
 
 function Write-Centered($text) {
     $width = [console]::WindowWidth
@@ -40,10 +89,9 @@ function Check-Java {
     $versionLine = $versionOutput | Where-Object { $_ -match 'version' }
 
     $major = $null
-    if ($versionLine -match 'version "(\d+)\.(\d+)\.(\d+)') {
+    if ($versionLine -match 'version "(\d+)(\.(\d+))?') {
         $major = [int]$Matches[1]
-    }
-    elseif ($versionLine -match "version ""(\d+)") {
+    } elseif ($versionLine -match "version ""(\d+)") {
         $major = [int]$Matches[1]
     }
 
@@ -63,7 +111,7 @@ function Check-Java {
 }
 
 function Ask-Java-Install {
-    $ans = Read-Host "Java 21 required. Install it manually and press Enter to continue (or type N to abort)"
+    $ans = Read-Host "Please install Java 11 or higher manually and press Enter to continue (or type N to abort)"
     if ($ans -match '^[Nn]') {
         exit 1
     }
@@ -98,7 +146,7 @@ function Choose-Version {
     $choice = Read-Host "`nEnter version number to install [default: 1]"
 
     if (-not $choice -match '^\d+$' -or [int]$choice -lt 1 -or [int]$choice -gt $versions.Count) {
-        $index = 0  # par défaut, index 0 = première version (triée)
+        $index = 0
     } else {
         $index = [int]$choice - 1
     }
@@ -126,13 +174,25 @@ function Download-And-Install($version) {
     }
 
     Write-Host "`nDownloading Corese-Command $version..."
-    $assetUrl = Invoke-RestMethod "$ReleaseApi/tags/$version" |
-        Select-Object -ExpandProperty assets |
+    try {
+        $release = Invoke-RestMethod "$ReleaseApi/tags/$version" -ErrorAction Stop
+    } catch {
+        Write-Host ""
+        Write-Host "Error: the version '$version' was not found on GitHub." -ForegroundColor Red
+        $allVersions = Get-Versions
+        Write-Host "`nAvailable versions are:"
+        foreach ($v in $allVersions) {
+            Write-Host " - $v"
+        }
+        exit 1
+    }
+
+    $assetUrl = $release.assets |
         Where-Object { $_.name -eq $JarName } |
-        Select-Object -ExpandProperty browser_download_url
+        Select-Object -ExpandProperty browser_download_url -ErrorAction SilentlyContinue
 
     if (-not $assetUrl) {
-        Write-Error "Could not find $JarName in release $version"
+        Write-Warning "Could not find asset '$JarName' in release '$version'."
         exit 1
     }
 
@@ -213,5 +273,34 @@ function Main {
     }
 }
 
-Main
+# Handle args
+if ($Help) {
+    Write-Host "Usage:"
+    Write-Host "  install.ps1 --install <version>       Install specific version"
+    Write-Host "  install.ps1 --install-latest          Install latest version"
+    Write-Host "  install.ps1 --uninstall               Uninstall Corese-Command"
+    Write-Host "  install.ps1 --help                    Show this help"
+    exit
+}
 
+if ($Install) {
+    Check-Internet
+    Check-Java
+    Download-And-Install $Install
+    exit
+}
+
+if ($InstallLatest) {
+    Check-Internet
+    Check-Java
+    $v = (Get-Versions)[0]
+    Download-And-Install $v
+    exit
+}
+
+if ($Uninstall) {
+    Uninstall
+    exit
+}
+
+Main

@@ -209,7 +209,7 @@ tasks.withType<Javadoc>() {
 
 // Configure the shadow JAR task to include dependencies in the output JAR.
 // This creates a single JAR file with all dependencies bundled.
-// The JAR file is named with the classifier "jar-with-dependencies".
+// The JAR file is named with the classifier "standalone" to indicate it contains all dependencies.
 tasks {
     shadowJar {
         this.archiveClassifier = "standalone"
