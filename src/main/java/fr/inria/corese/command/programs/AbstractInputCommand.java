@@ -2,6 +2,8 @@ package fr.inria.corese.command.programs;
 
 import java.nio.file.Path;
 
+import fr.inria.corese.command.utils.ConvertString;
+import fr.inria.corese.command.utils.InputTypeDetector;
 import picocli.CommandLine.Option;
 
 public abstract class AbstractInputCommand extends AbstractCommand {
@@ -32,7 +34,16 @@ public abstract class AbstractInputCommand extends AbstractCommand {
     private void checkInputValues() throws IllegalArgumentException {
         if (this.inputsRdfData != null && this.output != null) {
             for (String input : this.inputsRdfData) {
-                if (Path.of(input).compareTo(this.output) == 0) {
+
+                InputTypeDetector.InputType type = InputTypeDetector.detect(input);
+
+                // Skip non-file inputs
+                if (type != InputTypeDetector.InputType.FILE_PATH) {
+                    continue;
+                }
+
+                Path inputPath = ConvertString.toPathOrThrow(input);
+                if (inputPath.normalize().equals(this.output.normalize())) {
                     throw new IllegalArgumentException("Input path cannot be same as output path: " + input);
                 }
             }

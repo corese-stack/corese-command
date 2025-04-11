@@ -12,11 +12,11 @@ import picocli.CommandLine.Option;
 public class Canonicalize extends AbstractInputCommand {
 
     @Option(names = { "-f", "-if",
-            "--input-format" }, description = "Specifies the RDF serialization format of the input file. Available options are: :@|fg(225) ${COMPLETION-CANDIDATES}|@.")
+            "--input-format" }, description = "Specifies the RDF serialization format of the input file. Available options are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
     private EnumRdfInputFormat inputFormat;
 
     @Option(names = { "-a", "-ca", "-r", "-of",
-            "--canonical-algo" }, required = true, description = "Specifies the canonicalization algorithm to be applied to the input file. Available options are: :@|fg(225) ${COMPLETION-CANDIDATES}|@. The default algorithm is ${DEFAULT-VALUE}.", defaultValue = "rdfc-1.0")
+            "--canonical-algo" }, required = true, description = "Specifies the canonicalization algorithm to be applied to the input file. Available options are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@. The default algorithm is ${DEFAULT-VALUE}.", defaultValue = "rdfc-1.0")
     private EnumCanonicAlgo canonicalAlgo;
 
     public Canonicalize() {

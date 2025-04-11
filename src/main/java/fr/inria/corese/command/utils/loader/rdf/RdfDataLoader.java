@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import fr.inria.corese.command.utils.ConvertString;
+import fr.inria.corese.command.utils.InputTypeDetector;
+import fr.inria.corese.command.utils.InputTypeDetector.InputType;
 import fr.inria.corese.core.Graph;
 import fr.inria.corese.core.load.Load;
 import fr.inria.corese.core.load.LoadFormat;
@@ -46,6 +48,9 @@ public class RdfDataLoader {
     /**
      * Load RDF data into a Corese Graph.
      * 
+     * Load from standard input if no input is provided.
+     * Load from URL or file if input is a valid URL or file path.
+     * 
      * @param inputs      Paths or URLs of the files to load.
      * @param inputFormat Input file serialization format.
      * @param recursive   If true, load RDF data from subdirectories.
@@ -54,36 +59,41 @@ public class RdfDataLoader {
     public Graph load(String[] inputs, EnumRdfInputFormat inputFormat, boolean recursive)
             throws IllegalArgumentException {
 
+        // If no input is provided, load from standard input
         if (inputs == null || inputs.length == 0) {
             return this.LoadFromStdin(inputFormat);
-        } else {
-            Graph graph = Graph.create();
-            for (String input : inputs) {
-                Optional<URL> url = ConvertString.toUrl(input);
-                Optional<Path> path = ConvertString.toPath(input);
-
-                if (url.isPresent()) {
-                    // Load RDF data from URL
-                    Graph resultGraph = this.loadFromURL(url.get(), inputFormat);
-                    graph.merge(resultGraph);
-                } else if (path.isPresent()) {
-                    // Load RDF data from file or directory
-                    File file = path.get().toFile();
-                    if (file.isDirectory()) {
-                        // Load RDF data from directory
-                        Graph resultGraph = this.loadFromDirectory(path.get(), inputFormat, recursive);
-                        graph.merge(resultGraph);
-                    } else {
-                        // Load RDF data from file
-                        Graph resultGraph = this.loadFromFile(path.get(), inputFormat);
-                        graph.merge(resultGraph);
-                    }
-                } else {
-                    throw new IllegalArgumentException("Invalid input: " + input);
-                }
-            }
-            return graph;
         }
+
+        Graph graph = Graph.create();
+
+        for (String input : inputs) {
+            InputType type = InputTypeDetector.detect(input);
+
+            switch (type) {
+                case URL:
+                    Graph resultGraphUrl = this.loadFromURL(ConvertString.toUrlOrThrow(input), inputFormat);
+                    graph.merge(resultGraphUrl);
+                    break;
+
+                case FILE_PATH:
+                    Path path = ConvertString.toPathOrThrow(input);
+                    File file = path.toFile();
+                    Graph resultGraph;
+
+                    if (file.isDirectory()) {
+                        resultGraph = this.loadFromDirectory(path, inputFormat, recursive);
+                    } else {
+                        resultGraph = this.loadFromFile(path, inputFormat);
+                    }
+                    graph.merge(resultGraph);
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Invalid input: " + input);
+            }
+        }
+
+        return graph;
     }
 
     /////////////////////
@@ -232,7 +242,7 @@ public class RdfDataLoader {
                             + "Please specify the input format with the option -f.");
         } else {
             try {
-                load.parse(inputStream, inputFormat.getCoreseCode());
+                load.parse(inputStream, inputFormat.getCoreseFormat());
                 return graph;
             } catch (Exception e) {
                 throw new IllegalArgumentException("Failed to parse RDF file. Check if file is well-formed and that "

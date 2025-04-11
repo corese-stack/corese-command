@@ -10,59 +10,59 @@ import fr.inria.corese.core.api.Loader;
 public enum EnumRdfInputFormat {
 
     // RdfXml
-    RDFXML("rdfxml", Loader.RDFXML_FORMAT),
-    APPLICATION_RDF_XML("application/rdf+xml", Loader.RDFXML_FORMAT),
-    RDF("rdf", Loader.RDFXML_FORMAT),
+    RDFXML("rdfxml", Loader.format.RDFXML_FORMAT),
+    APPLICATION_RDF_XML("application/rdf+xml", Loader.format.RDFXML_FORMAT),
+    RDF("rdf", Loader.format.RDFXML_FORMAT),
 
     // Turtle
-    TURTLE("turtle", Loader.TURTLE_FORMAT),
-    TEXT_TURTLE("text/turtle", Loader.TURTLE_FORMAT),
-    TTL("ttl", Loader.TURTLE_FORMAT),
+    TURTLE("turtle", Loader.format.TURTLE_FORMAT),
+    TEXT_TURTLE("text/turtle", Loader.format.TURTLE_FORMAT),
+    TTL("ttl", Loader.format.TURTLE_FORMAT),
 
     // Trig
-    TRIG("trig", Loader.TRIG_FORMAT),
-    APPLICATION_TRIG("application/trig", Loader.TRIG_FORMAT),
+    TRIG("trig", Loader.format.TRIG_FORMAT),
+    APPLICATION_TRIG("application/trig", Loader.format.TRIG_FORMAT),
 
     // JsonLd
-    JSONLD("jsonld", Loader.JSONLD_FORMAT),
-    APPLICATION_LD_JSON("application/ld+json", Loader.JSONLD_FORMAT),
+    JSONLD("jsonld", Loader.format.JSONLD_FORMAT),
+    APPLICATION_LD_JSON("application/ld+json", Loader.format.JSONLD_FORMAT),
 
     // Ntriples
-    NTRIPLES("ntriples", Loader.NT_FORMAT),
-    APPLICATION_N_TRIPLES("application/n-triples", Loader.NT_FORMAT),
-    NT("nt", Loader.NT_FORMAT),
+    NTRIPLES("ntriples", Loader.format.NT_FORMAT),
+    APPLICATION_N_TRIPLES("application/n-triples", Loader.format.NT_FORMAT),
+    NT("nt", Loader.format.NT_FORMAT),
 
     // Nquads
-    NQUADS("nquads", Loader.NQUADS_FORMAT),
-    APPLICATION_N_QUADS("application/n-quads", Loader.NQUADS_FORMAT),
-    NQ("nq", Loader.NQUADS_FORMAT),
+    NQUADS("nquads", Loader.format.NQUADS_FORMAT),
+    APPLICATION_N_QUADS("application/n-quads", Loader.format.NQUADS_FORMAT),
+    NQ("nq", Loader.format.NQUADS_FORMAT),
 
     // Rdfa
-    RDFA("rdfa", Loader.RDFA_FORMAT),
-    APPLICATION_XHTML_XML("application/xhtml+xml", Loader.RDFA_FORMAT),
-    XHTML("xhtml", Loader.RDFA_FORMAT),
-    HTML("html", Loader.RDFA_FORMAT);
+    RDFA("rdfa", Loader.format.RDFA_FORMAT),
+    APPLICATION_XHTML_XML("application/xhtml+xml", Loader.format.RDFA_FORMAT),
+    XHTML("xhtml", Loader.format.RDFA_FORMAT),
+    HTML("html", Loader.format.RDFA_FORMAT);
 
     private final String name;
-    private final int coreseCodeFormat;
+    private final Loader.format coreseFormat;
 
     /**
      * Constructor.
      * 
-     * @param name             The name of the format.
-     * @param coreseCodeFormat The Corese code of the format.
+     * @param name         The name of the format.
+     * @param coreseFormat The Corese format.
      */
-    private EnumRdfInputFormat(String name, int coreseCodeFormat) {
+    private EnumRdfInputFormat(String name, Loader.format coreseFormat) {
         this.name = name;
-        this.coreseCodeFormat = coreseCodeFormat;
+        this.coreseFormat = coreseFormat;
     }
 
     /**
-     * Create an EnumInputFormat from a Corese code.
+     * Create an EnumInputFormat from a Corese format.
      */
-    public static EnumRdfInputFormat create(int loaderFormat) {
+    public static EnumRdfInputFormat create(Loader.format loaderFormat) {
         for (EnumRdfInputFormat format : EnumRdfInputFormat.values()) {
-            if (format.coreseCodeFormat == loaderFormat) {
+            if (format.coreseFormat == loaderFormat) {
                 return format;
             }
         }
@@ -71,10 +71,10 @@ public enum EnumRdfInputFormat {
     }
 
     /**
-     * Get the Corese code of the format.
+     * Get the Corese format.
      */
-    public int getCoreseCode() {
-        return this.coreseCodeFormat;
+    public Loader.format getCoreseFormat() {
+        return this.coreseFormat;
     }
 
     @Override

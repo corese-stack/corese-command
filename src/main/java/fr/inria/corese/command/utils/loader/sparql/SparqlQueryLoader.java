@@ -5,10 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Optional;
 
 import fr.inria.corese.command.utils.ConvertString;
-import fr.inria.corese.command.utils.TestType;
+import fr.inria.corese.command.utils.InputTypeDetector;
 import picocli.CommandLine.Model.CommandSpec;
 
 /**
@@ -42,28 +41,54 @@ public class SparqlQueryLoader {
     /**
      * Load a SPARQL query from a path, URL, or standard input.
      * 
+     * Load from standard input if no input is provided.
+     * Load from URL or file if input is a valid URL or file path.
+     * 
      * @param input Path, URL, or SPARQL query to load.
      * @return The loaded query.
      */
     public String load(String input) {
-        Optional<Path> path = ConvertString.toPath(input);
-        Optional<URL> url = ConvertString.toUrl(input);
-        Boolean isSparqlQuery = TestType.isSparqlQuery(input);
 
-        if (isSparqlQuery) {
-            return input;
-        } else if (url.isPresent()) {
-            return this.loadFromUrl(url.get());
-        } else if (path.isPresent()) {
-            return this.loadFromFile(path.get());
-        } else {
-            throw new IllegalArgumentException("Invalid input: " + input);
+        // If no input is provided, load from standard input
+        if (input == null || input.isEmpty()) {
+            return this.loadFromStdin();
+        }
+
+        InputTypeDetector.InputType type = InputTypeDetector.detect(input);
+
+        switch (type) {
+            case SPARQL:
+                return input;
+
+            case URL:
+                return this.loadFromUrl(ConvertString.toUrlOrThrow(input));
+
+            case FILE_PATH:
+                return this.loadFromFile(ConvertString.toPathOrThrow(input));
+
+            default:
+                throw new IllegalArgumentException("Unrecognized input format: " + input);
         }
     }
 
     /////////////////////
     // Private methods //
     /////////////////////
+
+    /**
+     * Load a SPARQL query from standard input.
+     *
+     * @return The loaded query.
+     */
+    private String loadFromStdin() {
+        String query = this.loadFromInputStream(System.in);
+
+        if (this.verbose) {
+            this.spec.commandLine().getErr().println("Loaded SPARQL query from standard input");
+        }
+
+        return query;
+    }
 
     /**
      * Load a SPARQL query from a path.

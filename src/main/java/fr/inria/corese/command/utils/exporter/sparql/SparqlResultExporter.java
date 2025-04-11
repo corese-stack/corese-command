@@ -85,15 +85,15 @@ public class SparqlResultExporter extends AbstractExporter {
         // Export the query result
         if (isUpdate) {
             if (this.outputIsDefined) {
-                exportToFile(this.output, format.getCoreseCodeFormat(), format.toString(), graph);
+                exportToFile(this.output, format.getCoreseFormat(), format.toString(), graph);
             } else {
-                exportToStdout(format.getCoreseCodeFormat(), format.toString(), graph);
+                exportToStdout(format.getCoreseFormat(), format.toString(), graph);
             }
         } else {
             if (this.outputIsDefined) {
-                exportToFile(this.output, format.getCoreseCodeFormat(), format.toString(), map);
+                exportToFile(this.output, format.getCoreseFormat(), format.toString(), map);
             } else {
-                exportToStdout(format.getCoreseCodeFormat(), format.toString(), map);
+                exportToStdout(format.getCoreseFormat(), format.toString(), map);
             }
         }
     }

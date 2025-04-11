@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-import fr.inria.corese.command.App;
+import fr.inria.corese.command.VersionProvider;
 import fr.inria.corese.command.utils.ConfigManager;
 import fr.inria.corese.command.utils.exporter.rdf.RdfDataExporter;
 import fr.inria.corese.core.util.Property;
@@ -19,7 +19,7 @@ import picocli.CommandLine.Spec;
  * 
  * This class provides common options and methods for all commands.
  */
-@Command(version = App.version)
+@Command(versionProvider = VersionProvider.class)
 public abstract class AbstractCommand implements Callable<Integer> {
 
     ///////////////
@@ -47,8 +47,8 @@ public abstract class AbstractCommand implements Callable<Integer> {
     protected boolean verbose = false;
 
     @Option(names = { "-w",
-            "--owl-import" }, description = "Disables the automatic importation of ontologies specified in 'owl:imports' statements. When this flag is set, the application will not fetch and include referenced ontologies. Default is '${DEFAULT-VALUE}'.", required = false, defaultValue = "false", negatable = true)
-    private boolean noOwlImport;
+            "--owl-import" }, description = "Enables the automatic importation of ontologies specified in 'owl:imports' statements. When this flag is set, the application will fetch and include referenced ontologies. Default is '${DEFAULT-VALUE}'.", required = false, defaultValue = "false")
+    private boolean owlImport;
 
     ////////////////
     // Properties //
@@ -77,7 +77,7 @@ public abstract class AbstractCommand implements Callable<Integer> {
         }
 
         // Set owl import
-        Property.set(Value.DISABLE_OWL_AUTO_IMPORT, this.noOwlImport);
+        Property.set(Value.OWL_AUTO_IMPORT, this.owlImport);
 
         return 0;
     }

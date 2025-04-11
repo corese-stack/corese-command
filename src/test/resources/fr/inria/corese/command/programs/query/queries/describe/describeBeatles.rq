@@ -1,0 +1,2 @@
+PREFIX ex: <http://example.com/>
+DESCRIBE ex:The_Beatles

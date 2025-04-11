@@ -4,9 +4,9 @@ package fr.inria.corese.command.utils.exporter;
 import java.nio.file.Path;
 
 import fr.inria.corese.core.Graph;
-import fr.inria.corese.core.print.ResultFormat;
 import fr.inria.corese.core.kgram.core.Mappings;
-import fr.inria.corese.core.sparql.triple.function.extension.ResultFormater;
+import fr.inria.corese.core.print.ResultFormat;
+import fr.inria.corese.core.sparql.api.ResultFormatDef;
 import picocli.CommandLine.Model.CommandSpec;
 
 /**
@@ -58,51 +58,51 @@ public abstract class AbstractExporter {
     /**
      * Export the result to a file.
      * 
-     * @param path       Path of the file to export to.
-     * @param FormatCode Corese code of the format.
-     * @param formatName Name of the format.
-     * @param graph      Graph to export.
+     * @param path         Path of the file to export to.
+     * @param coreseFormat Corese format.
+     * @param formatName   Name of the format.
+     * @param graph        Graph to export.
      */
-    protected void exportToFile(Path path, int FormatCode, String formatName, Graph graph) {
+    protected void exportToFile(Path path, ResultFormatDef.format coreseFormat, String formatName, Graph graph) {
         ResultFormat resultFormater = ResultFormat.create(graph);
-        exportToFile(path, FormatCode, formatName, resultFormater);
+        exportToFile(path, coreseFormat, formatName, resultFormater);
     }
 
     /**
      * Export the result to standard output.
      * 
-     * @param FormatCode Corese code of the format.
-     * @param formatName Name of the format.
-     * @param graph      Graph to export.
+     * @param coreseFormat Corese format.
+     * @param formatName   Name of the format.
+     * @param graph        Graph to export.
      */
-    protected void exportToStdout(int FormatCode, String formatName, Graph graph) {
+    protected void exportToStdout(ResultFormatDef.format coreseFormat, String formatName, Graph graph) {
         ResultFormat resultFormater = ResultFormat.create(graph);
-        exportToStdout(FormatCode, formatName, resultFormater);
+        exportToStdout(coreseFormat, formatName, resultFormater);
     }
 
     /**
      * Export the result to a file.
      * 
-     * @param path       Path of the file to export to.
-     * @param FormatCode Corese code of the format.
-     * @param formatName Name of the format.
-     * @param mappings   Mappings to export.
+     * @param path         Path of the file to export to.
+     * @param coreseFormat Corese format.
+     * @param formatName   Name of the format.
+     * @param mappings     Mappings to export.
      */
-    protected void exportToFile(Path path, int FormatCode, String formatName, Mappings mappings) {
+    protected void exportToFile(Path path, ResultFormatDef.format coreseFormat, String formatName, Mappings mappings) {
         ResultFormat resultFormater = ResultFormat.create(mappings);
-        exportToFile(path, FormatCode, formatName, resultFormater);
+        exportToFile(path, coreseFormat, formatName, resultFormater);
     }
 
     /**
      * Export the result to standard output.
      * 
-     * @param FormatCode Corese code of the format.
-     * @param formatName Name of the format.
-     * @param mappings   Mappings to export.
+     * @param coreseFormat Corese format.
+     * @param formatName   Name of the format.
+     * @param mappings     Mappings to export.
      */
-    protected void exportToStdout(int FormatCode, String formatName, Mappings mappings) {
+    protected void exportToStdout(ResultFormatDef.format coreseFormat, String formatName, Mappings mappings) {
         ResultFormat resultFormater = ResultFormat.create(mappings);
-        exportToStdout(FormatCode, formatName, resultFormater);
+        exportToStdout(coreseFormat, formatName, resultFormater);
     }
 
     /////////////////////
@@ -113,14 +113,15 @@ public abstract class AbstractExporter {
      * Export the result to a file.
      * 
      * @param path         Path of the file to export to.
-     * @param FormatCode   Corese code of the format.
+     * @param coreseFormat Corese format.
      * @param formatName   Name of the format.
      * @param ResultFormat Result formater.
      */
-    private void exportToFile(Path path, int FormatCode, String formatName, ResultFormat resultFormater) {
+    private void exportToFile(Path path,
+            ResultFormatDef.format coreseFormat, String formatName, ResultFormat resultFormater) {
 
-        resultFormater.setSelectFormat(FormatCode);
-        resultFormater.setConstructFormat(FormatCode);
+        resultFormater.setSelectFormat(coreseFormat);
+        resultFormater.setConstructFormat(coreseFormat);
 
         try {
             resultFormater.write(path.toString());
@@ -138,15 +139,15 @@ public abstract class AbstractExporter {
     /**
      * Export the result to standard output.
      * 
-     * @param FormatCode   Corese code of the format.
+     * @param coreseFormat Corese format.
      * @param formatName   Name of the format.
      * @param ResultFormat Result formater.
      */
-    private void exportToStdout(int FormatCode, String formatName, ResultFormat resultFormater) {
+    private void exportToStdout(ResultFormatDef.format coreseFormat, String formatName, ResultFormat resultFormater) {
 
         // Configure the result formater
-        resultFormater.setSelectFormat(FormatCode);
-        resultFormater.setConstructFormat(FormatCode);
+        resultFormater.setSelectFormat(coreseFormat);
+        resultFormater.setConstructFormat(coreseFormat);
 
         // Write the result to standard output
         try {

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<rdf:RDF
+  xmlns:ex='http://example.com/'
+  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+
+  <rdf:Description rdf:about='http://example.com/Please_Please_Me'>
+    <ex:artist rdf:resource='http://example.com/The_Beatles' />
+  </rdf:Description>
+
+  <ex:Band rdf:about='http://example.com/The_Beatles'>
+    <ex:member rdf:resource='http://example.com/Paul_McCartney' />
+    <ex:member rdf:resource='http://example.com/John_Lennon' />
+    <ex:member rdf:resource='http://example.com/Ringo_Starr' />
+    <ex:member rdf:resource='http://example.com/George_Harrison' />
+    <ex:name rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>The Beatles</ex:name>
+  </ex:Band>
+
+</rdf:RDF>

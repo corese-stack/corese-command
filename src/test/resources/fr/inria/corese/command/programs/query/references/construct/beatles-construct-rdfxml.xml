@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<rdf:RDF
+  xmlns:ex='http://example.com/'
+  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+
+  <ex:Album rdf:about='http://example.com/Please_Please_Me'>
+    <ex:artist rdf:resource='http://example.com/The_Beatles' />
+    <ex:date rdf:datatype='http://www.w3.org/2001/XMLSchema#date'>1963-03-22</ex:date>
+    <ex:name rdf:datatype='http://www.w3.org/2001/XMLSchema#string'>Please Please Me</ex:name>
+  </ex:Album>
+
+</rdf:RDF>

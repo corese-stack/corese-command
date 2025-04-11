@@ -1,0 +1,48 @@
+app-id: fr.inria.corese.CoreseCommand
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions: 
+  - org.freedesktop.Sdk.Extension.openjdk
+command: run.sh
+
+finish-args:
+  - --env=PATH=/app/jre/bin:/usr/bin:/app/bin/
+  - --share=network
+  - --filesystem=home
+
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk/install.sh
+
+  - name: corese-command
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 corese-command-standalone.jar /app/bin/corese-command-standalone.jar
+      - install -Dm755 packaging/flatpak/scripts/run.sh /app/bin/run.sh
+      - install -Dm644 packaging/flatpak/appdata/${FLATPAK_ID}.appdata.xml /app/share/metainfo/${FLATPAK_ID}.appdata.xml
+      - install -Dm644 packaging/flatpak/appdata/${FLATPAK_ID}.desktop /app/share/applications/${FLATPAK_ID}.desktop
+      - install -Dm644 packaging/flatpak/assets/logo/${FLATPAK_ID}.svg /app/share/icons/hicolor/scalable/apps/${FLATPAK_ID}.svg
+
+    sources:
+      # jar file from GitHub release
+      - type: file
+        # url: 
+        # sha256: 
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/corese-stack/corese-command/releases/latest
+          version-query: .tag_name
+          url-query: '"https://github.com/corese-stack/corese-command/releases/download/" + $version + "/corese-command-standalone.jar"'
+
+      # appdata, desktop and icon files from GitHub repository
+      - type: archive
+        # url: 
+        # sha256: 
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/corese-stack/corese-command/releases/latest
+          version-query: .tag_name
+          url-query: '"https://github.com/corese-stack/corese-command/archive/refs/tags/" + $version + ".tar.gz"'
