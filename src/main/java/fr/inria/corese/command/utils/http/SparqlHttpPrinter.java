@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -157,7 +158,8 @@ public class SparqlHttpPrinter {
             err.println("\n► HEADERS");
             for (Map.Entry<String, List<Object>> entry : headers.entrySet()) {
                 String key = normalizeHeaderKey(entry.getKey());
-                String value = String.join(", ", entry.getValue().stream().map(Object::toString).toList());
+                String value = String.join(", ",
+                        entry.getValue().stream().map(Object::toString).collect(Collectors.toList()));
                 err.println("  " + key + ": " + value);
             }
         }

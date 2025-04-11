@@ -68,7 +68,7 @@ dependencies {
     implementation("info.picocli:picocli:4.7.6") // Library for building a Command-Line Interface (CLI)
     implementation("org.apache.commons:commons-lang3:3.17.0") // Library for utility functions (e.g., StringUtils)
     implementation("com.github.jsonld-java:jsonld-java:0.13.6") // Library for JSON-LD support
-    implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0") // Jakarta REST API specifications
+    implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0") // Jakarta REST API specifications
     implementation("jakarta.activation:jakarta.activation-api:2.1.3") // Jakarta Activation API
     implementation("fr.com.hp.hpl.jena.rdf.arp:arp:2.2.b") // Jena implementation for RDF parsing
     implementation("org.slf4j:slf4j-api:2.0.16") // Simple Logging Facade for Java (SLF4J)
