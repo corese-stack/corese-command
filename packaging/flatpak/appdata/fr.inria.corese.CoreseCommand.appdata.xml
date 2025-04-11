@@ -137,6 +137,7 @@
 
     <releases>
         <release version="4.6.0" date="2025-04-11">
+            <url type="details">https://github.com/corese-stack/corese-command/releases/tag/v4.6.0</url>
             <description>
                 <ul>
                     <li>Added verbose query visualization in the `query-remote` command.</li>
@@ -149,25 +150,24 @@
                     <li>Improved visibility by changing completion suggestion color to magenta.</li>
                     <li>Fixed missing `.` when automatically adding file extensions.</li>
                     <li>Removed redirection options from the `query-remote` command.</li>
-                </ul>
-                <!-- French translation -->
-                <ul xml:lang="fr">
-                    <li>Ajout de la visualisation verbeuse des requêtes dans la commande
+
+                    <li xml:lang="fr">Ajout de la visualisation verbeuse des requêtes dans la commande
                         `query-remote`.</li>
-                    <li>Nouvelle commande `canonicalize` pour la canonicalisation des fichiers RDF.</li>
-                    <li>Renommage des commandes : `sparql` → `query`, `shacl` → `validate`,
+                    <li xml:lang="fr">Nouvelle commande `canonicalize` pour la canonicalisation des fichiers RDF.</li>
+                    <li xml:lang="fr">Renommage des commandes : `sparql` → `query`, `shacl` → `validate`,
                         `remote-sparql` → `query-remote`.</li>
-                    <li>Changement de comportement par défaut : l'option `--owl-import` doit être
+                    <li xml:lang="fr">Changement de comportement par défaut : l'option `--owl-import` doit être
                         explicitement activée pour importer les ontologies (désactivée par défaut).</li>
-                    <li>Mise à jour de Corese-Core en version 4.6.3.</li>
-                    <li>Amélioration de la lisibilité en changeant la couleur des complétions en
+                    <li xml:lang="fr">Mise à jour de Corese-Core en version 4.6.3.</li>
+                    <li xml:lang="fr">Amélioration de la lisibilité en changeant la couleur des complétions en
                         magenta.</li>
-                    <li>Correction de l'oubli du `.` lors de l'ajout automatique d'une extension.</li>
-                    <li>Suppression des options de redirection dans `query-remote`.</li>
+                    <li xml:lang="fr">Correction de l'oubli du `.` lors de l'ajout automatique d'une extension.</li>
+                    <li xml:lang="fr">Suppression des options de redirection dans `query-remote`.</li>
                 </ul>
             </description>
         </release>
         <release version="4.5.0" date="2023-12-14">
+            <url type="details">https://github.com/corese-stack/corese-command/releases/tag/v4.5.0</url>
             <description>
                 <ul>
                     <li>Added new sub-commands 'shacl', allowing to validate RDF graphs against
@@ -180,82 +180,82 @@
                     <li>Trig serialization to escape special characters.</li>
                     <li>Improved RDF serializers</li>
                     <li>Updated json library to 20231013.</li>
-                </ul>
-                <!-- French translation -->
-                <ul xml:lang="fr">
-                    <li>Ajout de nouveaux sous-commandes 'shacl', permettant de valider des graphes
+
+                    <li xml:lang="fr">Ajout de nouveaux sous-commandes 'shacl', permettant de valider des graphes
                         RDF contre des formes SHACL.</li>
-                    <li>Ajout de nouvelles sous-commandes 'remote-sparql', permettant d'exécuter des
+                    <li xml:lang="fr">Ajout de nouvelles sous-commandes 'remote-sparql', permettant d'exécuter des
                         requêtes SPARQL sur des points de terminaison distants.</li>
-                    <li>Ajout de l'option verbeuse.</li>
-                    <li>Ajout de la prise en charge des fichiers de propriétés.</li>
-                    <li>Déplacement des messages d'indice vers le flux d'erreur standard.</li>
-                    <li>Sérialisation Trig pour échapper aux caractères spéciaux.</li>
-                    <li>Amélioration des sérialiseurs RDF.</li>
-                    <li>Mise à jour de la bibliothèque json à 20231013.</li>
+                    <li xml:lang="fr">Ajout de l'option verbeuse.</li>
+                    <li xml:lang="fr">Ajout de la prise en charge des fichiers de propriétés.</li>
+                    <li xml:lang="fr">Déplacement des messages d'indice vers le flux d'erreur standard.</li>
+                    <li xml:lang="fr">Sérialisation Trig pour échapper aux caractères spéciaux.</li>
+                    <li xml:lang="fr">Amélioration des sérialiseurs RDF.</li>
+                    <li xml:lang="fr">Mise à jour de la bibliothèque json à 20231013.</li>
                 </ul>
             </description>
         </release>
         <release version="4.4.1" date="2023-07-25">
+            <url type="details">https://github.com/corese-stack/corese-command/releases/tag/v4.4.1</url>
             <description>
-                <p>
-                    - Enhanced 'convert' and 'sparql' to accept URL and standard input.&#10;
-                    - 'sparql' and 'convert' now support standard output and multiple file
-                    inputs.&#10;
-                    - Expanded 'sparql' to handle directories, recursive directories, and various
-                    query types (SELECT, CONSTRUCT, ASK, etc.).&#10;
-                    - User can choose result format in 'sparql', including markdown.&#10;
-                    - Added mime type as a format name.&#10;
-                    - Disabled owl:imports auto-import.&#10;
-                    - Docker users can pass custom options and adjust log level for
-                    Corese-server.&#10;
-                    - Standardized format names in Corese-command.&#10;
-                    - Removed 'owlProfile' and 'ldscript'; to return after refactoring.&#10;
-                    - Fixed warning related to sun.reflect.Reflection.getCallerClass.
-                </p>
-                <!-- French translation -->
-                <p xml:lang="fr">
-                    - Amélioration des commandes 'convert' et 'sparql' pour accepter les URL et
-                    l'entrée standard.&#10;
-                    - 'sparql' et 'convert' supportent désormais la sortie standard et de multiples
-                    fichiers en entrée.&#10;
-                    - Extension de 'sparql' pour gérer les répertoires, les sous-répertoires et
-                    divers types de requêtes (SELECT, CONSTRUCT, ASK, etc.).&#10;
-                    - L'utilisateur peut choisir le format du résultat dans 'sparql', y compris en
-                    markdown.&#10;
-                    - Ajout du type MIME comme nom de format.&#10;
-                    - Désactivation de l'auto-importation owl:imports.&#10;
-                    - Les utilisateurs de Docker peuvent passer des options personnalisées et
-                    ajuster le niveau de journalisation pour Corese-server.&#10;
-                    - Standardisation des noms de format dans Corese-command.&#10;
-                    - Retrait des commandes 'owlProfile' et 'ldscript'; reviendront après
-                    refonte.&#10;
-                    - Correction d'un avertissement lié à sun.reflect.Reflection.getCallerClass.
-                </p>
+                <ul>
+                    <li>Enhanced 'convert' and 'sparql' to accept URL and standard input.</li>
+                    <li>'sparql' and 'convert' now support standard output and multiple file inputs.</li>
+                    <li>Expanded 'sparql' to handle directories, recursive directories, and various
+                        query types (SELECT, CONSTRUCT, ASK, etc.).</li>
+                    <li>User can choose result format in 'sparql', including markdown.</li>
+                    <li>Added mime type as a format name.</li>
+                    <li>Disabled owl:imports auto-import.</li>
+                    <li>Docker users can pass custom options and adjust log level for Corese-server.</li>
+                    <li>Standardized format names in Corese-command.</li>
+                    <li>Removed 'owlProfile' and 'ldscript'; to return after refactoring.</li>
+                    <li>Fixed warning related to sun.reflect.Reflection.getCallerClass.</li>
+
+                    <li xml:lang="fr">Amélioration des commandes 'convert' et 'sparql' pour accepter
+                        les URL et l'entrée standard.</li>
+                    <li xml:lang="fr">'sparql' et 'convert' supportent désormais la sortie standard
+                        et de multiples fichiers en entrée.</li>
+                    <li xml:lang="fr">Extension de 'sparql' pour gérer les répertoires, les
+                        sous-répertoires et divers types de requêtes (SELECT, CONSTRUCT, ASK, etc.).</li>
+                    <li xml:lang="fr">L'utilisateur peut choisir le format du résultat dans
+                        'sparql', y compris en markdown.</li>
+                    <li xml:lang="fr">Ajout du type MIME comme nom de format.</li>
+                    <li xml:lang="fr">Désactivation de l'auto-importation owl:imports.</li>
+                    <li xml:lang="fr">Les utilisateurs de Docker peuvent passer des options
+                        personnalisées et ajuster le niveau de journalisation pour Corese-server.</li>
+                    <li xml:lang="fr">Standardisation des noms de format dans Corese-command.</li>
+                    <li xml:lang="fr">Retrait des commandes 'owlProfile' et 'ldscript'; reviendront
+                        après refonte.</li>
+                    <li xml:lang="fr">Correction d'un avertissement lié à
+                        sun.reflect.Reflection.getCallerClass.</li>
+                </ul>
             </description>
         </release>
         <release version="4.4.0" date="2023-03-30">
+            <url type="details">https://github.com/corese-stack/corese-command/releases/tag/v4.4.0</url>
             <description>
-                <p>
-                    - Added prove of concept of sub-commands `convert`.&#10;
-                    - Added prove of concept of sub-commands `sparql`.&#10;
-                    - Added prove of concept of sub-commands `ldscript`.&#10;
-                    - Added prove of concept of sub-commands `owlProfile`.&#10;
-                </p>
-                <!-- French translation -->
-                <p xml:lang="fr">
-                    - Ajouté une preuve de concept pour les sous-commandes `convert`.&#10;
-                    - Ajouté une preuve de concept pour les sous-commandes `sparql`.&#10;
-                    - Ajouté une preuve de concept pour les sous-commandes `ldscript`.&#10;
-                    - Ajouté une preuve de concept pour les sous-commandes `owlProfile`.&#10;
-                </p>
+                <ul>
+                    <li>Added proof of concept of sub-commands "convert".</li>
+                    <li>Added proof of concept of sub-commands "sparql".</li>
+                    <li>Added proof of concept of sub-commands "ldscript".</li>
+                    <li>Added proof of concept of sub-commands "owlProfile".</li>
+
+                    <li xml:lang="fr">Ajouté une preuve de concept pour les sous-commandes "
+                        convert".</li>
+                    <li xml:lang="fr">Ajouté une preuve de concept pour les sous-commandes "
+                        sparql".</li>
+                    <li xml:lang="fr">Ajouté une preuve de concept pour les sous-commandes "
+                        ldscript".</li>
+                    <li xml:lang="fr">Ajouté une preuve de concept pour les sous-commandes "
+                        owlProfile".</li>
+                </ul>
             </description>
         </release>
     </releases>
 
-    <url type="homepage">https://project.inria.fr/corese/</url>
-    <url type="bugtracker">https://github.com/Wimmics/corese/issues/</url>
-    <url type="help">https://project.inria.fr/corese/documentation/</url>
+    <url type="homepage">https://github.com/corese-stack/corese-command</url>
+    <url type="bugtracker">https://github.com/corese-stack/corese-command/issues/</url>
+    <url type="help">https://corese-stack.github.io/corese-command/</url>
+    <url type="faq">https://github.com/orgs/corese-stack/discussions</url>
 
     <update_contact>remi.ceres@inria.fr</update_contact>
 
