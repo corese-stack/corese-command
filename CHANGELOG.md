@@ -1,4 +1,35 @@
+<!-- markdownlint-disable MD024 -->
 # Corese Changelog
+
+## Version 4.6.0 – 2025-04-11
+
+### Added
+
+- Added script installers for Linux, macOS, and Windows platforms.
+- Added verbose query visualization in `query-remote` command.
+- Added deployment of the documentation site at [corese-stack.github.io/corese-command](https://corese-stack.github.io/corese-command).
+- Added new `canonicalize` command to canonicalize RDF files in formats like `rdfc-1.0`.
+
+### Changed
+
+- Renamed commands for consistency:
+  - `sparql` → `query`
+  - `shacl` → `validate`
+  - `remote-sparql` → `query-remote`
+- Updated completion candidate colors from pale pink to magenta for better visibility on white backgrounds.
+- Updated Corese-Core dependency to version `4.6.3`.
+- Changed `--no-owl-import` to `--owl-import` across all commands for clarity.
+  - The option now explicitly enables `owl:imports` (default is `false`).
+
+### Fixed
+
+- Fixed Windows bug related to incorrect line endings.
+- Fixed issue with missing `.` when automatically adding file extensions on export.
+- Fixed JSON-LD serializer bug on Windows.
+
+### Removed
+
+- Removed redirection options from the `query-remote` command.
 
 ## Version 4.5.0 – 2023-12-14
 
