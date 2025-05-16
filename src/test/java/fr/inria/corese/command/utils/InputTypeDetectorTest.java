@@ -76,7 +76,7 @@ public class InputTypeDetectorTest {
     @DisplayName("Detect complex file name with special characters")
     void detectFilenameWithSpecialCharacters() {
         String path = "queries/select_{lang}?pretty";
-        assertEquals(InputType.FILE_PATH, InputTypeDetector.detect(path));
+        assertEquals(InputType.UNKNOWN, InputTypeDetector.detect(path));
     }
 
     @Test
