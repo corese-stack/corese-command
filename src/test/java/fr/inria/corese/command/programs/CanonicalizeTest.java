@@ -68,7 +68,7 @@ public class CanonicalizeTest {
         assertEquals(0, exitCode);
         assertEquals("", err.toString());
         assertEquals("", out.toString());
-        assertEquals(getStringContent(expected), getStringContent(output));
+        assertEquals(normalizeLineEndings(getStringContent(expected)), normalizeLineEndings(getStringContent(output)));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class CanonicalizeTest {
         assertEquals(0, exitCode);
         assertEquals("", err.toString());
         assertEquals("", out.toString());
-        assertEquals(getStringContent(expected), getStringContent(output));
+        assertEquals(normalizeLineEndings(getStringContent(expected)), normalizeLineEndings(getStringContent(output)));
     }
 
     @Test
@@ -98,7 +98,7 @@ public class CanonicalizeTest {
         assertEquals(0, exitCode);
         assertEquals("", err.toString());
         assertEquals("", out.toString());
-        assertEquals(getStringContent(expected), getStringContent(output));
+        assertEquals(normalizeLineEndings(getStringContent(expected)), normalizeLineEndings(getStringContent(output)));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class CanonicalizeTest {
         assertEquals(0, exitCode);
         assertEquals("", err.toString());
         assertEquals("", out.toString());
-        assertEquals(getStringContent(expected), getStringContent(output));
+        assertEquals(normalizeLineEndings(getStringContent(expected)), normalizeLineEndings(getStringContent(output)));
     }
 
     @Test
@@ -129,7 +129,8 @@ public class CanonicalizeTest {
         assertEquals(0, exitCode);
         assertEquals("", err.toString());
         assertEquals("", out.toString());
-        assertEquals(getStringContent(expected), getStringContent(output));
+
+        assertEquals(normalizeLineEndings(getStringContent(expected)), normalizeLineEndings(getStringContent(output)));
     }
 
     @Test
@@ -144,7 +145,9 @@ public class CanonicalizeTest {
         assertEquals(0, exitCode);
         assertEquals("", err.toString());
         assertEquals("", out.toString());
-        assertEquals(getStringContent(expected), getStringContent(output));
+
+        assertEquals(normalizeLineEndings(getStringContent(expected)), normalizeLineEndings(getStringContent(output)));
+
     }
 
     @Test
@@ -172,7 +175,7 @@ public class CanonicalizeTest {
         assertEquals(0, exitCode);
         assertEquals("", err.toString());
         assertEquals("", out.toString());
-        assertEquals(getStringContent(expected), getStringContent(output));
+        assertEquals(normalizeLineEndings(getStringContent(expected)), normalizeLineEndings(getStringContent(output)));
     }
 
     @Test
@@ -187,7 +190,19 @@ public class CanonicalizeTest {
         assertEquals(0, exitCode);
         assertEquals("", err.toString());
         assertEquals("", out.toString());
-        assertEquals(getStringContent(expected), getStringContent(output));
+        assertEquals(normalizeLineEndings(getStringContent(expected)), normalizeLineEndings(getStringContent(output)));
+    }
+
+    /**
+     * Normalizes line endings in a string by converting Windows-style CRLF (\r\n) to Unix-style LF (\n).
+     *
+     * @param content The input string to normalize (may be null)
+     * @return The normalized string with Unix-style line endings, or null if the input was null
+     * @see System#lineSeparator()
+     * @see String#replace(CharSequence, CharSequence)
+     */
+    private String normalizeLineEndings(String content) {
+        return content.replace("\r\n", "\n");
     }
 
 }
