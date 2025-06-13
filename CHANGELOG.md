@@ -3,6 +3,10 @@
 
 ## Version 4.6.1 –
 
+### Changed
+
+- Updated to require Java 21.
+
 ### Fixed
 
 - Fixed bug where one-line inline SPARQL queries containing URIs (e.g. `PREFIX ex: <http://example.org/> SELECT * WHERE { ex:Alice a ex:Person }`) were incorrectly detected as file paths due to slashes or dots in the query string.
