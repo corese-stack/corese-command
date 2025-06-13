@@ -1,6 +1,12 @@
 <!-- markdownlint-disable MD024 -->
 # Corese Changelog
 
+## Version 4.6.1 –
+
+### Fixed
+
+- Fixed bug where one-line inline SPARQL queries containing URIs (e.g. `PREFIX ex: <http://example.org/> SELECT * WHERE { ex:Alice a ex:Person }`) were incorrectly detected as file paths due to slashes or dots in the query string.
+
 ## Version 4.6.0 – 2025-04-11
 
 ### Added

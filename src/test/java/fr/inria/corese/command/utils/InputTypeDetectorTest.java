@@ -107,4 +107,19 @@ public class InputTypeDetectorTest {
         String path = "some/futureQueryFile";
         assertEquals(InputType.FILE_PATH, InputTypeDetector.detect(path));
     }
+
+    @Test
+    @DisplayName("Detect single-line SPARQL that embeds a URI")
+    void detectInlineSparqlWithUri() {
+        String query = "PREFIX ex: <http://example.org/> SELECT * WHERE { ex:Alice a ex:Person }";
+        assertEquals(InputType.SPARQL, InputTypeDetector.detect(query));
+    }
+
+    @Test
+    @DisplayName("Detect file path with spaces")
+    void detectFilePathWithSpaces() {
+        String path = "data/my query.rq";
+        assertEquals(InputType.FILE_PATH, InputTypeDetector.detect(path));
+    }
+
 }
