@@ -45,7 +45,9 @@ object Meta {
 java {
     withJavadocJar()                             // Include Javadoc JAR in publications
     withSourcesJar()                             // Include sources JAR in publications
-    sourceCompatibility = JavaVersion.VERSION_11 // Configure minimum Java version
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }
 
 application {
@@ -64,8 +66,12 @@ repositories {
 
 // Define dependencies
 dependencies {
-    implementation("fr.inria.corese:corese-core:4.6.3") // Core module of Corese
-    implementation("info.picocli:picocli:4.7.6") // Library for building a Command-Line Interface (CLI)
+    val coreseVersion = "4.6.3"
+    val picocliVersion = "4.7.6"
+
+    implementation("fr.inria.corese:corese-core:$coreseVersion") // Core module of Corese
+    implementation("info.picocli:picocli:$picocliVersion") // Library for building a Command-Line Interface (CLI)
+
     implementation("org.apache.commons:commons-lang3:3.17.0") // Library for utility functions (e.g., StringUtils)
     implementation("com.github.jsonld-java:jsonld-java:0.13.6") // Library for JSON-LD support
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0") // Jakarta REST API specifications
@@ -198,6 +204,11 @@ nexusPublishing {
 // Set UTF-8 encoding for Java compilation tasks
 tasks.withType<JavaCompile>() {
     options.encoding = "UTF-8"
+    options.compilerArgs.addAll(listOf(
+        "-Xlint:deprecation",
+        "-Xlint:unchecked",
+        "-parameters"
+    ))
 }
 
 // Configure Javadoc tasks with UTF-8 encoding and disable failure on error.
