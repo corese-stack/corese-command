@@ -85,12 +85,18 @@ public class InputTypeDetector {
             return false;
         }
 
-        // Exclude if single-line path-like string (e.g. contains slashes, dots)
+        /*
+         * Treat it as a real path only when it is
+         * 1) single-line **and**
+         * 2) contains no whitespace (typical for file names)
+         */
         boolean isSingleLine = !input.contains("\n");
-        boolean containsPathLikeStuff = input.contains("/") || input.contains("\\") || input.contains(".");
+        boolean hasWhitespace = input.matches(".*\\s+.*");
+        boolean looksLikePath = input.matches(".*[\\\\/].*") // slash or back-slash
+                || input.matches(".*\\.[\\w]{1,4}$"); // ends with .ext
 
-        if (isSingleLine && containsPathLikeStuff) {
-            return false;
+        if (isSingleLine && !hasWhitespace && looksLikePath) {
+            return false; // definitely a path ⇒ not SPARQL
         }
 
         return true;
