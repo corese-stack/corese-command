@@ -6,6 +6,7 @@
 ### Changed
 
 - Updated to require Java 21.
+- Renamed `query-remote` command to `query-endpoint` for clarity and consistency with the `query` command.
 
 ### Fixed
 

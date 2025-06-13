@@ -1,6 +1,6 @@
 # Getting Started With Corese-Command
 
-Corese-Command is a command-line interface (CLI) for the Corese Semantic Web Factory. It allows you to run SPARQL queries on RDF datasets and remote SPARQL endpoints, convert RDF files between different serialization formats, validate RDF data against SHACL shapes, and canonicalize RDF files using various algorithms — all directly from the command line. This makes it a powerful tool for automated processing, quick console-based testing, and integration into larger scripts or applications.
+Corese-Command is a command-line interface (CLI) for the Corese Semantic Web Factory. It allows you to run SPARQL queries on RDF datasets and SPARQL endpoints, convert RDF files between different serialization formats, validate RDF data against SHACL shapes, and canonicalize RDF files using various algorithms — all directly from the command line. This makes it a powerful tool for automated processing, quick console-based testing, and integration into larger scripts or applications.
 
 Designed to simplify and streamline tasks related to querying, converting, validating, and canonicalizing RDF data, Corese-Command is ideal for developers, data scientists, and anyone working with Semantic Web technologies.
 
@@ -431,27 +431,27 @@ corese validate -i ./myDirectory/ -s ./myShapes/ -R
 
 > All input files are loaded into the same dataset, and all shapes files are loaded into the same shapes graph. The dataset is validated against all shapes graphs.
 
-## 5. The `query-remote` Command
+## 5. The `query-endpoint` Command
 
-The `query-remote` command allows you to run SPARQL queries on a remote SPARQL endpoint.
+The `query-endpoint` command allows you to run SPARQL queries on a SPARQL endpoint.
 
 ### 5.1. Basic Usage
 
 ```shell
-corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql"
+corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql"
 ```
 
-This example executes a query on the remote SPARQL endpoint `http://example.org/sparql`. The `-q` flag specifies the query, and the `-e` flag specifies the endpoint.
+This example executes a query on the SPARQL endpoint `http://example.org/sparql`. The `-q` flag specifies the query, and the `-e` flag specifies the endpoint.
 
 ### 5.2. Choose the Result Format
 
 Let's try the same query as before, but this time with the `json` format as output:
 
 ```shell
-corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" -a "application/sparql-results+json"
+corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" -a "application/sparql-results+json"
 ```
 
-The format of the result can be specified by using one of the following flags: `-a`, `-of`, or `--accept`. The available formats are determined by the remote SPARQL endpoint. Here are some common formats:
+The format of the result can be specified by using one of the following flags: `-a`, `-of`, or `--accept`. The available formats are determined by the SPARQL endpoint. Here are some common formats:
 
 - XML: `application/sparql-results+xml`
 - JSON: `application/sparql-results+json`
@@ -467,25 +467,25 @@ The query can be provided in different ways:
 - **Query String:** The query can be provided directly on the command line with the `-q` flag:
 
 ```shell
-corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql"
+corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql"
 ```
 
 - **File Query:** The query can be provided in a file with the `-q` flag:
 
 ```shell
-corese query-remote -q myQuery.rq -e "http://example.org/sparql"
+corese query-endpoint -q myQuery.rq -e "http://example.org/sparql"
 ```
 
 - **URL Input:** URLs can be specified with the `-q` flag:
 
 ```shell
-corese query-remote -q 'http://example.org/myQuery.rq' -e "http://example.org/sparql"
+corese query-endpoint -q 'http://example.org/myQuery.rq' -e "http://example.org/sparql"
 ```
 
 - **Standard Input:** If no input file is specified with `-q`, the program uses the standard input:
 
 ```shell
-cat myQuery.rq | corese query-remote -e "http://example.org/sparql"
+cat myQuery.rq | corese query-endpoint -e "http://example.org/sparql"
 ```
 
 ### 5.4. Different Types of Output
@@ -495,13 +495,13 @@ The output can be provided in different ways:
 - **File Output:** The output file can be specified with the `-o` flag:
 
 ```shell
-corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" -o myResult.csv
+corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" -o myResult.csv
 ```
 
 - **Standard Output:** If no output file is specified with `-o`, the program uses the standard output:
 
 ```shell
-corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" -a "application/sparql-results+json" | jq […]
+corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" -a "application/sparql-results+json" | jq […]
 ```
 
 ### 5.5. Different Types of Methods
@@ -525,7 +525,7 @@ In SPARQL, the dataset to be queried can be specified using the `FROM` and `FROM
 The default graph can be specified using the `-d` or `--default-graph` option. Each occurrence of this option represents a URI of a default graph. Multiple URIs can be specified by repeating this option.
 
 ```shell
-corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" -d http://example.org/graph1 -d http://example.org/graph2
+corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" -d http://example.org/graph1 -d http://example.org/graph2
 ```
 
 #### 5.6.2. Named Graph
@@ -533,7 +533,7 @@ corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql
 The named graph can be specified using the `-n` or `--named-graph` option. Each occurrence of this option represents a URI of a named graph. Multiple URIs can be specified by repeating this option.
 
 ```shell
-corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" -n http://example.org/graph1 -n http://example.org/graph2
+corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" -n http://example.org/graph1 -n http://example.org/graph2
 ```
 
 ### 5.7. Additional Request Configurations
@@ -545,7 +545,7 @@ The following options provide additional configurations for the HTTP request sen
 Custom HTTP headers can be added to the request using the `-H` or `--header` option. Each occurrence of this option represents a single header, with the header name and value separated by a colon `:`.
 
 ```shell
-corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" --header "Accept: application/sparql-results+json" --header "User-Agent: MyClient"
+corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" --header "Accept: application/sparql-results+json" --header "User-Agent: MyClient"
 ```
 
 > When the `--accept` option is used alongside the `--header "Accept: …"` option, the request sent to the server will contain a list of MIME types in the `Accept` header. The MIME type specified by the `--accept` option will be placed first in this list, followed by the MIME types specified with the `--header "Accept: …"` option.
@@ -555,7 +555,7 @@ corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql
 The maximum number of HTTP redirections to follow can be specified using the `-r` or `--max-redirection` option. The default value is 5.
 
 ```shell
-corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" --max-redirection 10
+corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" --max-redirection 10
 ```
 
 #### 5.7.3. Query Validation
@@ -563,7 +563,7 @@ corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql
 By default, the query is validated before being sent to the SPARQL endpoint. This can be disabled using the `-i` or `--ignore-query-validation` option.
 
 ```shell
-corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" --ignore-query-validation
+corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "http://example.org/sparql" --ignore-query-validation
 ```
 
 This option is useful when you want to send a query that is not valid according to the SPARQL grammar, but is still accepted by the SPARQL endpoint.
@@ -717,14 +717,14 @@ corese -h
 corese query -h
 corese convert -h
 corese validate -h
-corese query-remote -h
+corese query-endpoint -h
 corese canonicalize -h
 ```
 
-Example of the `query-remote` command with the verbose `-v` flag:
+Example of the `query-endpoint` command with the verbose `-v` flag:
 
 ```shell
-> corese query-remote -q example-file/query/spo.rq -e "https://dbpedia.org/sparql" -v
+> corese query-endpoint -q example-file/query/spo.rq -e "https://dbpedia.org/sparql" -v
 Loaded default config
 Loaded SPAQRL query file: example-file/query/spo.rq
 ╔════════════════════════════════╗
@@ -784,7 +784,7 @@ Loaded SPAQRL query file: example-file/query/spo.rq
 Verbose logs are printed to the standard error output. You can redirect them to a file using the `2>` operator:
 
 ```shell
-corese-dev query-remote -q example-file/query/spo.rq -e "https://dbpedia.org/sparql" -v 2> myLog.txt
+corese-dev query-endpoint -q example-file/query/spo.rq -e "https://dbpedia.org/sparql" -v 2> myLog.txt
 ```
 
 ### 7.5. Controlling OWL Auto Import
