@@ -45,8 +45,6 @@ object Meta {
 java {
     withJavadocJar()                             // Include Javadoc JAR in publications
     withSourcesJar()                             // Include sources JAR in publications
-    sourceCompatibility = JavaVersion.VERSION_21 // Configure Java version 21
-    targetCompatibility = JavaVersion.VERSION_21
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(21))
     }
