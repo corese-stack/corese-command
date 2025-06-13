@@ -117,7 +117,7 @@
         </screenshot>
         <screenshot>
             <image>
-                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/query-remote.png</image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/query-endpoint.png</image>
             <caption>Query a online endpoint</caption>
             <caption xml:lang="fr">Interroger un point de terminaison en ligne</caption>
         </screenshot>
