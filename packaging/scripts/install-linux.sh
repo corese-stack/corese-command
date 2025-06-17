@@ -134,17 +134,17 @@ choose_version() {
     done
 
     while true; do
-    echo -n "→ Enter the number of the version to install [default: 1]: "
-    read -r VERSION_INDEX
+        echo -n "→ Enter the number of the version to install [default: 1]: "
+        read -r VERSION_INDEX
 
         if [[ -z "$VERSION_INDEX" ]]; then
-        VERSION_INDEX=1
+            VERSION_INDEX=1
             break
         elif [[ "$VERSION_INDEX" =~ ^[0-9]+$ && "$VERSION_INDEX" -ge 1 && "$VERSION_INDEX" -le "${#VERSIONS[@]}" ]]; then
             break
         else
             echo "❌ Invalid input. Please enter a number between 1 and ${#VERSIONS[@]}."
-    fi
+        fi
     done
 
     VERSION_TAG="${VERSIONS[$((VERSION_INDEX - 1))]}"
