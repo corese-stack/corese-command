@@ -3,6 +3,13 @@
 
 ## Version 4.6.1 –
 
+### Added
+
+- Improved Linux, MacOS and Windows installation scripts:
+  - Pre-releases and drafts are now excluded from the available version list.
+  - User input is now validated in interactive mode: if an invalid version number is entered, the prompt will repeat until a valid choice is made.
+  - Updated java version to 21 in the installation scripts.
+
 ### Changed
 
 - Updated to require Java 21.
