@@ -14,7 +14,8 @@
 ## ✨ Features
 
 - Convert RDF data formats (Turtle, RDF/XML, N-Triples, etc.)
-- Execute SPARQL queries on local files or remote endpoints
+- Execute SPARQL queries on local or remote files
+- Query SPARQL endpoints
 - Validate RDF graphs using SHACL
 - Canonicalize RDF data
 
@@ -84,13 +85,13 @@ corese canonicalize -i data.ttl -of rdfc-1.0-sha256
 ```
 
 ```shell
-# Query a remote SPARQL endpoint
-corese query-remote -q 'SELECT * WHERE {?s ?p ?o}' -e "https://dbpedia.org/sparql"
+# Query a SPARQL endpoint
+corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "https://dbpedia.org/sparql"
 ```
 
 ## 📖 Documentation
 
-- [Getting Started Guide](https://corese-stack.github.io/corese-command/v4.6.0/user_guide.html)
+- [Getting Started Guide](https://corese-stack.github.io/corese-command/v4.6.1/user_guide.html)
 
 ## 🤝 Contributing
 

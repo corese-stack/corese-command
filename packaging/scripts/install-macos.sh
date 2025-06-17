@@ -4,7 +4,7 @@
 # Corese-Command macOs Installer
 # ------------------------------------------------------------------------------
 # This script installs or updates the Corese-Command CLI on a macOs system.
-# It automatically checks for Java (>= 11), installs it if necessary,
+# It automatically checks for Java (>= 21), installs it if necessary,
 # fetches the desired version of Corese-Command from GitHub, and adds
 # the binary to the user's PATH via shell configuration files.
 #
@@ -71,8 +71,8 @@ check_java() {
         return
     fi
 
-    if [ "$JAVA_VERSION" -lt 11 ]; then
-        echo "❌ Java version 11 or higher is required (found: $JAVA_VERSION)."
+    if [ "$JAVA_VERSION" -lt 21 ]; then
+        echo "❌ Java version 21 or higher is required (found: $JAVA_VERSION)."
         prompt_install_java
         check_java
     else
@@ -107,7 +107,10 @@ prompt_install_java() {
 }
 
 list_versions() {
-    curl -s "$RELEASE_API" | grep '"tag_name":' | cut -d '"' -f 4 | uniq
+    curl -s "$RELEASE_API" \
+        | jq -r '.[] | select(.prerelease == false and .draft == false) | [.tag_name, .published_at] | @tsv' \
+        | sort -k2 -r \
+        | cut -f1
 }
 
 choose_version() {
@@ -125,12 +128,19 @@ choose_version() {
         fi
     done
 
-    echo -n "→ Enter the number of the version to install [default: 1]: "
-    read -r VERSION_INDEX
+    while true; do
+        echo -n "→ Enter the number of the version to install [default: 1]: "
+        read -r VERSION_INDEX
 
-    if [[ -z "$VERSION_INDEX" || ! "$VERSION_INDEX" =~ ^[0-9]+$ || "$VERSION_INDEX" -lt 1 || "$VERSION_INDEX" -gt "${#VERSIONS[@]}" ]]; then
-        VERSION_INDEX=1
-    fi
+        if [[ -z "$VERSION_INDEX" ]]; then
+            VERSION_INDEX=1
+            break
+        elif [[ "$VERSION_INDEX" =~ ^[0-9]+$ && "$VERSION_INDEX" -ge 1 && "$VERSION_INDEX" -le "${#VERSIONS[@]}" ]]; then
+            break
+        else
+            echo "❌ Invalid input. Please enter a number between 1 and ${#VERSIONS[@]}."
+        fi
+    done
 
     VERSION_TAG="${VERSIONS[$((VERSION_INDEX - 1))]}"
     echo
@@ -161,7 +171,6 @@ download_and_install() {
 
     echo "⬇️  Downloading Corese-Command $VERSION_TAG..."
 
-    # Vérifie si le tag existe
     if ! RESPONSE=$(curl -s -f "$RELEASE_API/tags/$VERSION_TAG"); then
         echo
         echo "❌ Version '$VERSION_TAG' was not found on GitHub."
@@ -223,6 +232,7 @@ add_to_all_available_shell_rcs() {
 
         echo "   ➕ Updating $(basename "$rc")"
 
+        # Add a newline before the block only if the file doesn't already end with one
         [ -f "$rc" ] && [ "$(tail -c1 "$rc")" != "" ] && echo "" >> "$rc"
 
         {

@@ -1,6 +1,24 @@
 <!-- markdownlint-disable MD024 -->
 # Corese Changelog
 
+## Version 4.6.1 – 2025-06-17
+
+### Added
+
+- Improved Linux, MacOS and Windows installation scripts:
+  - Pre-releases and drafts are now excluded from the available version list.
+  - User input is now validated in interactive mode: if an invalid version number is entered, the prompt will repeat until a valid choice is made.
+  - Updated java version to 21 in the installation scripts.
+
+### Changed
+
+- Updated to require Java 21.
+- Renamed `query-remote` command to `query-endpoint` for clarity and consistency with the `query` command.
+
+### Fixed
+
+- Fixed bug where one-line inline SPARQL queries containing URIs (e.g. `PREFIX ex: <http://example.org/> SELECT * WHERE { ex:Alice a ex:Person }`) were incorrectly detected as file paths due to slashes or dots in the query string.
+
 ## Version 4.6.0 – 2025-04-11
 
 ### Added

@@ -6,7 +6,7 @@
 
 .DESCRIPTION
     This PowerShell script installs, updates, or uninstalls the Corese-Command CLI on Windows.
-    It checks for Java 11 or higher, prompts the user if Java is not found,
+    It checks for Java 21 or higher, prompts the user if Java is not found,
     and fetches the requested release from GitHub. It also adds Corese to the user's PATH.
 
 .PARAMETER --install <version>
@@ -101,8 +101,8 @@ function Check-Java {
         return
     }
 
-    if ($major -lt 11) {
-        Write-Host "Java 11 or higher is required (found: $major)."
+    if ($major -lt 21) {
+        Write-Host "Java 21 or higher is required (found: $major)."
         Ask-Java-Install
     } else {
         Write-Host "Java version $major detected."
@@ -111,7 +111,7 @@ function Check-Java {
 }
 
 function Ask-Java-Install {
-    $ans = Read-Host "Please install Java 11 or higher manually and press Enter to continue (or type N to abort)"
+    $ans = Read-Host "Please install Java 21 or higher manually and press Enter to continue (or type N to abort)"
     if ($ans -match '^[Nn]') {
         exit 1
     }
@@ -120,7 +120,9 @@ function Ask-Java-Install {
 function Get-Versions {
     try {
         $releases = Invoke-RestMethod "$ReleaseApi"
-        return ($releases | Select-Object -ExpandProperty tag_name) |
+        return ($releases |
+            Where-Object { -not $_.prerelease -and -not $_.draft } |
+            Select-Object -ExpandProperty tag_name) |
             Sort-Object { [version]($_ -replace '[^\d.]') } -Descending
     } catch {
         Write-Error "Failed to fetch versions from GitHub"
@@ -136,19 +138,25 @@ function Choose-Version {
     }
 
     Write-Host "`nAvailable versions:"
-    $i = 1
-    foreach ($v in $versions) {
-        $label = if ($i -eq 1) { "$v (latest)" } else { "$v" }
-        Write-Host " [$i] $label"
-        $i++
+    for ($i = 0; $i -lt $versions.Count; $i++) {
+        $label = if ($i -eq 0) { "$($versions[$i]) (latest)" } else { $versions[$i] }
+        Write-Host " [$($i + 1)] $label"
     }
 
-    $choice = Read-Host "`nEnter version number to install [default: 1]"
+    while ($true) {
+        $choice = Read-Host "`nEnter version number to install [default: 1]"
 
-    if (-not $choice -match '^\d+$' -or [int]$choice -lt 1 -or [int]$choice -gt $versions.Count) {
-        $index = 0
-    } else {
-        $index = [int]$choice - 1
+        if (-not $choice) {
+            $index = 0
+            break
+        }
+        elseif ($choice -match '^\d+$' -and [int]$choice -ge 1 -and [int]$choice -le $versions.Count) {
+            $index = [int]$choice - 1
+            break
+        }
+        else {
+            Write-Host "Invalid input. Please enter a number between 1 and $($versions.Count)."
+        }
     }
 
     return $versions[$index]

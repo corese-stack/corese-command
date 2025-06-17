@@ -27,10 +27,10 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
 import picocli.CommandLine;
 
-public class QueryRemoteTest {
+public class QueryEndpointTest {
 
         // Picocli objects
-        private QueryRemote queryRemote = new QueryRemote();
+        private QueryEndpoint queryRemote = new QueryEndpoint();
         private CommandLine cmd = new CommandLine(queryRemote);
 
         private StringWriter out = new StringWriter();
