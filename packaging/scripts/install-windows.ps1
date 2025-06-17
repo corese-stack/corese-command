@@ -120,7 +120,9 @@ function Ask-Java-Install {
 function Get-Versions {
     try {
         $releases = Invoke-RestMethod "$ReleaseApi"
-        return ($releases | Select-Object -ExpandProperty tag_name) |
+        return ($releases |
+            Where-Object { -not $_.prerelease -and -not $_.draft } |
+            Select-Object -ExpandProperty tag_name) |
             Sort-Object { [version]($_ -replace '[^\d.]') } -Descending
     } catch {
         Write-Error "Failed to fetch versions from GitHub"
