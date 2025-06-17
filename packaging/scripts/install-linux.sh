@@ -189,9 +189,9 @@ download_and_install() {
     create_wrapper
     add_to_all_available_shell_rcs
 
-    echo "Corese-Command $VERSION_TAG installed successfully."
-    echo "Run it with: $BIN_NAME"
-    echo "Installed in: $INSTALL_DIR"
+    echo "✅ Corese-Command $VERSION_TAG installed successfully!"
+    echo "🔧 Run it with: $BIN_NAME"
+    echo "📁 Installed in: $INSTALL_DIR"
     echo
 }
 
@@ -275,7 +275,7 @@ uninstall() {
     for rc in "${CONFIG_FILES[@]}"; do
         if [ -f "$rc" ]; then
             sed -i "/$BLOCK_START/,/$BLOCK_END/d" "$rc"
-            sed -i '/^$/N;/^\n$/D' "$rc"  # clean double blank lines
+            sed -i '/^$/N;/^\n$/D' "$rc"
             echo "   🧼 Cleaned $(basename "$rc")"
         fi
     done
