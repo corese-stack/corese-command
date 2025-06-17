@@ -4,7 +4,7 @@
 # Corese-Command macOs Installer
 # ------------------------------------------------------------------------------
 # This script installs or updates the Corese-Command CLI on a macOs system.
-# It automatically checks for Java (>= 11), installs it if necessary,
+# It automatically checks for Java (>= 21), installs it if necessary,
 # fetches the desired version of Corese-Command from GitHub, and adds
 # the binary to the user's PATH via shell configuration files.
 #
@@ -71,8 +71,8 @@ check_java() {
         return
     fi
 
-    if [ "$JAVA_VERSION" -lt 11 ]; then
-        echo "❌ Java version 11 or higher is required (found: $JAVA_VERSION)."
+    if [ "$JAVA_VERSION" -lt 21 ]; then
+        echo "❌ Java version 21 or higher is required (found: $JAVA_VERSION)."
         prompt_install_java
         check_java
     else
@@ -161,7 +161,6 @@ download_and_install() {
 
     echo "⬇️  Downloading Corese-Command $VERSION_TAG..."
 
-    # Vérifie si le tag existe
     if ! RESPONSE=$(curl -s -f "$RELEASE_API/tags/$VERSION_TAG"); then
         echo
         echo "❌ Version '$VERSION_TAG' was not found on GitHub."
@@ -223,6 +222,7 @@ add_to_all_available_shell_rcs() {
 
         echo "   ➕ Updating $(basename "$rc")"
 
+        # Add a newline before the block only if the file doesn't already end with one
         [ -f "$rc" ] && [ "$(tail -c1 "$rc")" != "" ] && echo "" >> "$rc"
 
         {
