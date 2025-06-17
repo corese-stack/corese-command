@@ -136,6 +136,20 @@
     </screenshots>
 
     <releases>
+        <release version="4.6.1" date="2025-06-17">
+            <url type="details">https://github.com/corese-stack/corese-command/releases/tag/v4.6.1</url>
+            <description>
+                <ul>
+                    <li>Renamed `query-remote` command to `query-endpoint`.</li>
+                    <li>Fixed bug detecting one-line inline SPARQL queries with slashes/dots as file
+                        paths.</li>
+
+                    <li xml:lang="fr">Renommage de la commande `query-remote` en `query-endpoint`.</li>
+                    <li xml:lang="fr">Correction d'un bug où les requêtes SPARQL en ligne contenant
+                        des URI étaient mal interprétées comme chemins de fichiers.</li>
+                </ul>
+            </description>
+        </release>        
         <release version="4.6.0" date="2025-04-11">
             <url type="details">https://github.com/corese-stack/corese-command/releases/tag/v4.6.0</url>
             <description>

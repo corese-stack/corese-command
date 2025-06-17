@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD024 -->
 # Corese Changelog
 
-## Version 4.6.1 –
+## Version 4.6.1 – 2025-06-17
 
 ### Added
 

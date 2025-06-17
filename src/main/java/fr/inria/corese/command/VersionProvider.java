@@ -9,7 +9,7 @@ import picocli.CommandLine;
 public class VersionProvider implements CommandLine.IVersionProvider {
 
     // Version of Corese-Command
-    public final static String commandVersion = "4.6.1-SNAPSHOT";
+    public final static String commandVersion = "4.6.1";
 
     @Override
     public String[] getVersion() {
