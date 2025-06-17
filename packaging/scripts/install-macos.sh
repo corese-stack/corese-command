@@ -128,12 +128,19 @@ choose_version() {
         fi
     done
 
-    echo -n "→ Enter the number of the version to install [default: 1]: "
-    read -r VERSION_INDEX
+    while true; do
+        echo -n "→ Enter the number of the version to install [default: 1]: "
+        read -r VERSION_INDEX
 
-    if [[ -z "$VERSION_INDEX" || ! "$VERSION_INDEX" =~ ^[0-9]+$ || "$VERSION_INDEX" -lt 1 || "$VERSION_INDEX" -gt "${#VERSIONS[@]}" ]]; then
-        VERSION_INDEX=1
-    fi
+        if [[ -z "$VERSION_INDEX" ]]; then
+            VERSION_INDEX=1
+            break
+        elif [[ "$VERSION_INDEX" =~ ^[0-9]+$ && "$VERSION_INDEX" -ge 1 && "$VERSION_INDEX" -le "${#VERSIONS[@]}" ]]; then
+            break
+        else
+            echo "❌ Invalid input. Please enter a number between 1 and ${#VERSIONS[@]}."
+        fi
+    done
 
     VERSION_TAG="${VERSIONS[$((VERSION_INDEX - 1))]}"
     echo
