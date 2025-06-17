@@ -4,7 +4,7 @@
 # Corese-Command Linux Installer
 # ------------------------------------------------------------------------------
 # This script installs or updates the Corese-Command CLI on a Linux system.
-# It automatically checks for Java (>= 11), installs it if necessary,
+# It automatically checks for Java (>= 21), installs it if necessary,
 # fetches the desired version of Corese-Command from GitHub, and adds
 # the binary to the user's PATH via shell configuration files.
 #
@@ -43,8 +43,8 @@ check_java() {
     fi
 
     JAVA_VERSION=$(java -version 2>&1 | grep -oE 'version "([0-9]+)' | grep -oE '[0-9]+')
-    if [ "$JAVA_VERSION" -lt 11 ]; then
-        echo "❌ Java version 11 or higher is required (found: $JAVA_VERSION)."
+    if [ "$JAVA_VERSION" -lt 21 ]; then
+        echo "❌ Java version 21 or higher is required (found: $JAVA_VERSION)."
         prompt_install_java
     else
         echo "✅ Java version $JAVA_VERSION detected."
@@ -105,7 +105,7 @@ install_java_by_distro() {
             apk add --no-cache openjdk21 ;;
         *)
             echo "❌ Unsupported distro: $DISTRO"
-            echo "Please install Java 11 or higher manually."
+            echo "Please install Java 21 or higher manually."
             exit 1 ;;
     esac
     echo
