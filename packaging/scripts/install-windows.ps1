@@ -138,19 +138,25 @@ function Choose-Version {
     }
 
     Write-Host "`nAvailable versions:"
-    $i = 1
-    foreach ($v in $versions) {
-        $label = if ($i -eq 1) { "$v (latest)" } else { "$v" }
-        Write-Host " [$i] $label"
-        $i++
+    for ($i = 0; $i -lt $versions.Count; $i++) {
+        $label = if ($i -eq 0) { "$($versions[$i]) (latest)" } else { $versions[$i] }
+        Write-Host " [$($i + 1)] $label"
     }
 
-    $choice = Read-Host "`nEnter version number to install [default: 1]"
+    while ($true) {
+        $choice = Read-Host "`nEnter version number to install [default: 1]"
 
-    if (-not $choice -match '^\d+$' -or [int]$choice -lt 1 -or [int]$choice -gt $versions.Count) {
-        $index = 0
-    } else {
-        $index = [int]$choice - 1
+        if (-not $choice) {
+            $index = 0
+            break
+        }
+        elseif ($choice -match '^\d+$' -and [int]$choice -ge 1 -and [int]$choice -le $versions.Count) {
+            $index = [int]$choice - 1
+            break
+        }
+        else {
+            Write-Host "Invalid input. Please enter a number between 1 and $($versions.Count)."
+        }
     }
 
     return $versions[$index]
