@@ -107,7 +107,10 @@ prompt_install_java() {
 }
 
 list_versions() {
-    curl -s "$RELEASE_API" | grep '"tag_name":' | cut -d '"' -f 4 | uniq
+    curl -s "$RELEASE_API" \
+        | jq -r '.[] | select(.prerelease == false and .draft == false) | [.tag_name, .published_at] | @tsv' \
+        | sort -k2 -r \
+        | cut -f1
 }
 
 choose_version() {
