@@ -6,7 +6,7 @@
 
 .DESCRIPTION
     This PowerShell script installs, updates, or uninstalls the Corese-Command CLI on Windows.
-    It checks for Java 11 or higher, prompts the user if Java is not found,
+    It checks for Java 21 or higher, prompts the user if Java is not found,
     and fetches the requested release from GitHub. It also adds Corese to the user's PATH.
 
 .PARAMETER --install <version>
@@ -101,8 +101,8 @@ function Check-Java {
         return
     }
 
-    if ($major -lt 11) {
-        Write-Host "Java 11 or higher is required (found: $major)."
+    if ($major -lt 21) {
+        Write-Host "Java 21 or higher is required (found: $major)."
         Ask-Java-Install
     } else {
         Write-Host "Java version $major detected."
@@ -111,7 +111,7 @@ function Check-Java {
 }
 
 function Ask-Java-Install {
-    $ans = Read-Host "Please install Java 11 or higher manually and press Enter to continue (or type N to abort)"
+    $ans = Read-Host "Please install Java 21 or higher manually and press Enter to continue (or type N to abort)"
     if ($ans -match '^[Nn]') {
         exit 1
     }
