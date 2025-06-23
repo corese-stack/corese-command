@@ -10,7 +10,6 @@ plugins {
 
     // Tooling plugins
     `jacoco`                                                    // For code coverage reports
-    id("org.gradlex.extra-java-module-info") version "1.9"      // Module metadata for JARs without module info
     id("com.gradleup.shadow") version "8.3.5"                   // Bundles dependencies into a single JAR
 }
 
@@ -84,18 +83,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.3") // JUnit 5 for testing
     testRuntimeOnly("org.junit.platform:junit-platform-launcher") // JUnit Platform launcher for running tests
 }
-
-// Configure extra Java module information for dependencies without module-info
-extraJavaModuleInfo {
-    // If a library is missing module info, the build process will not fail.
-    failOnMissingModuleInfo.set(false)
-
-    // Map automatic module names for non-modular libraries.
-    automaticModule("fr.com.hp.hpl.jena.rdf.arp:arp", "arp") // Module for Jena RDF ARP
-    automaticModule("com.github.jsonld-java:jsonld-java", "jsonld.java") // Module for JSON-LD Java
-    automaticModule("commons-lang:commons-lang", "commons.lang") // Module for Commons Lang
-}
-
 
 /////////////////////////
 // Publishing settings //
