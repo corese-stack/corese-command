@@ -6,6 +6,7 @@
 ### Changed
 
 - Remove `module-info.java` from the `corese-command` module to avoid issues with Java 21 and later versions. This file is not needed for command-line applications and its removal simplifies the build process.
+- Update JDK version to 21 in GitHub workflows
 
 ## Version 4.6.1 – 2025-06-17
 
