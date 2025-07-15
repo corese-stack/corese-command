@@ -51,7 +51,7 @@ You’ll then be able to use Corese-Command via the corese command in your termi
 
 You can also use Corese-Command as a standalone `.jar` file or add it to a Java project via Maven.
 
-> Requires Java 11 or higher.
+> Requires Java 21 or higher.
 
 - [🔗 GitHub Releases](https://github.com/corese-stack/corese-command/releases)
 - [📦 Maven Central](https://central.sonatype.com/artifact/fr.inria.corese/corese-command)
