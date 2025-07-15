@@ -66,7 +66,6 @@ detect_distro() {
     if [ -f /etc/os-release ]; then
         . /etc/os-release
 
-        # Favoriser ID_LIKE s'il existe (ex: pop!_os => ubuntu)
         if [[ "$ID_LIKE" =~ (debian|ubuntu) ]]; then
             echo "debian"
         elif [[ "$ID" == "debian" || "$ID" == "ubuntu" || "$ID" == "pop" || "$ID" == "linuxmint" ]]; then
@@ -298,7 +297,7 @@ uninstall() {
 main() {
     echo
     echo "╭────────────────────────────────────────╮"
-    echo "│         🧠 Corese-Command CLI          │"
+    echo "│           Corese-Command CLI           │"
     echo "│        Linux Installer & Updater       │"
     echo "╰────────────────────────────────────────╯"
     echo

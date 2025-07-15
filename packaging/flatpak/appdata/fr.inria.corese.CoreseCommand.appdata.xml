@@ -87,49 +87,49 @@
 
     <screenshots>
         <screenshot type="default">
-            <image>https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/help.png</image>
+            <image>https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/assets/screenshot/help.png</image>
             <caption>Print help page</caption>
             <caption xml:lang="fr">Afficher la page d'aide</caption>
         </screenshot>
         <screenshot>
             <image>
-                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/convert_1.png</image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/assets/screenshot/convert_1.png</image>
             <caption>Convert Turtle to JSON-LD from a local file</caption>
             <caption xml:lang="fr">Convertir Turtle en JSON-LD à partir d'un fichier local</caption>
         </screenshot>
         <screenshot>
             <image>
-                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/convert_2.png</image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/assets/screenshot/convert_2.png</image>
             <caption>Convert Turtle to Trig from an online file</caption>
             <caption xml:lang="fr">Convertir Turtle en Trig à partir d'un fichier en ligne</caption>
         </screenshot>
         <screenshot>
             <image>
-                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/query_1.png</image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/assets/screenshot/query_1.png</image>
             <caption>Query a local file with markdown output</caption>
             <caption xml:lang="fr">Interroger un fichier local avec une sortie en markdown</caption>
         </screenshot>
         <screenshot>
             <image>
-                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/query_2.png</image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/assets/screenshot/query_2.png</image>
             <caption>Query a local file with xml output</caption>
             <caption xml:lang="fr">Interroger un fichier local avec une sortie en xml</caption>
         </screenshot>
         <screenshot>
             <image>
-                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/query-endpoint.png</image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/assets/screenshot/query-endpoint.png</image>
             <caption>Query a online endpoint</caption>
             <caption xml:lang="fr">Interroger un point de terminaison en ligne</caption>
         </screenshot>
         <screenshot>
             <image>
-                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/validate.png</image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/assets/screenshot/validate.png</image>
             <caption>Validate RDF data against SHACL shapes</caption>
             <caption xml:lang="fr">Valider des données RDF contre des formes SHACL</caption>
         </screenshot>
         <screenshot>
             <image>
-                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/flatpak/assets/screenshot/canonicalize.png</image>
+                https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/assets/screenshot/canonicalize.png</image>
             <caption>Canonicalize RDF data</caption>
             <caption xml:lang="fr">Canonicaliser des données RDF</caption>
         </screenshot>

@@ -24,7 +24,7 @@ modules:
       - install -Dm755 packaging/flatpak/scripts/run.sh /app/bin/run.sh
       - install -Dm644 packaging/flatpak/appdata/${FLATPAK_ID}.appdata.xml /app/share/metainfo/${FLATPAK_ID}.appdata.xml
       - install -Dm644 packaging/flatpak/appdata/${FLATPAK_ID}.desktop /app/share/applications/${FLATPAK_ID}.desktop
-      - install -Dm644 packaging/flatpak/assets/logo/${FLATPAK_ID}.svg /app/share/icons/hicolor/scalable/apps/${FLATPAK_ID}.svg
+      - install -Dm644 packaging/assets/logo/${FLATPAK_ID}.svg /app/share/icons/hicolor/scalable/apps/${FLATPAK_ID}.svg
 
     sources:
       # jar file from GitHub release
