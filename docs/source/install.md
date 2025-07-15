@@ -28,7 +28,7 @@ iwr -useb https://raw.githubusercontent.com/corese-stack/corese-command/main/pac
 **Manual / Cross-platform Installation:**
 
 Use Corese CLI as a standalone `.jar`, or add it to your Java project via Maven.  
-> Requires Java 11 or higher.
+> Requires Java 21 or higher.
 
 <a href="https://github.com/corese-stack/corese-command/releases">
   <img src="./_static/logo/badge_github.svg" alt="GitHub Release" width="140">
