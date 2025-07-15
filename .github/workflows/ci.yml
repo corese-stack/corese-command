@@ -74,6 +74,13 @@ jobs:
           echo "Total coverage ${{ steps.jacoco.outputs.coverage-overall }}"
           echo "Changed Files coverage ${{ steps.jacoco.outputs.coverage-changed-files }}"
 
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action/linux@v2
+        if: always()
+        with:
+          files: |
+            build/test-results/**/*.xml
+
       - name: Archive test artifacts
         if: failure()
         uses: actions/upload-artifact@v4
