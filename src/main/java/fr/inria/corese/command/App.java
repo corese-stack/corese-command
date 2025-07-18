@@ -11,7 +11,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Help.Ansi.Style;
 import picocli.CommandLine.Help.ColorScheme;
 
-@Command(name = "Corese-command", versionProvider = VersionProvider.class, mixinStandardHelpOptions = true, subcommands = {
+@Command(name = "Corese", versionProvider = VersionProvider.class, mixinStandardHelpOptions = true, subcommands = {
         Convert.class, Query.class, QueryEndpoint.class, Validate.class, Canonicalize.class, GenerateCompletion.class })
 public final class App implements Runnable {
 
