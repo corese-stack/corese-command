@@ -3,7 +3,7 @@
 
 <p align="center">
     <a href="https://project.inria.fr/corese/">
-        <img src="docs/source/_static/logo/corese-command-logo.svg" width="200" alt="Corese-Command-logo">
+        <img src="docs/source/_static/logo/corese-command.svg" width="200" alt="Corese-Command-logo">
     </a>
     <br>
     <strong>Command-line tool for the Semantic Web of Linked Data</strong>
