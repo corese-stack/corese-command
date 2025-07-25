@@ -45,8 +45,6 @@ curl -fsSL https://raw.githubusercontent.com/corese-stack/corese-command/main/pa
 iwr -useb https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/scripts/install-windows.ps1 | iex
 ```
 
-You’ll then be able to use Corese-Command via the corese command in your terminal.
-
 ### Manual Installation (cross-platform)
 
 You can also use Corese-Command as a standalone `.jar` file or add it to a Java project via Maven.
