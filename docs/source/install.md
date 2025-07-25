@@ -40,7 +40,7 @@ iwr -useb https://raw.githubusercontent.com/corese-stack/corese-command/main/pac
 
 ## Uninstall / Update
 
-If you installed Corese using one of the scripts above, you can uninstall or update it by simply running the same script again.
+If you installed Corese-Command using one of the scripts above, you can uninstall or update it by simply running the same script again.
 
 ## Advanced usage (CI / silent install)
 
@@ -48,9 +48,9 @@ All install scripts support the following options:
 
 ```bash
 # Install a specific version
-./install-linux.sh --install 4.2.0
-./install-macos.sh --install 4.2.0
-.\install-windows.ps1 --install 4.2.0
+./install-linux.sh --install 4.6.0
+./install-macos.sh --install 4.6.0
+.\install-windows.ps1 --install 4.6.0
 
 # Install the latest available version
 ./install-linux.sh --install-latest

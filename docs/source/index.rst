@@ -23,59 +23,65 @@ It enables users to convert RDF formats, execute SPARQL queries, interogate SPAR
 
 .. grid:: 2
    :gutter: 2
-   :class: only-dark
 
    .. grid-item::
       
       .. image:: _static/screenshots/convert.png
          :alt: Screenshot of corese convert
          :width: 100%
+         :class: only-dark
 
    .. grid-item::
       
       .. image:: _static/screenshots/query.png
          :alt: Screenshot of corese query
          :width: 100%
+         :class: only-dark
 
    .. grid-item::
       
       .. image:: _static/screenshots/validate.png
          :alt: Screenshot of corese validate
          :width: 100%
+         :class: only-dark
 
    .. grid-item::
       
       .. image:: _static/screenshots/help.png
          :alt: Screenshot of help
          :width: 100%
+         :class: only-dark
 
 .. grid:: 2
    :gutter: 2
-   :class: only-light
 
    .. grid-item::
       
       .. image:: _static/screenshots/convert.png
          :alt: Screenshot of corese convert
          :width: 100%
+         :class: only-light
 
    .. grid-item::
       
       .. image:: _static/screenshots/query.png
          :alt: Screenshot of corese query
          :width: 100%
+         :class: only-light
 
    .. grid-item::
       
       .. image:: _static/screenshots/validate.png
          :alt: Screenshot of corese validate
          :width: 100%
+         :class: only-light
 
    .. grid-item::
       
       .. image:: _static/screenshots/help.png
          :alt: Screenshot of help
          :width: 100%
+         :class: only-light
 
 .. Define named hyperlinks for the references of W3C standards
 .. _RDF: https://www.w3.org/RDF/
@@ -136,7 +142,7 @@ It enables users to convert RDF formats, execute SPARQL queries, interogate SPAR
 .. _issue reports: https://github.com/corese-stack/corese-command/issues
 .. _pull requests: https://github.com/corese-stack/corese-command/pulls
 
-For support questions, comments, and any ideas for improvements you`d like to discuss, please use our `discussion forum`_. We welcome everyone to contribute to `issue reports`_, suggest new features, and create `pull requests`_.
+For any questions, comments, or improvement ideas, please use our `discussion forum`_. We welcome everyone to contribute via `issue reports`_, suggest new features, and create `pull requests`_.
 
 
 .. #############################################################################

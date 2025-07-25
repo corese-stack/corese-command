@@ -82,8 +82,8 @@ html_js_files = [
 ]
 
 # Modify the title to get good social-media links
-html_title = "Corese"
-html_short_title = "Corese"
+html_title = "Corese-command Documentation"
+html_short_title = "Corese-command Docs"
 
 # -- Theme Options -----------------------------------------------------------
 # Theme options are theme-specific and customize the look and feel of a theme
