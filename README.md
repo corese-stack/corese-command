@@ -93,7 +93,7 @@ corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "https://dbpedia.org/spa
 
 ## Documentation
 
-- [Getting Started Guide](https://corese-stack.github.io/corese-command/v4.6.1/user_guide.html)
+- [Getting Started Guide](https://corese-stack.github.io/corese-command/v4.6.2/user_guide.html)
 
 ## Contributing
 

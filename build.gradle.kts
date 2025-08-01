@@ -21,7 +21,7 @@ object Meta {
     // Project coordinates
     const val groupId = "fr.inria.corese"
     const val artifactId = "corese-command"
-    const val version = "4.6.1"
+    const val version = "4.6.2"
 
     // Project description
     const val desc = "A command-line tool for converting, querying, and validating RDF data with SPARQL and SHACL using the Corese engine."
