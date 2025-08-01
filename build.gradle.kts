@@ -65,7 +65,7 @@ repositories {
 
 // Define dependencies
 dependencies {
-    val coreseVersion = "4.6.3"
+    val coreseVersion = "4.6.4"
     val picocliVersion = "4.7.6"
 
     implementation("fr.inria.corese:corese-core:$coreseVersion") // Core module of Corese
