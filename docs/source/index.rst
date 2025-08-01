@@ -7,6 +7,13 @@
 .. image:: _static/logo/corese-command_doc_light.svg
    :align: center
    :width: 400px
+   :class: only-light
+
+.. image:: _static/logo/corese-command_doc_dark.svg
+   :align: center
+   :width: 400px
+   :class: only-dark
+
 
 Corese is a software platform that implements and extends the standards of the Semantic Web. It enables users to create, manipulate, parse, serialize, query, reason about, and validate RDF data.
 
@@ -22,28 +29,59 @@ It enables users to convert RDF formats, execute SPARQL queries, interogate SPAR
       .. image:: _static/screenshots/convert.png
          :alt: Screenshot of corese convert
          :width: 100%
-         :class: sd-rounded-2
+         :class: only-dark
 
    .. grid-item::
       
       .. image:: _static/screenshots/query.png
          :alt: Screenshot of corese query
          :width: 100%
-         :class: sd-rounded-2
+         :class: only-dark
 
    .. grid-item::
       
       .. image:: _static/screenshots/validate.png
          :alt: Screenshot of corese validate
          :width: 100%
-         :class: sd-rounded-2
+         :class: only-dark
 
    .. grid-item::
       
       .. image:: _static/screenshots/help.png
          :alt: Screenshot of help
          :width: 100%
-         :class: sd-rounded-2
+         :class: only-dark
+
+.. grid:: 2
+   :gutter: 2
+
+   .. grid-item::
+      
+      .. image:: _static/screenshots/convert.png
+         :alt: Screenshot of corese convert
+         :width: 100%
+         :class: only-light
+
+   .. grid-item::
+      
+      .. image:: _static/screenshots/query.png
+         :alt: Screenshot of corese query
+         :width: 100%
+         :class: only-light
+
+   .. grid-item::
+      
+      .. image:: _static/screenshots/validate.png
+         :alt: Screenshot of corese validate
+         :width: 100%
+         :class: only-light
+
+   .. grid-item::
+      
+      .. image:: _static/screenshots/help.png
+         :alt: Screenshot of help
+         :width: 100%
+         :class: only-light
 
 .. Define named hyperlinks for the references of W3C standards
 .. _RDF: https://www.w3.org/RDF/
@@ -91,13 +129,12 @@ It enables users to convert RDF formats, execute SPARQL queries, interogate SPAR
       Corese offers several interfaces
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
       * `corese-core <https://corese-stack.github.io/corese-core/>`_: Java library to process RDF data and use Corese features via an API.
-      * `corese-server <https://corese-stack.github.io/corese-server/>`_: Tool to easily create, configure and manage SPARQL endpoints.
-      * `corese-gui <https://corese-stack.github.io/corese-gui/>`_: Graphical interface that allows an easy and visual use of Corese features.
       * `corese-command <https://corese-stack.github.io/corese-command/>`_: Command Line Interface for Corese that allows users to interact with Corese features from the terminal.
+      * `corese-gui <https://corese-stack.github.io/corese-gui-swing/>`_: Graphical interface that allows an easy and visual use of Corese features.
+      * `corese-server <https://corese-stack.github.io/corese-server-jetty/>`_: Tool to create, configure and manage SPARQL endpoints.
       * `corese-python (beta) <https://corese-stack.github.io/corese-python/>`_: Python wrapper for accessing and manipulating RDF data with Corese features using py4j.
 
 .. raw:: html
-
 
    <h3>Contributions and discussions about Corese-Command</h3>
 
@@ -105,7 +142,7 @@ It enables users to convert RDF formats, execute SPARQL queries, interogate SPAR
 .. _issue reports: https://github.com/corese-stack/corese-command/issues
 .. _pull requests: https://github.com/corese-stack/corese-command/pulls
 
-For support questions, comments, and any ideas for improvements you`d like to discuss, please use our `discussion forum`_. We welcome everyone to contribute to `issue reports`_, suggest new features, and create `pull requests`_.
+For any questions, comments, or improvement ideas, please use our `discussion forum`_. We welcome everyone to contribute via `issue reports`_, suggest new features, and create `pull requests`_.
 
 
 .. #############################################################################
@@ -128,6 +165,5 @@ Home Page
 .. toctree::
    :hidden:
 
-   Home <index.rst>
-   Installation <install.md>
-   User Guide <user_guide.md>
+   Installation <install>
+   User Guide <user_guide>

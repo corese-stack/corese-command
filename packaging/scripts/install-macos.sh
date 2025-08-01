@@ -39,7 +39,6 @@ check_java() {
     if ! command -v java &> /dev/null; then
         echo "❌ Java is not installed."
         prompt_install_java
-        check_java
         return
     fi
 
@@ -62,23 +61,14 @@ check_java() {
         return
     fi
 
-    JAVA_VERSION=$(echo "$JAVA_OUTPUT" | grep -oE 'version "([0-9]+)' | grep -oE '[0-9]+')
-
-    if ! [[ "$JAVA_VERSION" =~ ^[0-9]+$ ]]; then
-        echo "⚠️ Unable to detect a valid Java version."
+    JAVA_VERSION=$(java -version 2>&1 | grep -oE 'version "([0-9]+)' | grep -oE '[0-9]+')
+    if [[ -z "$JAVA_VERSION" || "$JAVA_VERSION" -lt 21 ]]; then
+        echo "❌ Java version 21 or higher is required (found: ${JAVA_VERSION:-unknown})."
         prompt_install_java
-        check_java
         return
-    fi
-
-    if [ "$JAVA_VERSION" -lt 21 ]; then
-        echo "❌ Java version 21 or higher is required (found: $JAVA_VERSION)."
-        prompt_install_java
-        check_java
     else
         echo "✅ Java version $JAVA_VERSION detected."
     fi
-
     echo
 }
 
@@ -254,13 +244,15 @@ add_to_all_available_shell_rcs() {
 
 uninstall() {
     echo
-    echo "⚠️  This will completely remove Corese-Command from your system."
-    echo -n "→ Are you sure? [y/N] "
-    read -r confirm
-    if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
-        echo "❌ Uninstall cancelled."
-        echo
-        exit 0
+    if [[ "$AUTO_YES" -ne 1 ]]; then
+        echo "⚠️  This will completely remove Corese-Command from your system."
+        echo -n "→ Are you sure? [y/N] "
+        read -r confirm
+        if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+            echo "❌ Uninstall cancelled."
+            echo
+            exit 0
+        fi
     fi
 
     echo "🗑️  Removing Corese-Command files..."
@@ -293,12 +285,11 @@ uninstall() {
 main() {
     echo
     echo "╭────────────────────────────────────────╮"
-    echo "│         🧠 Corese-Command CLI          │"
+    echo "│           Corese-Command CLI           │"
     echo "│        macOS Installer & Updater       │"
     echo "╰────────────────────────────────────────╯"
     echo
 
-    check_internet
     display_installed_version
 
     echo "┌──────────── Menu ─────────────┐"
@@ -311,6 +302,7 @@ main() {
 
     case "$choice" in
         1)
+            check_internet
             check_java
             choose_version
             download_and_install
@@ -339,14 +331,15 @@ fi
 # Entry point
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
     echo "Usage:"
-    echo "  ./install.sh --install <version>       Install specific version"
-    echo "  ./install.sh --install-latest          Install latest version"
-    echo "  ./install.sh --uninstall               Uninstall Corese-Command"
+    echo "  ./install-linux-command.sh --install <version>       Install specific version"
+    echo "  ./install-linux-command.sh --install-latest          Install latest version"
+    echo "  ./install-linux-command.sh --uninstall               Uninstall Corese-Command"
     echo
     exit 0
 fi
 
 if [[ "$1" == "--install" && -n "$2" ]]; then
+    AUTO_YES=1
     VERSION_TAG="$2"
     check_java
     download_and_install
@@ -354,6 +347,7 @@ if [[ "$1" == "--install" && -n "$2" ]]; then
 fi
 
 if [[ "$1" == "--install-latest" ]]; then
+    AUTO_YES=1
     VERSION_TAG=$(list_versions | head -n 1)
     check_java
     download_and_install
@@ -361,9 +355,9 @@ if [[ "$1" == "--install-latest" ]]; then
 fi
 
 if [[ "$1" == "--uninstall" ]]; then
+    AUTO_YES=1
     uninstall
     exit 0
 fi
 
 main
-

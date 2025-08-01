@@ -9,16 +9,16 @@
     It checks for Java 21 or higher, prompts the user if Java is not found,
     and fetches the requested release from GitHub. It also adds Corese to the user's PATH.
 
-.PARAMETER --install <version>
+.PARAMETER Install
     Installs the specified version of Corese-Command (e.g., v4.4.1).
 
-.PARAMETER --install-latest
+.PARAMETER InstallLatest
     Automatically installs the latest available version.
 
-.PARAMETER --uninstall
+.PARAMETER Uninstall
     Completely removes Corese-Command and cleans up the user's PATH.
 
-.PARAMETER --help
+.PARAMETER Help
     Displays usage instructions.
 
 .EXAMPLE
@@ -55,6 +55,7 @@ for ($i = 0; $i -lt $args.Length; $i++) {
         "--help"           { $Help = $true }
     }
 }
+$AutoYes = ($Install -or $InstallLatest) -or $Uninstall
 
 function Write-Centered($text) {
     $width = [console]::WindowWidth
@@ -70,10 +71,12 @@ function Check-Internet {
         if (-not $result) {
             throw "No response"
         }
+        Write-Host "Internet connection is OK."
     } catch {
         Write-Error "No internet connection. Please connect and try again."
         exit 1
     }
+    Write-Host ""
 }
 
 function Check-Java {
@@ -113,6 +116,7 @@ function Check-Java {
 function Ask-Java-Install {
     $ans = Read-Host "Please install Java 21 or higher manually and press Enter to continue (or type N to abort)"
     if ($ans -match '^[Nn]') {
+        Write-Host "Java is required. Aborting."
         exit 1
     }
 }
@@ -140,7 +144,7 @@ function Choose-Version {
     Write-Host "`nAvailable versions:"
     for ($i = 0; $i -lt $versions.Count; $i++) {
         $label = if ($i -eq 0) { "$($versions[$i]) (latest)" } else { $versions[$i] }
-        Write-Host " [$($i + 1)] $label"
+        Write-Host "   [$($i + 1)] $label"
     }
 
     while ($true) {
@@ -159,19 +163,22 @@ function Choose-Version {
         }
     }
 
+    Write-Host ""
+    Write-Host "Selected version: $($versions[$index])"
+    Write-Host ""
     return $versions[$index]
 }
 
 function Show-Installed-Version {
+    Write-Host "Current installation:"
     if (Test-Path "$InstallDir\$JarName") {
-        Write-Host "Corese-Command is currently installed:"
         try {
             & java @("-Dfile.encoding=UTF-8", "-jar", "$InstallDir\$JarName", "-V")
         } catch {
-            Write-Host "Unable to run jar."
+            Write-Host "    Unable to run jar."
         }
     } else {
-        Write-Host "No version currently installed."
+        Write-Host "   No version currently installed."
     }
     Write-Host ""
 }
@@ -209,13 +216,20 @@ function Download-And-Install($version) {
     } else {
         Invoke-WebRequest $assetUrl -OutFile "$InstallDir\$JarName"
     }
+    Write-Host ""
+
 
     Write-Host "Creating launcher script..."
     $launcherContent = "@echo off`njava -Dfile.encoding=UTF-8 -jar `"$InstallDir\$JarName`" %*"
     Set-Content -Path $WrapperPath -Value $launcherContent -Encoding ASCII
-    Write-Host "Wrapper created: $WrapperPath"
+    Write-Host "   Wrapper created: $WrapperPath"
 
     Add-ToPath
+    Write-Host ""
+    Write-Host "Corese-Command $version installed successfully!"
+    Write-Host "Launch Corese-Command by running 'corese' in your terminal (terminal must be restarted)."
+    Write-Host "Installed in: $InstallDir"
+    Write-Host ""
 }
 
 function Add-ToPath {
@@ -232,17 +246,21 @@ function Add-ToPath {
 }
 
 function Uninstall {
-    $confirm = Read-Host "`nThis will remove Corese-Command. Are you sure? [y/N]"
-    if ($confirm -notmatch '^[Yy]') {
-        Write-Host "Uninstall cancelled."
-        return
+    if (-not $Global:AutoYes) {
+     $confirm = Read-Host "`nThis will remove Corese-Command from your system. Are you sure? [y/N]"
+      if ($confirm -notmatch '^[Yy]') {
+            Write-Host "Uninstall cancelled."
+         return
+        }
     }
 
+    Write-Host "`nRemoving Corese-Command files..."
     if (Test-Path $InstallDir) {
         Remove-Item -Recurse -Force $InstallDir
-        Write-Host "Removed: $InstallDir"
+        Write-Host "   Removed: $InstallDir"
     }
 
+    # Remove the wrapper script
     $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
     if ($userPath -match [regex]::Escape($InstallDir)) {
         $newPath = ($userPath -split ';') -ne $InstallDir -join ';'
@@ -250,44 +268,50 @@ function Uninstall {
         Write-Host "Removed from PATH (User)"
     }
 
+    Write-Host ""
     Write-Host "Corese-Command has been uninstalled."
+    Write-Host ""
 }
 
 function Main {
     Write-Host ""
     Write-Centered "--------------------------------------------"
-    Write-Centered "Corese-Command CLI - Windows Installer"
+    Write-Centered "   Corese-Command CLI - Windows Installer"
     Write-Centered "--------------------------------------------"
     Write-Host ""
 
-    Check-Internet
     Show-Installed-Version
-
-    Write-Host "Menu:"
-    Write-Host " [1] Install or update"
-    Write-Host " [2] Uninstall"
-    Write-Host " [3] Exit"
-
+    
+    Write-Host "-------------- Menu --------------"
+    Write-Host "| [1] Install or update          |"
+    Write-Host "| [2] Uninstall                  |"
+    Write-Host "| [3] Exit                       |"
+    Write-Host "----------------------------------"
+    
     $opt = Read-Host "`nSelect an option [1/2/3]"
     switch ($opt) {
         1 {
+            Check-Internet
             Check-Java
             $v = Choose-Version
             Download-And-Install $v
         }
         2 { Uninstall }
         3 { Write-Host "Goodbye!" }
-        default { Write-Host "Invalid option." }
+        default {
+            Write-Host "Invalid option."
+            Main
+        }
     }
 }
 
-# Handle args
+# Handle command line arguments
 if ($Help) {
     Write-Host "Usage:"
-    Write-Host "  install.ps1 --install <version>       Install specific version"
-    Write-Host "  install.ps1 --install-latest          Install latest version"
-    Write-Host "  install.ps1 --uninstall               Uninstall Corese-Command"
-    Write-Host "  install.ps1 --help                    Show this help"
+    Write-Host "  installinstall-windows-command.ps1 --install [version]       Install specific version"
+    Write-Host "  installinstall-windows-command.ps1 --install-latest          Install latest version"
+    Write-Host "  installinstall-windows-command.ps1 --uninstall               Uninstall Corese-Command"
+    Write-Host "  installinstall-windows-command.ps1 --help                    Show this help"
     exit
 }
 

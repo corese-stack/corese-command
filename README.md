@@ -3,7 +3,7 @@
 
 <p align="center">
     <a href="https://project.inria.fr/corese/">
-        <img src="docs/source/_static/logo/corese-command-logo.svg" width="200" alt="Corese-Command-logo">
+        <img src="docs/source/_static/logo/corese-command.svg" width="200" alt="Corese-Command-logo">
     </a>
     <br>
     <strong>Command-line tool for the Semantic Web of Linked Data</strong>
@@ -11,7 +11,7 @@
 
 [![License: CECILL-C](https://img.shields.io/badge/License-CECILL--C-blue.svg)](https://cecill.info/licences/Licence_CeCILL-C_V1-en.html) [![Discussions](https://img.shields.io/badge/Discussions-GitHub-blue)](https://github.com/orgs/corese-stack/discussions)
 
-## ✨ Features
+## Features
 
 - Convert RDF data formats (Turtle, RDF/XML, N-Triples, etc.)
 - Execute SPARQL queries on local or remote files
@@ -19,14 +19,14 @@
 - Validate RDF graphs using SHACL
 - Canonicalize RDF data
 
-## 🚀 Getting Started
+## Getting Started
 
 Install Corese-Command using your preferred platform:
 
 ### Linux
 
 <a href='https://flathub.org/apps/fr.inria.corese.CoreseCommand'>
-    <img width='140' alt='Get it on Flathub' src='https://flathub.org/api/badge?locale=en'/>
+    <img width='140' alt='Get it on Flathub' src='docs/source/_static/logo/badge_flathub.svg'/>
 </a>
 
 ```shell
@@ -45,16 +45,18 @@ curl -fsSL https://raw.githubusercontent.com/corese-stack/corese-command/main/pa
 iwr -useb https://raw.githubusercontent.com/corese-stack/corese-command/main/packaging/scripts/install-windows.ps1 | iex
 ```
 
-You’ll then be able to use Corese-Command via the corese command in your terminal.
-
 ### Manual Installation (cross-platform)
 
 You can also use Corese-Command as a standalone `.jar` file or add it to a Java project via Maven.
 
-> Requires Java 11 or higher.
+> Requires Java 21 or higher.
 
-- [🔗 GitHub Releases](https://github.com/corese-stack/corese-command/releases)
-- [📦 Maven Central](https://central.sonatype.com/artifact/fr.inria.corese/corese-command)
+<a href='https://github.com/corese-stack/corese-command/releases'>
+    <img width='140' alt='Get it on GitHub' src='docs/source/_static/logo/badge_github.svg'/>
+</a>
+<a href='https://central.sonatype.com/artifact/fr.inria.corese/corese-command'>
+    <img width='140' alt='Get it on Maven Central' src='docs/source/_static/logo/badge_maven.svg'/>
+</a>
 
 Run manually with:
 
@@ -62,7 +64,7 @@ Run manually with:
 java -jar corese-command-standalone.jar
 ```
 
-## ✅ Example Usage
+## Example Usage
 
 ```shell
 # Run a simple SPARQL query on an RDF file
@@ -89,11 +91,11 @@ corese canonicalize -i data.ttl -of rdfc-1.0-sha256
 corese query-endpoint -q 'SELECT * WHERE {?s ?p ?o}' -e "https://dbpedia.org/sparql"
 ```
 
-## 📖 Documentation
+## Documentation
 
-- [Getting Started Guide](https://corese-stack.github.io/corese-command/v4.6.1/user_guide.html)
+- [Getting Started Guide](https://corese-stack.github.io/corese-command/v4.6.2/user_guide.html)
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Here’s how to get involved:
 
@@ -101,7 +103,7 @@ We welcome contributions! Here’s how to get involved:
 - [Issue Tracker](https://github.com/corese-stack/corese-command/issues)
 - [Pull Requests](https://github.com/corese-stack/corese-command/pulls)
 
-## 🔗 Useful Links
+## Useful Links
 
 - [Corese Website](https://corese-stack.github.io/corese-command/)
 - Mailing List: <corese-users@inria.fr>
