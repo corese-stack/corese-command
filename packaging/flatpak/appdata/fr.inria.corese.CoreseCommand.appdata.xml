@@ -141,7 +141,9 @@
             <description>
                 <ul>
                     <li>Update Corese-Core dependency to version `4.6.4`.</li>
+                    <li>Update error messages for clarity and consistency.</li>
                     <li xml:lang="fr">Mise à jour de la dépendance Corese-Core à la version `4.6.4`.</li>
+                    <li xml:lang="fr">Mise à jour des messages d'erreur pour plus de clarté et de cohérence.</li>
                 </ul>
             </description>
         </release>
