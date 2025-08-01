@@ -136,6 +136,15 @@
     </screenshots>
 
     <releases>
+        <release version="4.6.2" date="2025-08-01">
+            <url type="details">https://github.com/corese-stack/corese-command/releases/tag/v4.6.2</url>
+            <description>
+                <ul>
+                    <li>Update Corese-Core dependency to version `4.6.4`.</li>
+                    <li xml:lang="fr">Mise à jour de la dépendance Corese-Core à la version `4.6.4`.</li>
+                </ul>
+            </description>
+        </release>
         <release version="4.6.1" date="2025-06-17">
             <url type="details">https://github.com/corese-stack/corese-command/releases/tag/v4.6.1</url>
             <description>

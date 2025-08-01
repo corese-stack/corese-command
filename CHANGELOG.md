@@ -1,12 +1,17 @@
 <!-- markdownlint-disable MD024 -->
 # Corese Changelog
 
-## Version 4.6.2
+## Version 4.6.2 - 2025-08-01
 
 ### Changed
 
 - Remove `module-info.java` from the `corese-command` module to avoid issues with Java 21 and later versions. This file is not needed for command-line applications and its removal simplifies the build process.
-- Update JDK version to 21 in GitHub workflows
+- Update JDK version to 21 in GitHub workflows.
+- Update Corese-Core dependency to version `4.6.4`.
+
+### Fixed
+
+- Fixed bugs in installation scripts for Linux, macOS, and Windows.
 
 ## Version 4.6.1 – 2025-06-17
 
