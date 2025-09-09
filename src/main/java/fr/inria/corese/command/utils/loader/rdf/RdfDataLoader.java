@@ -246,7 +246,7 @@ public class RdfDataLoader {
         Load load = RDFLoaderWrapper.graphLoader(graph);
 
         try {
-            load.parse(inputStream, inputFormat.getCoreseFormat());
+            RDFLoaderWrapper.parse( load, inputStream, inputFormat.getCoreseFormat());
             return graph;
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to parse RDF file. Check if file is well-formed and that "
