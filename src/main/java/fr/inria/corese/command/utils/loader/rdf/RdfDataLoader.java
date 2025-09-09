@@ -13,7 +13,6 @@ import fr.inria.corese.command.utils.ConvertString;
 import fr.inria.corese.command.utils.InputTypeDetector;
 import fr.inria.corese.command.utils.InputTypeDetector.InputType;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.GraphWrapper;
 import fr.inria.corese.command.utils.coreseCoreWrapper.RDFLoaderWrapper;
 import fr.inria.corese.core.Graph;
 import fr.inria.corese.core.load.Load;
@@ -262,7 +261,7 @@ public class RdfDataLoader {
      */
     private Optional<EnumRdfInputFormat> guessInputFormat(String input) {
 
-        EnumRdfInputFormat inputFormat = EnumRdfInputFormat.create(LoadFormat.getFormat(input));
+        EnumRdfInputFormat inputFormat = EnumRdfInputFormat.create( RDFLoaderWrapper.getLoadFormat(input));
 
         if (inputFormat == null) {
             if (this.verbose) {
