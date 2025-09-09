@@ -75,7 +75,7 @@ public class RdfDataLoader {
             switch (type) {
                 case URL:
                     Graph resultGraphUrl = this.loadFromURL(ConvertString.toUrlOrThrow(input), inputFormat);
-                    graph.merge(resultGraphUrl);
+                    GraphWrapper.mergeGraph(graph, resultGraphUrl);
                     break;
 
                 case FILE_PATH:
@@ -88,7 +88,7 @@ public class RdfDataLoader {
                     } else {
                         resultGraph = this.loadFromFile(path, inputFormat);
                     }
-                    graph.merge(resultGraph);
+                    GraphWrapper.mergeGraph(graph, resultGraph);
                     break;
 
                 default:
@@ -203,7 +203,7 @@ public class RdfDataLoader {
                     this.loadFromDirectoryRecursive(childFile.toPath(), inputFormat, recursive, graph);
                 } else if (childFile.isFile()) {
                     Graph resultGraph = this.loadFromFile(childFile.toPath(), inputFormat);
-                    graph.merge(resultGraph);
+                    GraphWrapper.mergeGraph(graph, resultGraph);
                 }
             }
         }
