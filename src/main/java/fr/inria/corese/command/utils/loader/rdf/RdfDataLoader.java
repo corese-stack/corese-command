@@ -12,6 +12,9 @@ import java.util.Optional;
 import fr.inria.corese.command.utils.ConvertString;
 import fr.inria.corese.command.utils.InputTypeDetector;
 import fr.inria.corese.command.utils.InputTypeDetector.InputType;
+
+import fr.inria.corese.command.utils.coreseCoreWrapper.GraphWrapper;
+import fr.inria.corese.command.utils.coreseCoreWrapper.RDFLoaderWrapper;
 import fr.inria.corese.core.Graph;
 import fr.inria.corese.core.load.Load;
 import fr.inria.corese.core.load.LoadFormat;
@@ -240,7 +243,7 @@ public class RdfDataLoader {
         }
 
         Graph graph = Graph.create();
-        Load load = Load.create(graph);
+        Load load = RDFLoaderWrapper.graphLoader(graph);
 
         try {
             load.parse(inputStream, inputFormat.getCoreseFormat());
