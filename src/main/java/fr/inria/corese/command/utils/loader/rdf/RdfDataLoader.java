@@ -233,21 +233,21 @@ public class RdfDataLoader {
      */
     private Graph loadFromInputStream(InputStream inputStream, EnumRdfInputFormat inputFormat) {
 
-        Graph graph = Graph.create();
-        Load load = Load.create(graph);
-
         if (inputFormat == null) {
             throw new IllegalArgumentException(
                     "The input format cannot be automatically determined if you use standard input or na URL. "
                             + "Please specify the input format with the option -f.");
-        } else {
-            try {
-                load.parse(inputStream, inputFormat.getCoreseFormat());
-                return graph;
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Failed to parse RDF file. Check if file is well-formed and that "
-                        + "the input format is correct. " + e.getMessage(), e);
-            }
+        }
+
+        Graph graph = Graph.create();
+        Load load = Load.create(graph);
+
+        try {
+            load.parse(inputStream, inputFormat.getCoreseFormat());
+            return graph;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse RDF file. Check if file is well-formed and that "
+                    + "the input format is correct. " + e.getMessage(), e);
         }
     }
 
