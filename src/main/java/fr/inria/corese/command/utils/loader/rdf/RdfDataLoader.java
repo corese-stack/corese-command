@@ -14,9 +14,10 @@ import fr.inria.corese.command.utils.InputTypeDetector;
 import fr.inria.corese.command.utils.InputTypeDetector.InputType;
 
 import fr.inria.corese.command.utils.coreseCoreWrapper.RDFLoaderWrapper;
-import fr.inria.corese.core.Graph;
 import fr.inria.corese.core.load.Load;
-import fr.inria.corese.core.load.LoadFormat;
+import fr.inria.corese.command.utils.coreseCoreWrapper.GraphWrapper;
+import fr.inria.corese.core.Graph;
+
 import picocli.CommandLine.Model.CommandSpec;
 
 /**
@@ -66,7 +67,7 @@ public class RdfDataLoader {
             return this.LoadFromStdin(inputFormat);
         }
 
-        Graph graph = Graph.create();
+        Graph graph = GraphWrapper.createGraph();
 
         for (String input : inputs) {
             InputType type = InputTypeDetector.detect(input);
@@ -217,7 +218,7 @@ public class RdfDataLoader {
      * @return The Corese Graph containing the RDF data.
      */
     private Graph loadFromDirectory(Path path, EnumRdfInputFormat inputFormat, boolean recursive) {
-        Graph graph = Graph.create();
+        Graph graph = GraphWrapper.createGraph();
         this.loadFromDirectoryRecursive(path, inputFormat, recursive, graph);
 
         if (this.verbose) {
@@ -241,7 +242,7 @@ public class RdfDataLoader {
                             + "Please specify the input format with the option -f.");
         }
 
-        Graph graph = Graph.create();
+        Graph graph = GraphWrapper.createGraph();
         Load load = RDFLoaderWrapper.graphLoader(graph);
 
         try {
