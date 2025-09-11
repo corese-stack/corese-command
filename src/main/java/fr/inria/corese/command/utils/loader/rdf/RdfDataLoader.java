@@ -12,9 +12,12 @@ import java.util.Optional;
 import fr.inria.corese.command.utils.ConvertString;
 import fr.inria.corese.command.utils.InputTypeDetector;
 import fr.inria.corese.command.utils.InputTypeDetector.InputType;
-import fr.inria.corese.core.Graph;
+
+import fr.inria.corese.command.utils.coreseCoreWrapper.RDFLoaderWrapper;
 import fr.inria.corese.core.load.Load;
-import fr.inria.corese.core.load.LoadFormat;
+import fr.inria.corese.command.utils.coreseCoreWrapper.GraphWrapper;
+import fr.inria.corese.core.Graph;
+
 import picocli.CommandLine.Model.CommandSpec;
 
 /**
@@ -64,7 +67,7 @@ public class RdfDataLoader {
             return this.LoadFromStdin(inputFormat);
         }
 
-        Graph graph = Graph.create();
+        Graph graph = GraphWrapper.createGraph();
 
         for (String input : inputs) {
             InputType type = InputTypeDetector.detect(input);
@@ -72,7 +75,7 @@ public class RdfDataLoader {
             switch (type) {
                 case URL:
                     Graph resultGraphUrl = this.loadFromURL(ConvertString.toUrlOrThrow(input), inputFormat);
-                    graph.merge(resultGraphUrl);
+                    GraphWrapper.mergeGraph(graph, resultGraphUrl);
                     break;
 
                 case FILE_PATH:
@@ -85,7 +88,7 @@ public class RdfDataLoader {
                     } else {
                         resultGraph = this.loadFromFile(path, inputFormat);
                     }
-                    graph.merge(resultGraph);
+                    GraphWrapper.mergeGraph(graph, resultGraph);
                     break;
 
                 default:
@@ -200,7 +203,7 @@ public class RdfDataLoader {
                     this.loadFromDirectoryRecursive(childFile.toPath(), inputFormat, recursive, graph);
                 } else if (childFile.isFile()) {
                     Graph resultGraph = this.loadFromFile(childFile.toPath(), inputFormat);
-                    graph.merge(resultGraph);
+                    GraphWrapper.mergeGraph(graph, resultGraph);
                 }
             }
         }
@@ -215,7 +218,7 @@ public class RdfDataLoader {
      * @return The Corese Graph containing the RDF data.
      */
     private Graph loadFromDirectory(Path path, EnumRdfInputFormat inputFormat, boolean recursive) {
-        Graph graph = Graph.create();
+        Graph graph = GraphWrapper.createGraph();
         this.loadFromDirectoryRecursive(path, inputFormat, recursive, graph);
 
         if (this.verbose) {
@@ -233,21 +236,21 @@ public class RdfDataLoader {
      */
     private Graph loadFromInputStream(InputStream inputStream, EnumRdfInputFormat inputFormat) {
 
-        Graph graph = Graph.create();
-        Load load = Load.create(graph);
-
         if (inputFormat == null) {
             throw new IllegalArgumentException(
                     "The input format cannot be automatically determined if you use standard input or na URL. "
                             + "Please specify the input format with the option -f.");
-        } else {
-            try {
-                load.parse(inputStream, inputFormat.getCoreseFormat());
-                return graph;
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Failed to parse RDF file. Check if file is well-formed and that "
-                        + "the input format is correct. " + e.getMessage(), e);
-            }
+        }
+
+        Graph graph = GraphWrapper.createGraph();
+        Load load = RDFLoaderWrapper.graphLoader(graph);
+
+        try {
+            RDFLoaderWrapper.parse( load, inputStream, inputFormat.getCoreseFormat());
+            return graph;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse RDF file. Check if file is well-formed and that "
+                    + "the input format is correct. " + e.getMessage(), e);
         }
     }
 
@@ -259,7 +262,7 @@ public class RdfDataLoader {
      */
     private Optional<EnumRdfInputFormat> guessInputFormat(String input) {
 
-        EnumRdfInputFormat inputFormat = EnumRdfInputFormat.create(LoadFormat.getFormat(input));
+        EnumRdfInputFormat inputFormat = EnumRdfInputFormat.create( RDFLoaderWrapper.getLoadFormat(input));
 
         if (inputFormat == null) {
             if (this.verbose) {
