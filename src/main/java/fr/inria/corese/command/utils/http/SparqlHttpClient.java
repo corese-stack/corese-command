@@ -10,7 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import fr.inria.corese.command.VersionProvider;
 import fr.inria.corese.command.utils.ContentValidator;
-import fr.inria.corese.core.Graph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
 import fr.inria.corese.core.kgram.core.Query;
 import fr.inria.corese.core.query.QueryProcess;
 import fr.inria.corese.core.sparql.triple.parser.Constant;
@@ -264,7 +264,7 @@ public class SparqlHttpClient {
      * @return the query object
      */
     private Query buildQuery(String query) {
-        QueryProcess exec = QueryProcess.create(Graph.create());
+        QueryProcess exec = QueryProcess.create(CoreseGraph.create().getGraph());
         Query q;
         try {
             q = exec.compile(query);

@@ -15,10 +15,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
-import fr.inria.corese.command.utils.loader.rdf.RdfDataLoader;
-import fr.inria.corese.core.Graph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
 import fr.inria.corese.core.load.Load;
-import fr.inria.corese.core.print.CanonicalRdf10Format;
 import picocli.CommandLine;
 
 public class ConvertTest {
@@ -45,8 +43,8 @@ public class ConvertTest {
     }
 
     private String canonicalize(String path) {
-        Graph graph = Graph.create();
-        Load ld = Load.create(graph);
+        CoreseGraph graph = CoreseGraph.create();
+        Load ld = Load.create(graph.getGraph());
 
         try {
             ld.parse(path, "");
@@ -54,7 +52,7 @@ public class ConvertTest {
             e.printStackTrace();
         }
 
-        return CanonicalRdf10Format.create(graph).toString();
+        return graph.canonicalRdf10Format().toString();
     }
 
     @BeforeEach
@@ -773,8 +771,8 @@ public class ConvertTest {
         Path inputPath = referencesPath.resolve("beatles.ttl");
 
         try {
-            RdfDataLoader loader = new RdfDataLoader(null, false);
-            loader.load(new String[] { inputPath.toString() }, EnumRdfInputFormat.JSONLD, false);
+            CoreseGraph graph = new CoreseGraph(null, false);
+            graph.load(new String[] { inputPath.toString() }, EnumRdfInputFormat.JSONLD, false);
             fail("Expected an IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertTrue(e.getMessage().contains("Failed to open RDF data file:"));

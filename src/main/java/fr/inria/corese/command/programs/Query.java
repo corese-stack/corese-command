@@ -1,9 +1,9 @@
 package fr.inria.corese.command.programs;
 
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
 import fr.inria.corese.command.utils.exporter.sparql.EnumResultFormat;
 import fr.inria.corese.command.utils.exporter.sparql.SparqlResultExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
-import fr.inria.corese.command.utils.loader.rdf.RdfDataLoader;
 import fr.inria.corese.command.utils.loader.sparql.SparqlQueryLoader;
 import fr.inria.corese.core.Graph;
 import fr.inria.corese.core.kgram.core.Mappings;
@@ -37,19 +37,19 @@ public class Query extends AbstractInputCommand {
         try {
 
             // Load the input file(s)
-            RdfDataLoader loader = new RdfDataLoader(this.spec, this.verbose);
-            Graph graph = loader.load(this.inputsRdfData, this.inputFormat, this.recursive);
+            CoreseGraph graph = new CoreseGraph(this.spec, this.verbose);
+            graph.load(this.inputsRdfData, this.inputFormat, this.recursive);
 
             // Load the query
             SparqlQueryLoader queryLoader = new SparqlQueryLoader(this.spec, this.verbose);
             String query = queryLoader.load(this.queryUrlOrFile);
 
             // Execute the query
-            Mappings mappings = this.execute(graph, query);
+            Mappings mappings = this.execute( graph.getGraph(), query);
 
             // Export the result
             SparqlResultExporter exporter = new SparqlResultExporter(this.spec, this.verbose, this.output);
-            exporter.export(mappings, graph, this.resultFormat);
+            exporter.export(mappings, graph.getGraph(), this.resultFormat);
 
             return this.ERROR_EXIT_CODE_SUCCESS;
         } catch (Exception e) {

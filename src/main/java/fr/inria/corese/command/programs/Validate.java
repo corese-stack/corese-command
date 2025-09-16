@@ -1,10 +1,10 @@
 package fr.inria.corese.command.programs;
 
 import fr.inria.corese.command.utils.ContentValidator;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
 import fr.inria.corese.command.utils.exporter.rdf.EnumRdfOutputFormat;
 import fr.inria.corese.command.utils.exporter.rdf.RdfDataExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
-import fr.inria.corese.command.utils.loader.rdf.RdfDataLoader;
 import fr.inria.corese.core.Graph;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -34,11 +34,12 @@ public class Validate extends AbstractInputCommand {
 
         try {
             // Load input file(s)
-            RdfDataLoader loader = new RdfDataLoader(this.spec, this.verbose);
-            Graph dataGraph = loader.load(this.inputsRdfData, this.inputFormat, this.recursive);
+            CoreseGraph dataGraph = new CoreseGraph(this.spec, this.verbose);
+            dataGraph.load(this.inputsRdfData, this.inputFormat, this.recursive);
 
             // Load shapes file(s)
-            Graph shapesGraph = loader.load(this.shaclShapes, this.reportFormat, this.recursive);
+            CoreseGraph shapesGraph = new CoreseGraph(this.spec, this.verbose);
+            shapesGraph.load(this.shaclShapes, this.reportFormat, this.recursive);
 
             // Check if shapes graph contains SHACL shapes
             if (!ContentValidator.containsShaclShapes(shapesGraph)) {
@@ -67,13 +68,13 @@ public class Validate extends AbstractInputCommand {
      * @return The report graph.
      * @throws Exception If an error occurs while evaluating SHACL shapes.
      */
-    private Graph evaluateSHACLShapes(Graph dataGraph, Graph shapesGraph) throws Exception {
+    private Graph evaluateSHACLShapes(CoreseGraph dataGraph, CoreseGraph shapesGraph) throws Exception {
 
         if (this.verbose) {
             this.spec.commandLine().getErr().println("Evaluating SHACL shapes...");
         }
 
-        fr.inria.corese.core.shacl.Shacl shacl = new fr.inria.corese.core.shacl.Shacl(dataGraph, shapesGraph);
+        fr.inria.corese.core.shacl.Shacl shacl = new fr.inria.corese.core.shacl.Shacl(dataGraph.getGraph(), shapesGraph.getGraph());
         try {
             return shacl.eval();
         } catch (Exception e) {

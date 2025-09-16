@@ -1,6 +1,6 @@
 package fr.inria.corese.command.utils;
 
-import fr.inria.corese.core.Graph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
 import fr.inria.corese.core.query.QueryProcess;
 import fr.inria.corese.core.kgram.api.core.Node;
 import fr.inria.corese.core.kgram.core.Query;
@@ -23,8 +23,8 @@ public class ContentValidator {
             return false;
         }
 
-        Graph graph = Graph.create();
-        QueryProcess exec = QueryProcess.create(graph);
+        CoreseGraph graph = CoreseGraph.create();
+        QueryProcess exec = QueryProcess.create(graph.getGraph());
 
         try {
             Query query = exec.compile(input);
@@ -40,7 +40,7 @@ public class ContentValidator {
      * @param graph Graph to check.
      * @return True if the graph contains SHACL shapes, false otherwise.
      */
-    public static boolean containsShaclShapes(Graph graph) {
+    public static boolean containsShaclShapes(CoreseGraph graph) {
         if (graph == null || graph.size() == 0) {
             return false;
         }
