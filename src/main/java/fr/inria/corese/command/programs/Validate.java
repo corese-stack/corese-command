@@ -5,7 +5,6 @@ import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
 import fr.inria.corese.command.utils.exporter.rdf.EnumRdfOutputFormat;
 import fr.inria.corese.command.utils.exporter.rdf.RdfDataExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
-import fr.inria.corese.core.Graph;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -47,7 +46,7 @@ public class Validate extends AbstractInputCommand {
             }
 
             // Evaluation of SHACL shapes
-            Graph reportGraph = this.evaluateSHACLShapes(dataGraph, shapesGraph);
+            CoreseGraph reportGraph = this.evaluateSHACLShapes(dataGraph, shapesGraph);
 
             // Export the report graph
             RdfDataExporter rdfExporter = new RdfDataExporter(this.spec, this.verbose, this.output);
@@ -68,7 +67,7 @@ public class Validate extends AbstractInputCommand {
      * @return The report graph.
      * @throws Exception If an error occurs while evaluating SHACL shapes.
      */
-    private Graph evaluateSHACLShapes(CoreseGraph dataGraph, CoreseGraph shapesGraph) throws Exception {
+    private CoreseGraph evaluateSHACLShapes(CoreseGraph dataGraph, CoreseGraph shapesGraph) throws Exception {
 
         if (this.verbose) {
             this.spec.commandLine().getErr().println("Evaluating SHACL shapes...");
@@ -76,7 +75,7 @@ public class Validate extends AbstractInputCommand {
 
         fr.inria.corese.core.shacl.Shacl shacl = new fr.inria.corese.core.shacl.Shacl(dataGraph.getGraph(), shapesGraph.getGraph());
         try {
-            return shacl.eval();
+            return new CoreseGraph( shacl.eval());
         } catch (Exception e) {
             throw new Exception("Error while evaluating SHACL shapes: " + e.getMessage(), e);
         }

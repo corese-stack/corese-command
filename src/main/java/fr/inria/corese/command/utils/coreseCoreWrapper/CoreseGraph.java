@@ -5,7 +5,6 @@ import fr.inria.corese.command.utils.InputTypeDetector;
 import fr.inria.corese.command.utils.InputTypeDetector.InputType;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
 import fr.inria.corese.core.Graph;
-import fr.inria.corese.core.extension.Core;
 import fr.inria.corese.core.kgram.api.core.Edge;
 import fr.inria.corese.core.kgram.api.core.Node;
 import fr.inria.corese.core.load.Load;
@@ -42,6 +41,11 @@ public class CoreseGraph  {
     public CoreseGraph(CommandSpec spec, boolean verbose) {
         this.spec = spec;
         this.verbose = verbose;
+    }
+
+    public CoreseGraph(Graph graph) {
+        this(null, false);
+        this.graph = graph;
     }
 
     ////////////////////

@@ -33,7 +33,7 @@ public class Canonicalize extends AbstractInputCommand {
 
             // Canonicalize and export the graph
             RdfDataCanonicalizer rdfCanonicalizer = new RdfDataCanonicalizer(this.spec, this.verbose, this.output);
-            rdfCanonicalizer.export(graph.getGraph(), this.canonicalAlgo);
+            rdfCanonicalizer.export(graph, this.canonicalAlgo);
 
             return this.ERROR_EXIT_CODE_SUCCESS;
         } catch (IllegalArgumentException e) {

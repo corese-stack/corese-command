@@ -5,7 +5,6 @@ import fr.inria.corese.command.utils.exporter.sparql.EnumResultFormat;
 import fr.inria.corese.command.utils.exporter.sparql.SparqlResultExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
 import fr.inria.corese.command.utils.loader.sparql.SparqlQueryLoader;
-import fr.inria.corese.core.Graph;
 import fr.inria.corese.core.kgram.core.Mappings;
 import fr.inria.corese.core.query.QueryProcess;
 import picocli.CommandLine.Command;
@@ -45,11 +44,11 @@ public class Query extends AbstractInputCommand {
             String query = queryLoader.load(this.queryUrlOrFile);
 
             // Execute the query
-            Mappings mappings = this.execute( graph.getGraph(), query);
+            Mappings mappings = this.execute( graph, query);
 
             // Export the result
             SparqlResultExporter exporter = new SparqlResultExporter(this.spec, this.verbose, this.output);
-            exporter.export(mappings, graph.getGraph(), this.resultFormat);
+            exporter.export(mappings, graph, this.resultFormat);
 
             return this.ERROR_EXIT_CODE_SUCCESS;
         } catch (Exception e) {
@@ -58,8 +57,8 @@ public class Query extends AbstractInputCommand {
         }
     }
 
-    private Mappings execute(Graph graph, String query) throws Exception {
-        QueryProcess exec = QueryProcess.create(graph);
+    private Mappings execute(CoreseGraph graph, String query) throws Exception {
+        QueryProcess exec = QueryProcess.create(graph.getGraph());
 
         // Execute query
         try {

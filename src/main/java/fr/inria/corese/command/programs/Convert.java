@@ -33,7 +33,7 @@ public class Convert extends AbstractInputCommand {
 
             // Export the graph
             RdfDataExporter rdfExporter = new RdfDataExporter(this.spec, this.verbose, this.output);
-            rdfExporter.export(graph.getGraph(), this.outputFormat);
+            rdfExporter.export(graph, this.outputFormat);
 
             return this.ERROR_EXIT_CODE_SUCCESS;
         } catch (IllegalArgumentException e) {
