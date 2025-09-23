@@ -212,7 +212,7 @@ public class SparqlHttpClient {
 
         if (!this.requestMethodIsDefinedByUser) {
             // Check if the query is an update query.
-            if (query.getAST().isSPARQLUpdate()) {
+            if (query.isSPARQLUpdate()) {
                 // If it is an update query, set the request method to POST_Encoded.
                 this.requestMethod = EnumRequestMethod.POST_URLENCODED;
             } else {
@@ -224,7 +224,7 @@ public class SparqlHttpClient {
         // Check if the query is an update query and the method is GET
         // which is not allowed by the SPARQL specification
         // (see https://www.w3.org/TR/sparql11-protocol/#update-operation)
-        if (this.requestMethod == EnumRequestMethod.GET && query.getAST().isSPARQLUpdate()) {
+        if (this.requestMethod == EnumRequestMethod.GET && query.isSPARQLUpdate()) {
             throw new IllegalArgumentException(
                     "SPARQL query is an update query, but GET method is used. Please use a POST method instead.");
         }
@@ -242,7 +242,7 @@ public class SparqlHttpClient {
         // which is not allowed by the SPARQL specification
         // (see https://www.w3.org/TR/sparql11-protocol/#update-operation)
         List<String> sparqlConstants = new ArrayList<>();
-        ASTUpdate astUpdate = query.getAST().getUpdate();
+        ASTUpdate astUpdate = query.getUpdate();
         if (astUpdate != null) {
             for (Update update : astUpdate.getUpdates()) {
                 Composite composite = update.getComposite();
