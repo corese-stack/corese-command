@@ -21,42 +21,63 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.Optional;
 
+/**
+ * Wrapper class for corese.core.Graph
+ * All interactions with corese.core.Graph should be done through this class
+ */
 public class CoreseGraph  {
     private Graph graph;
 
     // Command specification
-    private CommandSpec spec;
-    private boolean verbose;
+    private CommandSpec spec = null;  // Command specification
+    private boolean verbose = false;  // If set to true, print information about the loaded files
 
-    /////////////////
-    // Constructor //
-    /////////////////
+    //////////////////
+    // Constructors //
+    //////////////////
 
     /**
      * Constructor.
-     *
+     * Empty graph, empty command specification, verbose is false
+     */
+    public CoreseGraph() {
+        this(Graph.create(), null, false);
+    }
+
+    /**
+     * Constructor.
+     * Empty graph
+     * @param spec    Command specification.
+     * @param verbose If true, print information about the loaded files.
+    */
+   public CoreseGraph(CommandSpec spec, boolean verbose) {
+        this(Graph.create(), spec, verbose);
+    }
+
+    /**
+     * Constructor.
+     * Empty command specification, verbose is false
+     * @param graph   A given corese Graph
+     */
+    public CoreseGraph(Graph graph) {
+        this(graph, null, false);
+    }
+
+    /**
+     * Constructor.
+     * @param graph   A given corese Graph
      * @param spec    Command specification.
      * @param verbose If true, print information about the loaded files.
      */
-    public CoreseGraph(CommandSpec spec, boolean verbose) {
+    public CoreseGraph(Graph graph, CommandSpec spec, boolean verbose) {
+        this.graph = graph;
         this.spec = spec;
         this.verbose = verbose;
-    }
-
-    public CoreseGraph(Graph graph) {
-        this(null, false);
-        this.graph = graph;
     }
 
     ////////////////////
     // Public methods //
     ////////////////////
-
-    public static CoreseGraph create() {
-        CoreseGraph createdGraph = new CoreseGraph(null,false);
-        createdGraph.graph = Graph.create();
-        return createdGraph;
-    }
 
     public Graph getGraph() {
         return graph;

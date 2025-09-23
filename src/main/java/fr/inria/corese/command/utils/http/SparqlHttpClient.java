@@ -264,7 +264,7 @@ public class SparqlHttpClient {
      * @return the query object
      */
     private Query buildQuery(String query) {
-        QueryProcess exec = QueryProcess.create(CoreseGraph.create().getGraph());
+        QueryProcess exec = QueryProcess.create(new CoreseGraph().getGraph());
         Query q;
         try {
             q = exec.compile(query);

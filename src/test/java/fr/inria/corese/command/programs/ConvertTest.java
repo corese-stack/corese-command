@@ -43,7 +43,7 @@ public class ConvertTest {
     }
 
     private String canonicalize(String path) {
-        CoreseGraph graph = CoreseGraph.create();
+        CoreseGraph graph = new CoreseGraph();
         Load ld = Load.create(graph.getGraph());
 
         try {
@@ -771,7 +771,7 @@ public class ConvertTest {
         Path inputPath = referencesPath.resolve("beatles.ttl");
 
         try {
-            CoreseGraph graph = new CoreseGraph(null, false);
+            CoreseGraph graph = new CoreseGraph();
             graph.load(new String[] { inputPath.toString() }, EnumRdfInputFormat.JSONLD, false);
             fail("Expected an IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {

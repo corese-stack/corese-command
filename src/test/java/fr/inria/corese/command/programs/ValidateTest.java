@@ -96,7 +96,7 @@ public class ValidateTest {
         InputStream is = new ByteArrayInputStream(content.getBytes());
 
         // Load RDF content into a Graph
-        CoreseGraph graph = CoreseGraph.create();
+        CoreseGraph graph = new CoreseGraph();
         Load ld = Load.create(graph.getGraph());
 
         try {

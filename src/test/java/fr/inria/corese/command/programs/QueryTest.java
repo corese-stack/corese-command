@@ -111,7 +111,7 @@ public class QueryTest {
         private String canonicalize(String filePath) {
 
                 // Load RDF content into a Graph
-                CoreseGraph graph = CoreseGraph.create();
+                CoreseGraph graph = new CoreseGraph();
                 Load ld = Load.create(graph.getGraph());
 
                 try {

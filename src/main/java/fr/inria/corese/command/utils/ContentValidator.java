@@ -23,7 +23,7 @@ public class ContentValidator {
             return false;
         }
 
-        CoreseGraph graph = CoreseGraph.create();
+        CoreseGraph graph = new CoreseGraph();
         QueryProcess exec = QueryProcess.create(graph.getGraph());
 
         try {
