@@ -10,9 +10,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import fr.inria.corese.command.VersionProvider;
 import fr.inria.corese.command.utils.ContentValidator;
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
-import fr.inria.corese.core.kgram.core.Query;
-import fr.inria.corese.core.query.QueryProcess;
+import fr.inria.corese.command.utils.coreseCoreWrapper.KgramQuery;
+import fr.inria.corese.core.sparql.exceptions.EngineException;
 import fr.inria.corese.core.sparql.triple.parser.Constant;
 import fr.inria.corese.core.sparql.triple.update.ASTUpdate;
 import fr.inria.corese.core.sparql.triple.update.Composite;
@@ -203,7 +202,12 @@ public class SparqlHttpClient {
             throw new IllegalArgumentException("Invalid SPARQL query");
         }
 
-        Query query = buildQuery(queryString);
+        // Try to build a SPARQL query from the queryString
+        try {
+            KgramQuery query = new KgramQuery( queryString);
+        } catch (EngineException e) {
+            throw new IllegalArgumentException("Invalid SPARQL query", e);
+        }
 
         if (!this.requestMethodIsDefinedByUser) {
             // Check if the query is an update query.
@@ -227,7 +231,7 @@ public class SparqlHttpClient {
         // Check if the query contains FROM clause and default/named graph URIs
         // which is not allowed by the SPARQL specification
         // (see https://www.w3.org/TR/sparql11-protocol/#query-operation)
-        if (containsFromClause(query) && !(defaultGraphUris.isEmpty() && namedGraphUris.isEmpty())) {
+        if (query.containsFromClause() && !(defaultGraphUris.isEmpty() && namedGraphUris.isEmpty())) {
             throw new IllegalArgumentException(
                     "SPARQL query contains FROM clause, but default and named graph URIs are specified. It is not allowed to specify both FROM clause and default/named graph URIs. Please remove FROM clause from the query or remove default/named graph URIs.");
         }
@@ -263,25 +267,12 @@ public class SparqlHttpClient {
      * @param query the query string
      * @return the query object
      */
-    private Query buildQuery(String query) {
-        QueryProcess exec = QueryProcess.create(new CoreseGraph().getGraph());
-        Query q;
+    private KgramQuery buildQuery(String query) {
         try {
-            q = exec.compile(query);
-        } catch (Exception e) {
+            return new KgramQuery( query);
+        } catch (EngineException e) {
             throw new IllegalArgumentException("Invalid SPARQL query", e);
         }
-        return q;
-    }
-
-    /**
-     * Checks if the query contains FROM clause.
-     * 
-     * @param query the query to check
-     * @return true if the query contains FROM clause, false otherwise
-     */
-    private boolean containsFromClause(Query query) {
-        return query.getFrom() != null && !query.getFrom().isEmpty();
     }
 
     /**

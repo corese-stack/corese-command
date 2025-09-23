@@ -1,9 +1,8 @@
 package fr.inria.corese.command.utils;
 
 import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
-import fr.inria.corese.core.query.QueryProcess;
+import fr.inria.corese.command.utils.coreseCoreWrapper.KgramQuery;
 import fr.inria.corese.core.kgram.api.core.Node;
-import fr.inria.corese.core.kgram.core.Query;
 import fr.inria.corese.core.sparql.datatype.DatatypeMap;
 import fr.inria.corese.core.sparql.exceptions.EngineException;
 
@@ -23,12 +22,8 @@ public class ContentValidator {
             return false;
         }
 
-        CoreseGraph graph = new CoreseGraph();
-        QueryProcess exec = QueryProcess.create(graph.getGraph());
-
         try {
-            Query query = exec.compile(input);
-            return query != null;
+            return new KgramQuery(input) != null;
         } catch (EngineException e) {
             return false;
         }
