@@ -203,8 +203,9 @@ public class SparqlHttpClient {
         }
 
         // Try to build a SPARQL query from the queryString
+        KgramQuery query = null;
         try {
-            KgramQuery query = new KgramQuery( queryString);
+            query = new KgramQuery( queryString);
         } catch (EngineException e) {
             throw new IllegalArgumentException("Invalid SPARQL query", e);
         }
@@ -259,20 +260,6 @@ public class SparqlHttpClient {
                     "SPARQL update query contains USING, USING NAMED, or WITH clause and the using-graph-uri/using-named-graph-uri parameters are also specified. It is not allowed to specify both USING, USING NAMED, or WITH clause and the using-graph-uri/using-named-graph-uri parameters. Please remove USING, USING NAMED, or WITH clause from the query or remove the using-graph-uri/using-named-graph-uri parameters.");
         }
 
-    }
-
-    /**
-     * Builds a query object from the given query string.
-     * 
-     * @param query the query string
-     * @return the query object
-     */
-    private KgramQuery buildQuery(String query) {
-        try {
-            return new KgramQuery( query);
-        } catch (EngineException e) {
-            throw new IllegalArgumentException("Invalid SPARQL query", e);
-        }
     }
 
     /**
