@@ -3,6 +3,7 @@ package fr.inria.corese.command.utils.coreseCoreWrapper;
 import java.util.List;
 
 import fr.inria.corese.core.kgram.api.core.Node;
+import fr.inria.corese.core.kgram.core.Mappings;
 import fr.inria.corese.core.kgram.core.Query;
 import fr.inria.corese.core.query.QueryProcess;
 import fr.inria.corese.core.sparql.exceptions.EngineException;
@@ -27,6 +28,15 @@ public class KgramQuery {
         QueryProcess exec = QueryProcess.create(graph.getGraph());
 
         this.query = exec.compile( query);
+    }
+
+    /**
+     * Executes the stringQuery on the graph
+     */
+    public static Mappings execute(CoreseGraph graph, String stringQuery) throws EngineException {
+        QueryProcess exec = QueryProcess.create(graph.getGraph());
+
+        return exec.query(stringQuery);
     }
 
     public List<Node> getFrom() {

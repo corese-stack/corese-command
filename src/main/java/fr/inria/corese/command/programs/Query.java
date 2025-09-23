@@ -1,12 +1,12 @@
 package fr.inria.corese.command.programs;
 
 import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.KgramQuery;
 import fr.inria.corese.command.utils.exporter.sparql.EnumResultFormat;
 import fr.inria.corese.command.utils.exporter.sparql.SparqlResultExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
 import fr.inria.corese.command.utils.loader.sparql.SparqlQueryLoader;
 import fr.inria.corese.core.kgram.core.Mappings;
-import fr.inria.corese.core.query.QueryProcess;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -58,17 +58,14 @@ public class Query extends AbstractInputCommand {
     }
 
     private Mappings execute(CoreseGraph graph, String query) throws Exception {
-        QueryProcess exec = QueryProcess.create(graph.getGraph());
 
-        // Execute query
+        if (this.verbose) {
+            this.spec.commandLine().getErr().println("Query: " + query);
+            this.spec.commandLine().getErr().println("Executing query...");
+        }
+
         try {
-
-            if (this.verbose) {
-                this.spec.commandLine().getErr().println("Query: " + query);
-                this.spec.commandLine().getErr().println("Executing query...");
-            }
-
-            return exec.query(query);
+            return KgramQuery.execute(graph, query);
         } catch (Exception e) {
             throw new Exception("Error when executing SPARQL query : " + e.getMessage(), e);
         }
