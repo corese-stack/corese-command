@@ -14,8 +14,8 @@ import java.nio.file.Paths;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
 import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
+import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
 import fr.inria.corese.core.load.Load;
 import picocli.CommandLine;
 

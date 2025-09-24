@@ -44,7 +44,7 @@ public class Query extends AbstractInputCommand {
             String query = queryLoader.load(this.queryUrlOrFile);
 
             // Execute the query
-            Mappings mappings = this.execute( graph, query);
+            Mappings mappings = this.execute(graph, query);
 
             // Export the result
             SparqlResultExporter exporter = new SparqlResultExporter(this.spec, this.verbose, this.output);

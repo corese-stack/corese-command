@@ -27,20 +27,21 @@ public class KgramQuery {
         CoreseGraph graph = new CoreseGraph();
         QueryProcess exec = QueryProcess.create(graph.getGraph());
 
-        this.query = exec.compile( query);
+        this.query = exec.compile(query);
     }
 
     /**
      * Executes the stringQuery on the graph
+     * 
+     * @param graph       The graph to execute the query on
+     * @param stringQuery The SPARQL query string
+     * @return The mappings resulting from the query execution
+     * @throws EngineException If an error occurs during query execution
      */
     public static Mappings execute(CoreseGraph graph, String stringQuery) throws EngineException {
         QueryProcess exec = QueryProcess.create(graph.getGraph());
 
         return exec.query(stringQuery);
-    }
-
-    public List<Node> getFrom() {
-        return query.getFrom();
     }
 
     /**
@@ -57,11 +58,11 @@ public class KgramQuery {
      * 
      * @return true if the query is an update, false otherwise
      */
-   public boolean isSPARQLUpdate() {
+    public boolean isSPARQLUpdate() {
         return query.getAST().isSPARQLUpdate();
     }
 
-    public ASTUpdate getUpdate() {
+    public ASTUpdate getAstUpdate() {
         return query.getAST().getUpdate();
     }
 

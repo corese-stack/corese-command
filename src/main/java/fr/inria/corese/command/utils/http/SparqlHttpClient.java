@@ -205,7 +205,7 @@ public class SparqlHttpClient {
         // Try to build a SPARQL query from the queryString
         KgramQuery query = null;
         try {
-            query = new KgramQuery( queryString);
+            query = new KgramQuery(queryString);
         } catch (EngineException e) {
             throw new IllegalArgumentException("Invalid SPARQL query", e);
         }
@@ -242,7 +242,7 @@ public class SparqlHttpClient {
         // which is not allowed by the SPARQL specification
         // (see https://www.w3.org/TR/sparql11-protocol/#update-operation)
         List<String> sparqlConstants = new ArrayList<>();
-        ASTUpdate astUpdate = query.getUpdate();
+        ASTUpdate astUpdate = query.getAstUpdate();
         if (astUpdate != null) {
             for (Update update : astUpdate.getUpdates()) {
                 Composite composite = update.getComposite();

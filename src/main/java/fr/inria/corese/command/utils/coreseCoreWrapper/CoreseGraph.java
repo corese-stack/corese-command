@@ -1,5 +1,14 @@
 package fr.inria.corese.command.utils.coreseCoreWrapper;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.Optional;
+
 import fr.inria.corese.command.utils.ConvertString;
 import fr.inria.corese.command.utils.InputTypeDetector;
 import fr.inria.corese.command.utils.InputTypeDetector.InputType;
@@ -12,25 +21,16 @@ import fr.inria.corese.core.load.LoadFormat;
 import fr.inria.corese.core.print.CanonicalRdf10Format;
 import picocli.CommandLine.Model.CommandSpec;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.Optional;
-
 /**
  * Wrapper class for corese.core.Graph
  * All interactions with corese.core.Graph should be done through this class
  */
-public class CoreseGraph  {
+public class CoreseGraph {
     private Graph graph;
 
     // Command specification
-    private CommandSpec spec = null;  // Command specification
-    private boolean verbose = false;  // If set to true, print information about the loaded files
+    private CommandSpec spec = null; // Command specification
+    private boolean verbose = false; // If set to true, print information about the loaded files
 
     //////////////////
     // Constructors //
@@ -47,17 +47,19 @@ public class CoreseGraph  {
     /**
      * Constructor.
      * Empty graph
+     * 
      * @param spec    Command specification.
      * @param verbose If true, print information about the loaded files.
-    */
-   public CoreseGraph(CommandSpec spec, boolean verbose) {
+     */
+    public CoreseGraph(CommandSpec spec, boolean verbose) {
         this(Graph.create(), spec, verbose);
     }
 
     /**
      * Constructor.
      * Empty command specification, verbose is false
-     * @param graph   A given corese Graph
+     * 
+     * @param graph A given corese Graph
      */
     public CoreseGraph(Graph graph) {
         this(graph, null, false);
@@ -65,6 +67,7 @@ public class CoreseGraph  {
 
     /**
      * Constructor.
+     * 
      * @param graph   A given corese Graph
      * @param spec    Command specification.
      * @param verbose If true, print information about the loaded files.
@@ -85,11 +88,11 @@ public class CoreseGraph  {
 
     public int size() {
         return graph.size();
-    }    
+    }
 
-    public  void init() {
+    public void init() {
         graph.init();
-    }    
+    }
 
     /**
      * Load RDF data into a Corese Graph.
@@ -105,7 +108,7 @@ public class CoreseGraph  {
     public void load(String[] inputs, EnumRdfInputFormat inputFormat, boolean recursive)
             throws IllegalArgumentException {
 
-        Graph otherGraph = null;  // used to merge another graph into the final result
+        Graph otherGraph = null; // used to merge another graph into the final result
 
         // If no input is provided, load from standard input
         if (inputs == null || inputs.length == 0) {
@@ -143,11 +146,25 @@ public class CoreseGraph  {
 
     }
 
+    /**
+     * Returns a Canonical RDF 1.0 representation of the graph.
+     * 
+     * @return A Canonical RDF 1.0 representation of the graph.
+     */
     public CanonicalRdf10Format canonicalRdf10Format() {
         return CanonicalRdf10Format.create(graph);
     }
 
-    public Iterable<Edge> getEdgesRDF4J( Node s, Node p, Node o, Node... from) {
+    /**
+     * Get edges in RDF4J format.
+     * 
+     * @param s    Subject node (can be null for wildcard)
+     * @param p    Predicate node (can be null for wildcard)
+     * @param o    Object node (can be null for wildcard)
+     * @param from Named graph nodes (can be null for wildcard)
+     * @return An iterable of edges in RDF4J format.
+     */
+    public Iterable<Edge> getEdgesRDF4J(Node s, Node p, Node o, Node... from) {
         return graph.getEdgesRDF4J(s, p, o, from);
     }
 
@@ -244,7 +261,8 @@ public class CoreseGraph  {
      * @param recursive   If true, load RDF data from subdirectories.
      * @return The Corese Graph containing the RDF data.
      */
-    private void loadFromDirectoryRecursive(Path path, EnumRdfInputFormat inputFormat, boolean recursive, Graph loadedGraph) {
+    private void loadFromDirectoryRecursive(Path path, EnumRdfInputFormat inputFormat, boolean recursive,
+            Graph loadedGraph) {
 
         File[] files = path.toFile().listFiles();
 
@@ -255,7 +273,7 @@ public class CoreseGraph  {
                     this.loadFromDirectoryRecursive(childFile.toPath(), inputFormat, recursive, loadedGraph);
                 } else if (childFile.isFile()) {
                     Graph otherGraph = this.loadFromFile(childFile.toPath(), inputFormat);
-                    loadedGraph.merge( otherGraph);
+                    loadedGraph.merge(otherGraph);
                 }
             }
         }
@@ -298,7 +316,7 @@ public class CoreseGraph  {
         Load load = Load.create(loadedGraph);
 
         try {
-            load.parse( inputStream, inputFormat.getCoreseFormat());
+            load.parse(inputStream, inputFormat.getCoreseFormat());
             return loadedGraph;
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to parse RDF file. Check if file is well-formed and that "
@@ -314,7 +332,7 @@ public class CoreseGraph  {
      */
     private Optional<EnumRdfInputFormat> guessInputFormat(String input) {
 
-        EnumRdfInputFormat inputFormat = EnumRdfInputFormat.create( LoadFormat.getFormat(input));
+        EnumRdfInputFormat inputFormat = EnumRdfInputFormat.create(LoadFormat.getFormat(input));
 
         if (inputFormat == null) {
             if (this.verbose) {
