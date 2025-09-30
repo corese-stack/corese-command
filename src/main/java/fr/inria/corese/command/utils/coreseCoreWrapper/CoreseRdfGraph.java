@@ -14,6 +14,7 @@ import fr.inria.corese.command.utils.InputTypeDetector;
 import fr.inria.corese.command.utils.InputTypeDetector.InputType;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
 import fr.inria.corese.core.Graph;
+import fr.inria.corese.core.api.Loader.format;
 import fr.inria.corese.core.kgram.api.core.Node;
 import fr.inria.corese.core.load.Load;
 import fr.inria.corese.core.load.LoadFormat;
@@ -98,6 +99,10 @@ public class CoreseRdfGraph {
         graph.init();
     }
 
+    /**
+     * Load data from a path name into a Corese Graph.
+     * Used for testing
+     */
     public void load(String path, String name) {
 
         graph = Graph.create();
@@ -108,6 +113,24 @@ public class CoreseRdfGraph {
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to parse String. Check if it is well-formed. " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Load data from an input stream with a given format.
+     * Becareful that the format is a core.api.loader.format,
+     * not a EnumRdfInputFormat as used in LoadFromStdin
+     * Used for testing
+     */
+    public void load(InputStream is, format coreseFormat) {
+
+        graph = Graph.create();
+        Load load = Load.create(graph);
+
+        try {
+            load.parse(is, coreseFormat);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse String. Check if it is well-formed. " + e.getMessage(), e);
+        }     
     }
 
     /**
@@ -128,7 +151,7 @@ public class CoreseRdfGraph {
 
         // If no input is provided, load from standard input
         if (inputs == null || inputs.length == 0) {
-            graph = this.LoadFromStdin(inputFormat);
+            graph = this.loadFromStdin(inputFormat);
             return;
         }
 
@@ -199,7 +222,7 @@ public class CoreseRdfGraph {
      * @param inputFormat Input file serialization format.
      * @return The Corese Graph containing the RDF data.
      */
-    private Graph LoadFromStdin(EnumRdfInputFormat inputFormat) {
+    private Graph loadFromStdin(EnumRdfInputFormat inputFormat) {
 
         Graph loadedGraph = this.loadFromInputStream(System.in, inputFormat);
 

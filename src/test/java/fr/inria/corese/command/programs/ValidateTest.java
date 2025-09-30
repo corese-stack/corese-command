@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 
 import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import fr.inria.corese.core.api.Loader;
-import fr.inria.corese.core.load.Load;
 import picocli.CommandLine;
 
 public class ValidateTest {
@@ -97,13 +96,7 @@ public class ValidateTest {
 
         // Load RDF content into a Graph
         CoreseRdfGraph graph = new CoreseRdfGraph();
-        Load ld = Load.create(graph.getGraph());
-
-        try {
-            ld.parse(is, coreseFormat);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        graph.load(is, coreseFormat);
 
         // Return Canonical RDF content
         return graph.canonicalRdf10Format().toString();
