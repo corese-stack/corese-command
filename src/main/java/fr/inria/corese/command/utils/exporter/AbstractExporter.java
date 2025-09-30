@@ -3,7 +3,7 @@ package fr.inria.corese.command.utils.exporter;
 
 import java.nio.file.Path;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import fr.inria.corese.core.kgram.core.Mappings;
 import fr.inria.corese.core.print.ResultFormat;
 import fr.inria.corese.core.sparql.api.ResultFormatDef;
@@ -63,7 +63,7 @@ public abstract class AbstractExporter {
      * @param formatName   Name of the format.
      * @param graph        Graph to export.
      */
-    protected void exportToFile(Path path, ResultFormatDef.format coreseFormat, String formatName, CoreseGraph graph) {
+    protected void exportToFile(Path path, ResultFormatDef.format coreseFormat, String formatName, CoreseRdfGraph graph) {
         ResultFormat resultFormater = ResultFormat.create(graph.getGraph());
         exportToFile(path, coreseFormat, formatName, resultFormater);
     }
@@ -75,7 +75,7 @@ public abstract class AbstractExporter {
      * @param formatName   Name of the format.
      * @param graph        Graph to export.
      */
-    protected void exportToStdout(ResultFormatDef.format coreseFormat, String formatName, CoreseGraph graph) {
+    protected void exportToStdout(ResultFormatDef.format coreseFormat, String formatName, CoreseRdfGraph graph) {
         ResultFormat resultFormater = ResultFormat.create(graph.getGraph());
         exportToStdout(coreseFormat, formatName, resultFormater);
     }

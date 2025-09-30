@@ -3,7 +3,7 @@ package fr.inria.corese.command.utils.exporter.rdf;
 
 import java.nio.file.Path;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import fr.inria.corese.command.utils.exporter.AbstractExporter;
 import picocli.CommandLine.Model.CommandSpec;
 
@@ -38,7 +38,7 @@ public class RdfDataExporter extends AbstractExporter {
      * @param graph  RDF graph to export.
      * @param format Serialization format.
      */
-    public void export(CoreseGraph graph, EnumRdfOutputFormat format) {
+    public void export(CoreseRdfGraph graph, EnumRdfOutputFormat format) {
 
         if (this.outputIsDefined) {
             Path path = this.needToAppendExtension ? Path.of(this.output + "." + format.getExtention()) : this.output;

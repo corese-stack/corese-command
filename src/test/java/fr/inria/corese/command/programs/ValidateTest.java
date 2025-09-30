@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import fr.inria.corese.core.api.Loader;
 import fr.inria.corese.core.load.Load;
 import picocli.CommandLine;
@@ -96,7 +96,7 @@ public class ValidateTest {
         InputStream is = new ByteArrayInputStream(content.getBytes());
 
         // Load RDF content into a Graph
-        CoreseGraph graph = new CoreseGraph();
+        CoreseRdfGraph graph = new CoreseRdfGraph();
         Load ld = Load.create(graph.getGraph());
 
         try {

@@ -15,7 +15,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import fr.inria.corese.core.load.Load;
 import picocli.CommandLine;
 
@@ -111,7 +111,7 @@ public class QueryTest {
         private String canonicalize(String filePath) {
 
                 // Load RDF content into a Graph
-                CoreseGraph graph = new CoreseGraph();
+                CoreseRdfGraph graph = new CoreseRdfGraph();
                 Load ld = Load.create(graph.getGraph());
 
                 try {

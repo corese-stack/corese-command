@@ -1,8 +1,5 @@
 package fr.inria.corese.command.utils.coreseCoreWrapper;
 
-import java.util.List;
-
-import fr.inria.corese.core.kgram.api.core.Node;
 import fr.inria.corese.core.kgram.core.Mappings;
 import fr.inria.corese.core.kgram.core.Query;
 import fr.inria.corese.core.query.QueryProcess;
@@ -12,19 +9,19 @@ import fr.inria.corese.core.sparql.triple.update.ASTUpdate;
 /**
  * Wrapper class for corese core KGRAM query
  */
-public class KgramQuery {
+public class CoreseSparqlQuery {
 
     /**
      * The wrapped KGRAM query
      */
     protected Query query;
 
-    public KgramQuery(Query query) {
+    public CoreseSparqlQuery(Query query) {
         this.query = query;
     }
 
-    public KgramQuery(String query) throws EngineException {
-        CoreseGraph graph = new CoreseGraph();
+    public CoreseSparqlQuery(String query) throws EngineException {
+        CoreseRdfGraph graph = new CoreseRdfGraph();
         QueryProcess exec = QueryProcess.create(graph.getGraph());
 
         this.query = exec.compile(query);
@@ -38,7 +35,7 @@ public class KgramQuery {
      * @return The mappings resulting from the query execution
      * @throws EngineException If an error occurs during query execution
      */
-    public static Mappings execute(CoreseGraph graph, String stringQuery) throws EngineException {
+    public static Mappings execute(CoreseRdfGraph graph, String stringQuery) throws EngineException {
         QueryProcess exec = QueryProcess.create(graph.getGraph());
 
         return exec.query(stringQuery);

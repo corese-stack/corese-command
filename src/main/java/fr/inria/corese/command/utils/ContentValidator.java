@@ -1,7 +1,7 @@
 package fr.inria.corese.command.utils;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
-import fr.inria.corese.command.utils.coreseCoreWrapper.KgramQuery;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseSparqlQuery;
 import fr.inria.corese.core.kgram.api.core.Node;
 import fr.inria.corese.core.sparql.datatype.DatatypeMap;
 import fr.inria.corese.core.sparql.exceptions.EngineException;
@@ -23,7 +23,7 @@ public class ContentValidator {
         }
 
         try {
-            return new KgramQuery(input) != null;
+            return new CoreseSparqlQuery(input) != null;
         } catch (EngineException e) {
             return false;
         }
@@ -35,7 +35,7 @@ public class ContentValidator {
      * @param graph Graph to check.
      * @return True if the graph contains SHACL shapes, false otherwise.
      */
-    public static boolean containsShaclShapes(CoreseGraph graph) {
+    public static boolean containsShaclShapes(CoreseRdfGraph graph) {
         if (graph == null || graph.size() == 0) {
             return false;
         }

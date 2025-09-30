@@ -1,7 +1,7 @@
 package fr.inria.corese.command.programs;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
-import fr.inria.corese.command.utils.coreseCoreWrapper.KgramQuery;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseSparqlQuery;
 import fr.inria.corese.command.utils.exporter.sparql.EnumResultFormat;
 import fr.inria.corese.command.utils.exporter.sparql.SparqlResultExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
@@ -36,7 +36,7 @@ public class Query extends AbstractInputCommand {
         try {
 
             // Load the input file(s)
-            CoreseGraph graph = new CoreseGraph(this.spec, this.verbose);
+            CoreseRdfGraph graph = new CoreseRdfGraph(this.spec, this.verbose);
             graph.load(this.inputsRdfData, this.inputFormat, this.recursive);
 
             // Load the query
@@ -57,7 +57,7 @@ public class Query extends AbstractInputCommand {
         }
     }
 
-    private Mappings execute(CoreseGraph graph, String query) throws Exception {
+    private Mappings execute(CoreseRdfGraph graph, String query) throws Exception {
 
         if (this.verbose) {
             this.spec.commandLine().getErr().println("Query: " + query);
@@ -65,7 +65,7 @@ public class Query extends AbstractInputCommand {
         }
 
         try {
-            return KgramQuery.execute(graph, query);
+            return CoreseSparqlQuery.execute(graph, query);
         } catch (Exception e) {
             throw new Exception("Error when executing SPARQL query : " + e.getMessage(), e);
         }

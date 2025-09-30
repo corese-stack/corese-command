@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
 import fr.inria.corese.core.load.Load;
 import picocli.CommandLine;
@@ -43,7 +43,7 @@ public class ConvertTest {
     }
 
     private String canonicalize(String path) {
-        CoreseGraph graph = new CoreseGraph();
+        CoreseRdfGraph graph = new CoreseRdfGraph();
         Load ld = Load.create(graph.getGraph());
 
         try {
@@ -771,7 +771,7 @@ public class ConvertTest {
         Path inputPath = referencesPath.resolve("beatles.ttl");
 
         try {
-            CoreseGraph graph = new CoreseGraph();
+            CoreseRdfGraph graph = new CoreseRdfGraph();
             graph.load(new String[] { inputPath.toString() }, EnumRdfInputFormat.JSONLD, false);
             fail("Expected an IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {

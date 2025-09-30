@@ -25,7 +25,7 @@ import picocli.CommandLine.Model.CommandSpec;
  * Wrapper class for corese.core.Graph
  * All interactions with corese.core.Graph should be done through this class
  */
-public class CoreseGraph {
+public class CoreseRdfGraph {
     private Graph graph;
 
     // Command specification
@@ -40,7 +40,7 @@ public class CoreseGraph {
      * Constructor.
      * Empty graph, empty command specification, verbose is false
      */
-    public CoreseGraph() {
+    public CoreseRdfGraph() {
         this(Graph.create(), null, false);
     }
 
@@ -51,7 +51,7 @@ public class CoreseGraph {
      * @param spec    Command specification.
      * @param verbose If true, print information about the loaded files.
      */
-    public CoreseGraph(CommandSpec spec, boolean verbose) {
+    public CoreseRdfGraph(CommandSpec spec, boolean verbose) {
         this(Graph.create(), spec, verbose);
     }
 
@@ -61,7 +61,7 @@ public class CoreseGraph {
      * 
      * @param graph A given corese Graph
      */
-    public CoreseGraph(Graph graph) {
+    public CoreseRdfGraph(Graph graph) {
         this(graph, null, false);
     }
 
@@ -72,7 +72,7 @@ public class CoreseGraph {
      * @param spec    Command specification.
      * @param verbose If true, print information about the loaded files.
      */
-    public CoreseGraph(Graph graph, CommandSpec spec, boolean verbose) {
+    public CoreseRdfGraph(Graph graph, CommandSpec spec, boolean verbose) {
         this.graph = graph;
         this.spec = spec;
         this.verbose = verbose;

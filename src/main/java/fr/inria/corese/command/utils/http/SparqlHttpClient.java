@@ -10,7 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import fr.inria.corese.command.VersionProvider;
 import fr.inria.corese.command.utils.ContentValidator;
-import fr.inria.corese.command.utils.coreseCoreWrapper.KgramQuery;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseSparqlQuery;
 import fr.inria.corese.core.sparql.exceptions.EngineException;
 import fr.inria.corese.core.sparql.triple.parser.Constant;
 import fr.inria.corese.core.sparql.triple.update.ASTUpdate;
@@ -203,9 +203,9 @@ public class SparqlHttpClient {
         }
 
         // Try to build a SPARQL query from the queryString
-        KgramQuery query = null;
+        CoreseSparqlQuery query = null;
         try {
-            query = new KgramQuery(queryString);
+            query = new CoreseSparqlQuery(queryString);
         } catch (EngineException e) {
             throw new IllegalArgumentException("Invalid SPARQL query", e);
         }

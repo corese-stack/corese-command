@@ -1,6 +1,6 @@
 package fr.inria.corese.command.programs;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseGraph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import fr.inria.corese.command.utils.exporter.rdf.EnumRdfOutputFormat;
 import fr.inria.corese.command.utils.exporter.rdf.RdfDataExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
@@ -28,7 +28,7 @@ public class Convert extends AbstractInputCommand {
 
         try {
             // Load the input file(s)
-            CoreseGraph graph = new CoreseGraph(this.spec, this.verbose);
+            CoreseRdfGraph graph = new CoreseRdfGraph(this.spec, this.verbose);
             graph.load(this.inputsRdfData, this.inputFormat, this.recursive);
 
             // Export the graph
