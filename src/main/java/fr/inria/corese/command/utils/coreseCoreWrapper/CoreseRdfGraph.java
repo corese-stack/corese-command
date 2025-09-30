@@ -98,6 +98,18 @@ public class CoreseRdfGraph {
         graph.init();
     }
 
+    public void load(String path, String name) {
+
+        graph = Graph.create();
+        Load load = Load.create(graph);
+
+        try {
+            load.parse(path, name);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse String. Check if it is well-formed. " + e.getMessage(), e);
+        }
+    }
+
     /**
      * Load RDF data into a Corese Graph.
      * 
@@ -157,6 +169,24 @@ public class CoreseRdfGraph {
      */
     public CanonicalRdf10Format canonicalRdf10Format() {
         return CanonicalRdf10Format.create(graph);
+    }
+
+    /**
+     * Detect if the graph contains SHACL shapes.
+     *
+     * @return True if the graph contains SHACL shapes, false otherwise.
+     */
+    public boolean containsShaclShapes() {
+        if (graph == null || graph.size() == 0) {
+            return false;
+        }
+
+        graph.init();
+        Node nodeShape = DatatypeMap.createResource("http://www.w3.org/ns/shacl#NodeShape");
+        Node propertyShape = DatatypeMap.createResource("http://www.w3.org/ns/shacl#PropertyShape");
+
+        return graph.getEdgesRDF4J(null, null, nodeShape).iterator().hasNext() ||
+                graph.getEdgesRDF4J(null, null, propertyShape).iterator().hasNext();
     }
 
     /////////////////////
@@ -336,24 +366,6 @@ public class CoreseRdfGraph {
             this.spec.commandLine().getErr().println("Format not specified, detected input format: " + inputFormat);
         }
         return Optional.of(inputFormat);
-    }
-
-    /**
-     * Detect if the graph contains SHACL shapes.
-     *
-     * @return True if the graph contains SHACL shapes, false otherwise.
-     */
-    public boolean containsShaclShapes() {
-        if (graph == null || graph.size() == 0) {
-            return false;
-        }
-
-        graph.init();
-        Node nodeShape = DatatypeMap.createResource("http://www.w3.org/ns/shacl#NodeShape");
-        Node propertyShape = DatatypeMap.createResource("http://www.w3.org/ns/shacl#PropertyShape");
-
-        return graph.getEdgesRDF4J(null, null, nodeShape).iterator().hasNext() ||
-                graph.getEdgesRDF4J(null, null, propertyShape).iterator().hasNext();
     }
 
 }

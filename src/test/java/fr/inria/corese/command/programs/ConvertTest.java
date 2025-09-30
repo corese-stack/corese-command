@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 
 import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
-import fr.inria.corese.core.load.Load;
 import picocli.CommandLine;
 
 public class ConvertTest {
@@ -44,14 +43,8 @@ public class ConvertTest {
 
     private String canonicalize(String path) {
         CoreseRdfGraph graph = new CoreseRdfGraph();
-        Load ld = Load.create(graph.getGraph());
-
-        try {
-            ld.parse(path, "");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        graph.load(path, "");
+    
         return graph.canonicalRdf10Format().toString();
     }
 
