@@ -99,7 +99,7 @@ public class ValidateTest {
         graph.load(is, coreseFormat);
 
         // Return Canonical RDF content
-        return graph.canonicalRdf10Format().toString();
+        return graph.canonicalRdf10Format();
     }
 
     @Test

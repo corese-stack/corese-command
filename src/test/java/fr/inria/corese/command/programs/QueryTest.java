@@ -114,7 +114,7 @@ public class QueryTest {
                 graph.load(filePath, "");
 
                 // Return Canonical RDF content
-                return graph.canonicalRdf10Format().toString();
+                return graph.canonicalRdf10Format();
         }
 
         @Test

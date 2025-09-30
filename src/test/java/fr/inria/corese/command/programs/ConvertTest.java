@@ -45,7 +45,7 @@ public class ConvertTest {
         CoreseRdfGraph graph = new CoreseRdfGraph();
         graph.load(path, "");
     
-        return graph.canonicalRdf10Format().toString();
+        return graph.canonicalRdf10Format();
     }
 
     @BeforeEach

@@ -186,12 +186,12 @@ public class CoreseRdfGraph {
     }
 
     /**
-     * Returns a Canonical RDF 1.0 representation of the graph.
+     * Returns a Canonical RDF 1.0 representation of the graph serialized in a String.
      * 
-     * @return A Canonical RDF 1.0 representation of the graph.
+     * @return A String representing a canonical RDF 1.0 representation of the graph.
      */
-    public CanonicalRdf10Format canonicalRdf10Format() {
-        return CanonicalRdf10Format.create(graph);
+    public String canonicalRdf10Format() {
+        return CanonicalRdf10Format.create(graph).toString();
     }
 
     /**
