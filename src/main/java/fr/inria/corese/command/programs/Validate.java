@@ -1,12 +1,10 @@
 package fr.inria.corese.command.programs;
 
-import fr.inria.corese.command.utils.ContentValidator;
 import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseShacl;
 import fr.inria.corese.command.utils.exporter.rdf.EnumRdfOutputFormat;
 import fr.inria.corese.command.utils.exporter.rdf.RdfDataExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
-import fr.inria.corese.core.shacl.Shacl;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -43,7 +41,7 @@ public class Validate extends AbstractInputCommand {
             shapesGraph.load(this.shaclShapes, this.reportFormat, this.recursive);
 
             // Check if shapes graph contains SHACL shapes
-            if (!ContentValidator.containsShaclShapes(shapesGraph)) {
+            if (! shapesGraph.containsShaclShapes()) {
                 throw new IllegalArgumentException("No SHACL shapes found in the input file(s).");
             }
 

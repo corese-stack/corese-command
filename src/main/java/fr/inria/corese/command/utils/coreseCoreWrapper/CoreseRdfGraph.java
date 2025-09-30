@@ -19,6 +19,7 @@ import fr.inria.corese.core.kgram.api.core.Node;
 import fr.inria.corese.core.load.Load;
 import fr.inria.corese.core.load.LoadFormat;
 import fr.inria.corese.core.print.CanonicalRdf10Format;
+import fr.inria.corese.core.sparql.datatype.DatatypeMap;
 import picocli.CommandLine.Model.CommandSpec;
 
 /**
@@ -349,6 +350,24 @@ public class CoreseRdfGraph {
             this.spec.commandLine().getErr().println("Format not specified, detected input format: " + inputFormat);
         }
         return Optional.of(inputFormat);
+    }
+
+    /**
+     * Detect if the graph contains SHACL shapes.
+     *
+     * @return True if the graph contains SHACL shapes, false otherwise.
+     */
+    public boolean containsShaclShapes() {
+        if (graph == null || graph.size() == 0) {
+            return false;
+        }
+
+        graph.init();
+        Node nodeShape = DatatypeMap.createResource("http://www.w3.org/ns/shacl#NodeShape");
+        Node propertyShape = DatatypeMap.createResource("http://www.w3.org/ns/shacl#PropertyShape");
+
+        return graph.getEdgesRDF4J(null, null, nodeShape).iterator().hasNext() ||
+                graph.getEdgesRDF4J(null, null, propertyShape).iterator().hasNext();
     }
 
 }

@@ -29,6 +29,24 @@ public class CoreseSparqlQuery {
     }
 
     /**
+     * Check if the input string is a valid SPARQL query.
+     *
+     * @param input String to check.
+     * @return True if the input is a valid SPARQL query, false otherwise.
+     */
+    public static boolean isValidSparqlQuery(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return false;
+        }
+
+        try {
+            return new CoreseSparqlQuery(input) != null;
+        } catch (EngineException e) {
+            return false;
+        }
+    }
+
+    /**
      * Executes the stringQuery on the graph
      * 
      * @param graph       The graph to execute the query on

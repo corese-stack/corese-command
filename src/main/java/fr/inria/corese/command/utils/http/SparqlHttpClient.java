@@ -9,7 +9,6 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 import fr.inria.corese.command.VersionProvider;
-import fr.inria.corese.command.utils.ContentValidator;
 import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseSparqlQuery;
 import fr.inria.corese.core.sparql.exceptions.EngineException;
 import fr.inria.corese.core.sparql.triple.parser.Constant;
@@ -198,7 +197,7 @@ public class SparqlHttpClient {
         }
 
         // Check if the query is a valid SPARQL query
-        if (!ContentValidator.isValidSparqlQuery(queryString)) {
+        if (! CoreseSparqlQuery.isValidSparqlQuery(queryString)) {
             throw new IllegalArgumentException("Invalid SPARQL query");
         }
 
