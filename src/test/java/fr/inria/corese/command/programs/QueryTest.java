@@ -16,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
-import fr.inria.corese.core.load.Load;
 import picocli.CommandLine;
 
 public class QueryTest {
@@ -112,13 +111,7 @@ public class QueryTest {
 
                 // Load RDF content into a Graph
                 CoreseRdfGraph graph = new CoreseRdfGraph();
-                Load ld = Load.create(graph.getGraph());
-
-                try {
-                        ld.parse(filePath, "");
-                } catch (Exception e) {
-                        e.printStackTrace();
-                }
+                graph.load(filePath, "");
 
                 // Return Canonical RDF content
                 return graph.canonicalRdf10Format().toString();
