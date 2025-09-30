@@ -2,6 +2,7 @@ package fr.inria.corese.command.programs;
 
 import fr.inria.corese.command.utils.ContentValidator;
 import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseShacl;
 import fr.inria.corese.command.utils.exporter.rdf.EnumRdfOutputFormat;
 import fr.inria.corese.command.utils.exporter.rdf.RdfDataExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
@@ -74,7 +75,7 @@ public class Validate extends AbstractInputCommand {
             this.spec.commandLine().getErr().println("Evaluating SHACL shapes...");
         }
 
-        Shacl shacl = new fr.inria.corese.core.shacl.Shacl(dataGraph.getGraph(), shapesGraph.getGraph());
+        CoreseShacl shacl = new CoreseShacl(dataGraph.getGraph(), shapesGraph.getGraph());
         try {
             return new CoreseRdfGraph(shacl.eval());
         } catch (Exception e) {
