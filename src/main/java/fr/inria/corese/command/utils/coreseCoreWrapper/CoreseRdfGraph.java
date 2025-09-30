@@ -14,7 +14,6 @@ import fr.inria.corese.command.utils.InputTypeDetector;
 import fr.inria.corese.command.utils.InputTypeDetector.InputType;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
 import fr.inria.corese.core.Graph;
-import fr.inria.corese.core.kgram.api.core.Edge;
 import fr.inria.corese.core.kgram.api.core.Node;
 import fr.inria.corese.core.load.Load;
 import fr.inria.corese.core.load.LoadFormat;
@@ -158,19 +157,6 @@ public class CoreseRdfGraph {
      */
     public CanonicalRdf10Format canonicalRdf10Format() {
         return CanonicalRdf10Format.create(graph);
-    }
-
-    /**
-     * Get edges in RDF4J format.
-     * 
-     * @param s    Subject node (can be null for wildcard)
-     * @param p    Predicate node (can be null for wildcard)
-     * @param o    Object node (can be null for wildcard)
-     * @param from Named graph nodes (can be null for wildcard)
-     * @return An iterable of edges in RDF4J format.
-     */
-    public Iterable<Edge> getEdgesRDF4J(Node s, Node p, Node o, Node... from) {
-        return graph.getEdgesRDF4J(s, p, o, from);
     }
 
     /////////////////////
