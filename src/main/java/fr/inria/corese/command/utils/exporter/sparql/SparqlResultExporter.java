@@ -3,10 +3,10 @@ package fr.inria.corese.command.utils.exporter.sparql;
 
 import java.nio.file.Path;
 
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseMappingType;
 import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import fr.inria.corese.command.utils.exporter.AbstractExporter;
 import fr.inria.corese.core.kgram.core.Mappings;
-import fr.inria.corese.core.sparql.triple.parser.ASTQuery;
 import picocli.CommandLine.Model.CommandSpec;
 
 /**
@@ -47,13 +47,13 @@ public class SparqlResultExporter extends AbstractExporter {
      */
     public void export(Mappings map, CoreseRdfGraph graph, EnumResultFormat format) {
 
-        ASTQuery ast = map.getAST();
+        CoreseMappingType mappingType = new CoreseMappingType(map);
 
-        boolean isUpdate = ast.isUpdate();
-        boolean isConstruct = ast.isConstruct();
-        boolean isAsk = ast.isAsk();
-        boolean isSelect = ast.isSelect();
-        boolean isDescribe = ast.isDescribe();
+        boolean isUpdate = mappingType.isUpdate();
+        boolean isConstruct = mappingType.isConstruct();
+        boolean isAsk = mappingType.isAsk();
+        boolean isSelect = mappingType.isSelect();
+        boolean isDescribe = mappingType.isDescribe();
 
         // Define the output format if not provided
         if (format == null) {
