@@ -8,6 +8,7 @@ import fr.inria.corese.core.sparql.triple.update.ASTUpdate;
 
 /**
  * Wrapper class for corese core KGRAM query
+ * All interactions with corese.core.kgram.core.Query should be done through this class
  */
 public class CoreseSparqlQuery {
 

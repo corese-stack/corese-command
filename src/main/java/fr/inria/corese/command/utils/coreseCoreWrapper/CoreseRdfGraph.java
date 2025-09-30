@@ -26,6 +26,10 @@ import picocli.CommandLine.Model.CommandSpec;
  * All interactions with corese.core.Graph should be done through this class
  */
 public class CoreseRdfGraph {
+
+    /**
+     * The wrapped RDF graph
+     */
     private Graph graph;
 
     // Command specification
