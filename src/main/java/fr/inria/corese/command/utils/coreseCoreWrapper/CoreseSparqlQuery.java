@@ -5,6 +5,8 @@ import fr.inria.corese.core.kgram.core.Query;
 import fr.inria.corese.core.query.QueryProcess;
 import fr.inria.corese.core.sparql.exceptions.EngineException;
 import fr.inria.corese.core.sparql.triple.update.ASTUpdate;
+import fr.inria.corese.core.sparql.triple.update.Composite;
+import fr.inria.corese.core.sparql.triple.update.Update;
 
 /**
  * Wrapper class for corese core KGRAM query
@@ -78,8 +80,25 @@ public class CoreseSparqlQuery {
         return query.getAST().isSPARQLUpdate();
     }
 
-    public ASTUpdate getAstUpdate() {
-        return query.getAST().getUpdate();
+    /**
+     * Checks if the query contains WITH clause.
+     * 
+     * @return true if the query contains WITH clause, false otherwise
+     */
+    public boolean containsWithClause() {
+        ASTUpdate astUpdate = query.getAST().getUpdate();
+        if (astUpdate != null) {
+            for (Update update : astUpdate.getUpdates()) {
+                Composite composite = update.getComposite();
+                if (composite != null) {
+                    if (composite.getWith() != null) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
 }
