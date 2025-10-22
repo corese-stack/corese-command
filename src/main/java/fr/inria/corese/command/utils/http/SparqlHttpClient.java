@@ -9,14 +9,8 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 import fr.inria.corese.command.VersionProvider;
-import fr.inria.corese.command.utils.ContentValidator;
-import fr.inria.corese.core.Graph;
-import fr.inria.corese.core.kgram.core.Query;
-import fr.inria.corese.core.query.QueryProcess;
-import fr.inria.corese.core.sparql.triple.parser.Constant;
-import fr.inria.corese.core.sparql.triple.update.ASTUpdate;
-import fr.inria.corese.core.sparql.triple.update.Composite;
-import fr.inria.corese.core.sparql.triple.update.Update;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseSparqlQuery;
+import fr.inria.corese.core.sparql.exceptions.EngineException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -191,23 +185,25 @@ public class SparqlHttpClient {
      * @param defaultGraphUris default graph URIs to use
      * @param namedGraphUris   named graph URIs to use
      */
-    private void validateQuery(String queryString, List<String> defaultGraphUris, List<String> namedGraphUris) {
+    protected void validateQuery(String queryString, List<String> defaultGraphUris, List<String> namedGraphUris) {
 
         // Check if the query is defined
         if (queryString == null || queryString.isEmpty()) {
             throw new IllegalArgumentException("SPARQL query must be specified");
         }
 
-        // Check if the query is a valid SPARQL query
-        if (!ContentValidator.isValidSparqlQuery(queryString)) {
-            throw new IllegalArgumentException("Invalid SPARQL query");
+        // Try to build a SPARQL query from the queryString
+        // (Check if the query is a valid SPARQL query)
+        CoreseSparqlQuery query = null;
+        try {
+            query = new CoreseSparqlQuery(queryString);
+        } catch (EngineException e) {
+            throw new IllegalArgumentException("Invalid SPARQL query", e);
         }
-
-        Query query = buildQuery(queryString);
 
         if (!this.requestMethodIsDefinedByUser) {
             // Check if the query is an update query.
-            if (query.getAST().isSPARQLUpdate()) {
+            if (query.isSPARQLUpdate()) {
                 // If it is an update query, set the request method to POST_Encoded.
                 this.requestMethod = EnumRequestMethod.POST_URLENCODED;
             } else {
@@ -219,7 +215,7 @@ public class SparqlHttpClient {
         // Check if the query is an update query and the method is GET
         // which is not allowed by the SPARQL specification
         // (see https://www.w3.org/TR/sparql11-protocol/#update-operation)
-        if (this.requestMethod == EnumRequestMethod.GET && query.getAST().isSPARQLUpdate()) {
+        if (this.requestMethod == EnumRequestMethod.GET && query.isSPARQLUpdate()) {
             throw new IllegalArgumentException(
                     "SPARQL query is an update query, but GET method is used. Please use a POST method instead.");
         }
@@ -227,7 +223,7 @@ public class SparqlHttpClient {
         // Check if the query contains FROM clause and default/named graph URIs
         // which is not allowed by the SPARQL specification
         // (see https://www.w3.org/TR/sparql11-protocol/#query-operation)
-        if (containsFromClause(query) && !(defaultGraphUris.isEmpty() && namedGraphUris.isEmpty())) {
+        if (query.containsFromClause() && (!defaultGraphUris.isEmpty() || !namedGraphUris.isEmpty())) {
             throw new IllegalArgumentException(
                     "SPARQL query contains FROM clause, but default and named graph URIs are specified. It is not allowed to specify both FROM clause and default/named graph URIs. Please remove FROM clause from the query or remove default/named graph URIs.");
         }
@@ -236,52 +232,13 @@ public class SparqlHttpClient {
         // and the using-graph-uri/using-named-graph-uri parameters are also specified
         // which is not allowed by the SPARQL specification
         // (see https://www.w3.org/TR/sparql11-protocol/#update-operation)
-        List<String> sparqlConstants = new ArrayList<>();
-        ASTUpdate astUpdate = query.getAST().getUpdate();
-        if (astUpdate != null) {
-            for (Update update : astUpdate.getUpdates()) {
-                Composite composite = update.getComposite();
-                if (composite != null) {
-                    Constant with = composite.getWith();
-                    if (with != null) {
-                        sparqlConstants.add(with.getLabel());
-                    }
-                }
-            }
-        }
-
-        if (!sparqlConstants.isEmpty() && (!defaultGraphUris.isEmpty() || !namedGraphUris.isEmpty())) {
+        if (query.containsWithClause() && (!defaultGraphUris.isEmpty() || !namedGraphUris.isEmpty())) {
             throw new IllegalArgumentException(
-                    "SPARQL update query contains USING, USING NAMED, or WITH clause and the using-graph-uri/using-named-graph-uri parameters are also specified. It is not allowed to specify both USING, USING NAMED, or WITH clause and the using-graph-uri/using-named-graph-uri parameters. Please remove USING, USING NAMED, or WITH clause from the query or remove the using-graph-uri/using-named-graph-uri parameters.");
+                "SPARQL update query contains USING, USING NAMED, or WITH clause and the using-graph-uri/using-named-graph-uri parameters are also specified."
+                + " It is not allowed to specify both USING, USING NAMED, or WITH clause and the using-graph-uri/using-named-graph-uri parameters."
+                + "Please remove USING, USING NAMED, or WITH clause from the query or remove the using-graph-uri/using-named-graph-uri parameters.");
         }
 
-    }
-
-    /**
-     * Builds a query object from the given query string.
-     * 
-     * @param query the query string
-     * @return the query object
-     */
-    private Query buildQuery(String query) {
-        QueryProcess exec = QueryProcess.create(Graph.create());
-        Query q;
-        try {
-            q = exec.compile(query);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid SPARQL query", e);
-        }
-        return q;
-    }
-
-    /**
-     * Checks if the query contains FROM clause.
-     * 
-     * @param query the query to check
-     * @return true if the query contains FROM clause, false otherwise
-     */
-    private boolean containsFromClause(Query query) {
-        return query.getFrom() != null && !query.getFrom().isEmpty();
     }
 
     /**

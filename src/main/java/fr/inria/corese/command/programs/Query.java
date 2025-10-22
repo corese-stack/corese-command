@@ -1,13 +1,12 @@
 package fr.inria.corese.command.programs;
 
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseSparqlQuery;
 import fr.inria.corese.command.utils.exporter.sparql.EnumResultFormat;
 import fr.inria.corese.command.utils.exporter.sparql.SparqlResultExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
-import fr.inria.corese.command.utils.loader.rdf.RdfDataLoader;
 import fr.inria.corese.command.utils.loader.sparql.SparqlQueryLoader;
-import fr.inria.corese.core.Graph;
 import fr.inria.corese.core.kgram.core.Mappings;
-import fr.inria.corese.core.query.QueryProcess;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -37,8 +36,8 @@ public class Query extends AbstractInputCommand {
         try {
 
             // Load the input file(s)
-            RdfDataLoader loader = new RdfDataLoader(this.spec, this.verbose);
-            Graph graph = loader.load(this.inputsRdfData, this.inputFormat, this.recursive);
+            CoreseRdfGraph graph = new CoreseRdfGraph(this.spec, this.verbose);
+            graph.load(this.inputsRdfData, this.inputFormat, this.recursive);
 
             // Load the query
             SparqlQueryLoader queryLoader = new SparqlQueryLoader(this.spec, this.verbose);
@@ -58,18 +57,15 @@ public class Query extends AbstractInputCommand {
         }
     }
 
-    private Mappings execute(Graph graph, String query) throws Exception {
-        QueryProcess exec = QueryProcess.create(graph);
+    private Mappings execute(CoreseRdfGraph graph, String query) throws Exception {
 
-        // Execute query
+        if (this.verbose) {
+            this.spec.commandLine().getErr().println("Query: " + query);
+            this.spec.commandLine().getErr().println("Executing query...");
+        }
+
         try {
-
-            if (this.verbose) {
-                this.spec.commandLine().getErr().println("Query: " + query);
-                this.spec.commandLine().getErr().println("Executing query...");
-            }
-
-            return exec.query(query);
+            return CoreseSparqlQuery.execute(graph, query);
         } catch (Exception e) {
             throw new Exception("Error when executing SPARQL query : " + e.getMessage(), e);
         }

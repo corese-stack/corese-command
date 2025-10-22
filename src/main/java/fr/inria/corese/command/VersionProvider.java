@@ -1,6 +1,6 @@
 package fr.inria.corese.command;
 
-import fr.inria.corese.core.util.CoreseInfo;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseUtils;
 import picocli.CommandLine;
 
 /**
@@ -15,7 +15,7 @@ public class VersionProvider implements CommandLine.IVersionProvider {
     public String[] getVersion() {
         return new String[] {
                 commandVersion,
-                "Based on Corese-Core Version: " + CoreseInfo.getVersion()
+                "Based on Corese-Core Version: " + CoreseUtils.getCoreseVersion()
         };
     }
 

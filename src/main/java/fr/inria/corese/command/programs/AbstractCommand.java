@@ -6,9 +6,9 @@ import java.util.concurrent.Callable;
 
 import fr.inria.corese.command.VersionProvider;
 import fr.inria.corese.command.utils.ConfigManager;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseUtils;
 import fr.inria.corese.command.utils.exporter.rdf.RdfDataExporter;
 import fr.inria.corese.core.util.Property;
-import fr.inria.corese.core.util.Property.Value;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
@@ -77,7 +77,7 @@ public abstract class AbstractCommand implements Callable<Integer> {
         }
 
         // Set owl import
-        Property.set(Value.OWL_AUTO_IMPORT, this.owlImport);
+        CoreseUtils.setProperty(Property.Value.OWL_AUTO_IMPORT, this.owlImport);
 
         return 0;
     }

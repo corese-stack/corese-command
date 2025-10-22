@@ -15,9 +15,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import fr.inria.corese.core.Graph;
-import fr.inria.corese.core.load.Load;
-import fr.inria.corese.core.print.CanonicalRdf10Format;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import picocli.CommandLine;
 
 public class QueryTest {
@@ -112,17 +110,11 @@ public class QueryTest {
         private String canonicalize(String filePath) {
 
                 // Load RDF content into a Graph
-                Graph graph = Graph.create();
-                Load ld = Load.create(graph);
-
-                try {
-                        ld.parse(filePath, "");
-                } catch (Exception e) {
-                        e.printStackTrace();
-                }
+                CoreseRdfGraph graph = new CoreseRdfGraph();
+                graph.load(filePath, "");
 
                 // Return Canonical RDF content
-                return CanonicalRdf10Format.create(graph).toString();
+                return graph.canonicalRdf10Format();
         }
 
         @Test

@@ -1,10 +1,9 @@
 package fr.inria.corese.command.programs;
 
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import fr.inria.corese.command.utils.exporter.rdf.EnumCanonicAlgo;
 import fr.inria.corese.command.utils.exporter.rdf.RdfDataCanonicalizer;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
-import fr.inria.corese.command.utils.loader.rdf.RdfDataLoader;
-import fr.inria.corese.core.Graph;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -29,8 +28,8 @@ public class Canonicalize extends AbstractInputCommand {
 
         try {
             // Load the input file(s)
-            RdfDataLoader loader = new RdfDataLoader(this.spec, this.verbose);
-            Graph graph = loader.load(this.inputsRdfData, this.inputFormat, this.recursive);
+            CoreseRdfGraph graph = new CoreseRdfGraph(this.spec, this.verbose);
+            graph.load(this.inputsRdfData, this.inputFormat, this.recursive);
 
             // Canonicalize and export the graph
             RdfDataCanonicalizer rdfCanonicalizer = new RdfDataCanonicalizer(this.spec, this.verbose, this.output);

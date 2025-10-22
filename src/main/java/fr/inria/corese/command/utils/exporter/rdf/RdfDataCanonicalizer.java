@@ -3,8 +3,8 @@ package fr.inria.corese.command.utils.exporter.rdf;
 
 import java.nio.file.Path;
 
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
 import fr.inria.corese.command.utils.exporter.AbstractExporter;
-import fr.inria.corese.core.Graph;
 import picocli.CommandLine.Model.CommandSpec;
 
 /**
@@ -38,7 +38,7 @@ public class RdfDataCanonicalizer extends AbstractExporter {
      * @param format Serialization format.
      * @param graph  RDF graph to export.
      */
-    public void export(Graph graph, EnumCanonicAlgo format) {
+    public void export(CoreseRdfGraph graph, EnumCanonicAlgo format) {
 
         if (this.outputIsDefined) {
             Path path = this.needToAppendExtension ? Path.of(this.output + "." + format.getExtention()) : this.output;

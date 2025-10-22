@@ -2,7 +2,7 @@ package fr.inria.corese.command.utils;
 
 import java.nio.file.Path;
 
-import fr.inria.corese.core.util.Property;
+import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseUtils;
 import picocli.CommandLine.Model.CommandSpec;
 
 /**
@@ -19,11 +19,7 @@ public class ConfigManager {
      */
     public static void loadFromFile(Path path, CommandSpec spec, boolean verbose) {
 
-        try {
-            Property.load(path.toString());
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to open config file: " + path.toString(), e);
-        }
+        CoreseUtils.loadProperty(path.toString());
 
         if (verbose) {
             spec.commandLine().getErr().println("Loaded config file: " + path.toString());
