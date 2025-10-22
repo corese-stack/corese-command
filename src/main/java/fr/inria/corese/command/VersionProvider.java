@@ -1,6 +1,6 @@
 package fr.inria.corese.command;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseUtils;
+import fr.inria.corese.command.utils.coresecorowrapper.CoreseUtils;
 import picocli.CommandLine;
 
 /**

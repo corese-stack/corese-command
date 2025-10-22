@@ -1,4 +1,4 @@
-package fr.inria.corese.command.utils.coreseCoreWrapper;
+package fr.inria.corese.command.utils.coresecorowrapper;
 
 import fr.inria.corese.core.kgram.core.Mappings;
 import fr.inria.corese.core.kgram.core.Query;
@@ -9,14 +9,12 @@ import fr.inria.corese.core.sparql.triple.update.Composite;
 import fr.inria.corese.core.sparql.triple.update.Update;
 
 /**
- * Wrapper class for corese core KGRAM query
- * All interactions with corese.core.kgram.core.Query should be done through this class
+ * Wrapper class for corese core KGRAM query All interactions with corese.core.kgram.core.Query
+ * should be done through this class
  */
 public class CoreseSparqlQuery {
 
-    /**
-     * The wrapped KGRAM query
-     */
+    /** The wrapped KGRAM query */
     protected Query query;
 
     public CoreseSparqlQuery(Query query) {
@@ -50,13 +48,14 @@ public class CoreseSparqlQuery {
 
     /**
      * Executes the stringQuery on the graph
-     * 
-     * @param graph       The graph to execute the query on
+     *
+     * @param graph The graph to execute the query on
      * @param stringQuery The SPARQL query string
      * @return The mappings resulting from the query execution
      * @throws EngineException If an error occurs during query execution
      */
-    public static Mappings execute(CoreseRdfGraph graph, String stringQuery) throws EngineException {
+    public static Mappings execute(CoreseRdfGraph graph, String stringQuery)
+            throws EngineException {
         QueryProcess exec = QueryProcess.create(graph.getGraph());
 
         return exec.query(stringQuery);
@@ -64,7 +63,7 @@ public class CoreseSparqlQuery {
 
     /**
      * Checks if the query contains FROM clause.
-     * 
+     *
      * @return true if the query contains FROM clause, false otherwise
      */
     public boolean containsFromClause() {
@@ -73,7 +72,7 @@ public class CoreseSparqlQuery {
 
     /**
      * Checks if the query is an update query.
-     * 
+     *
      * @return true if the query is an update, false otherwise
      */
     public boolean isSPARQLUpdate() {
@@ -82,7 +81,7 @@ public class CoreseSparqlQuery {
 
     /**
      * Checks if the query contains WITH clause.
-     * 
+     *
      * @return true if the query contains WITH clause, false otherwise
      */
     public boolean containsWithClause() {
@@ -90,15 +89,12 @@ public class CoreseSparqlQuery {
         if (astUpdate != null) {
             for (Update update : astUpdate.getUpdates()) {
                 Composite composite = update.getComposite();
-                if (composite != null) {
-                    if (composite.getWith() != null) {
-                        return true;
-                    }
+                if (composite != null && composite.getWith() != null) {
+                    return true;
                 }
             }
         }
 
         return false;
     }
-
 }

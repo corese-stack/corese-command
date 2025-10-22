@@ -1,7 +1,14 @@
 package fr.inria.corese.command.utils.http;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import fr.inria.corese.command.programs.AbstractCommand;
+import fr.inria.corese.command.programs.QueryEndpoint;
+
+import org.junit.jupiter.api.Test;
+
+import picocli.CommandLine;
+import picocli.CommandLine.Model.CommandSpec;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -9,25 +16,20 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
-import fr.inria.corese.command.programs.AbstractCommand;
-import fr.inria.corese.command.programs.QueryEndpoint;
-import picocli.CommandLine;
-import picocli.CommandLine.Model.CommandSpec;
-
-public class SparqlHttpClientTest {
+class SparqlHttpClientTest {
 
     private final ArrayList<String> emptyList = new ArrayList<String>();
 
-        // Default data for the tests
-        private final String serverUrl = "http://localhost:8080/sparql";
-        private final String graphUri = "http://example.orgraphUrig/graph";
+    // Default data for the tests
+    private final String serverUrl = "http://localhost:8080/sparql";
+    private final String graphUri = "http://example.orgraphUrig/graph";
 
     /**
-     * Don't look at it. This is an ugly hack to get a valid CommandSpec instance for the tests.
-     * (It uses reflective API to get a protected attribute of the QueryEndpoint class)
-     * We are only testing the query validation which is not concerned with CommandSpec (but a valid one is required anyway).
+     * Don't look at it. This is an ugly hack to get a valid CommandSpec instance for the tests. (It
+     * uses reflective API to get a protected attribute of the QueryEndpoint class) We are only
+     * testing the query validation which is not concerned with CommandSpec (but a valid one is
+     * required anyway).
+     *
      * @return
      */
     private CommandSpec createCommandSpecObject() {
@@ -56,72 +58,63 @@ public class SparqlHttpClientTest {
             e.printStackTrace();
             return null;
         }
-        
     }
 
-    /**
-     * Test that validateQuery fails for an empty query
-     */
+    /** Test that validateQuery fails for an empty query */
     @Test
-    public void testValidateQueryFalseForEmptyQuery() {
- 
+    void testValidateQueryFalseForEmptyQuery() {
+
         SparqlHttpClient httpClient = new SparqlHttpClient(createCommandSpecObject(), serverUrl);
 
         /* Invalid null query */
-        assertThrows( 
-            IllegalArgumentException.class,
-            () -> httpClient.validateQuery(null, emptyList, emptyList) );
- 
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> httpClient.validateQuery(null, emptyList, emptyList));
+
         /* Invalid empty query */
-        assertThrows( 
-            IllegalArgumentException.class,
-            () -> httpClient.validateQuery("", emptyList, emptyList) );
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> httpClient.validateQuery("", emptyList, emptyList));
     }
 
-    /**
-     * Test that validateQuery fails for query with a syntax error
-     */
+    /** Test that validateQuery fails for query with a syntax error */
     @Test
-    public void testValidateQueryFalseForSyntaxError() {
- 
+    void testValidateQueryFalseForSyntaxError() {
+
         SparqlHttpClient httpClient = new SparqlHttpClient(createCommandSpecObject(), serverUrl);
 
         /* valid query : passes */
-        httpClient.validateQuery("SELECT * WHERE { ?s ?p ?o }", emptyList, emptyList );
+        httpClient.validateQuery("SELECT * WHERE { ?s ?p ?o }", emptyList, emptyList);
 
         /* Invalid query: syntax error */
-        assertThrows( 
-            IllegalArgumentException.class,
-            () -> httpClient.validateQuery("SELECT * WHERE", emptyList, emptyList) );
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> httpClient.validateQuery("SELECT * WHERE", emptyList, emptyList));
     }
 
-    /**
-     * Test that validateQuery fails for update query using the POST request method
-     */
+    /** Test that validateQuery fails for update query using the POST request method */
     @Test
-    public void testValidateQueryFalseForUpdateWithGET() {
+    void testValidateQueryFalseForUpdateWithGET() {
         String query = "DELETE WHERE { ?s ?p ?o }";
         SparqlHttpClient httpClient = new SparqlHttpClient(createCommandSpecObject(), serverUrl);
 
         /* update query not defined by user: will set the requestMethod and pass */
-        httpClient.validateQuery(query, emptyList, emptyList );
+        httpClient.validateQuery(query, emptyList, emptyList);
 
         /* update query defined by user with POST request method: passes */
         httpClient.setRequestMethod(EnumRequestMethod.POST_URLENCODED);
-        httpClient.validateQuery(query, emptyList, emptyList );
+        httpClient.validateQuery(query, emptyList, emptyList);
 
         /* Invalid update query: defined by user with GET request method */
         httpClient.setRequestMethod(EnumRequestMethod.GET);
-        assertThrows( 
-            IllegalArgumentException.class,
-            () -> httpClient.validateQuery(query, emptyList, emptyList) );
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> httpClient.validateQuery(query, emptyList, emptyList));
     }
 
-    /**
-     * Test that validateQuery fails for an clause FROM and non empty GraphURI
-     */
+    /** Test that validateQuery fails for an clause FROM and non empty GraphURI */
     @Test
-    public void testValidateQueryFalseForFromClauseAndGraphURI() {
+    void testValidateQueryFalseForFromClauseAndGraphURI() {
         String query = "SELECT * FROM <" + graphUri + "> WHERE { ?s ?p ?o }";
 
         List<String> nonEmptyList = new ArrayList<String>();
@@ -131,18 +124,16 @@ public class SparqlHttpClientTest {
 
         /* Valid query with FROM clause and empty URI list  */
         httpClient.validateQuery(query, emptyList, emptyList);
- 
+
         /* Invalid query with FROM clause and non empty URI list */
-        assertThrows( 
-            IllegalArgumentException.class,
-            () -> httpClient.validateQuery(query, nonEmptyList, emptyList) );
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> httpClient.validateQuery(query, nonEmptyList, emptyList));
     }
 
-    /**
-     * Test that validateQuery fails for a WITH clause and non empty GraphURI
-     */
+    /** Test that validateQuery fails for a WITH clause and non empty GraphURI */
     @Test
-    public void testValidateQueryFalseForWithClauseAndGraphURI() {
+    void testValidateQueryFalseForWithClauseAndGraphURI() {
         String query = "WITH <" + graphUri + "> DELETE { ?s ?p ?o } WHERE { ?s ?p ?o }";
 
         List<String> nonEmptyList = new ArrayList<String>();
@@ -152,11 +143,10 @@ public class SparqlHttpClientTest {
 
         /* Valid query having WITH clause and empty URI list  */
         httpClient.validateQuery(query, emptyList, emptyList);
- 
-        /* Invalid query having WITH clause and non empty URI list */
-        assertThrows( 
-            IllegalArgumentException.class,
-            () -> httpClient.validateQuery(query, nonEmptyList, emptyList) );
-    }
 
+        /* Invalid query having WITH clause and non empty URI list */
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> httpClient.validateQuery(query, nonEmptyList, emptyList));
+    }
 }

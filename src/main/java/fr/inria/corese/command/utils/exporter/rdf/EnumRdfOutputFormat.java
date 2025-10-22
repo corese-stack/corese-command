@@ -2,9 +2,7 @@ package fr.inria.corese.command.utils.exporter.rdf;
 
 import fr.inria.corese.core.sparql.api.ResultFormatDef;
 
-/**
- * Enumeration of output RDF serialization formats.
- */
+/** Enumeration of output RDF serialization formats. */
 public enum EnumRdfOutputFormat {
     // RdfXml
     RDFXML("rdfxml", ResultFormatDef.format.RDF_XML_FORMAT, "rdf"),
@@ -47,12 +45,13 @@ public enum EnumRdfOutputFormat {
 
     /**
      * Constructor.
-     * 
-     * @param name         The name of the format.
+     *
+     * @param name The name of the format.
      * @param coreseFormat The Corese format.
-     * @param extention    The extension file for the format.
+     * @param extention The extension file for the format.
      */
-    private EnumRdfOutputFormat(String name, ResultFormatDef.format coreseFormat, String extention) {
+    private EnumRdfOutputFormat(
+            String name, ResultFormatDef.format coreseFormat, String extention) {
         this.name = name;
         this.coreseFormat = coreseFormat;
         this.extention = extention;
@@ -60,7 +59,7 @@ public enum EnumRdfOutputFormat {
 
     /**
      * Get the Corese format.
-     * 
+     *
      * @return The Corese format.
      */
     public ResultFormatDef.format getCoreseFormat() {
@@ -69,7 +68,7 @@ public enum EnumRdfOutputFormat {
 
     /**
      * Get the extension of the file format associated with the format.
-     * 
+     *
      * @return The extension of the file format associated with the format.
      */
     public String getExtention() {
@@ -80,5 +79,4 @@ public enum EnumRdfOutputFormat {
     public String toString() {
         return this.name;
     }
-
 }

@@ -2,32 +2,59 @@ package fr.inria.corese.command.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import fr.inria.corese.command.utils.InputTypeDetector.InputType;
 
-public class InputTypeDetectorTest {
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-    @Test
-    @DisplayName("Detect valid SPARQL query")
-    void detectValidSparql() {
-        String query = "SELECT * WHERE { ?s ?p ?o }";
-        assertEquals(InputType.SPARQL, InputTypeDetector.detect(query));
+import java.util.stream.Stream;
+
+class InputTypeDetectorTest {
+
+    // Data provider for SPARQL detection tests
+    static Stream<Arguments> sparqlInputProvider() {
+        return Stream.of(
+                Arguments.of("SELECT * WHERE { ?s ?p ?o }", "Detect valid SPARQL query"),
+                Arguments.of("PREFIX : <http://example.com/>\nASK { :x ?p ?o }", "Detect SPARQL with complex characters"),
+                Arguments.of("SELEeCT * WHERE { ?s ?p ?o }", "Detect invalid SPARQL with typo"),
+                Arguments.of("""
+                        PREFIX : <http://example.com/>
+                            SELECT * WHERE {
+                                ?s ?p ?o .
+                            } LIMIT 10
+                        """, "Detect multiline SPARQL"),
+                Arguments.of("PREFIX ex: <http://example.org/> SELECT * WHERE { ex:Alice a ex:Person }", "Detect single-line SPARQL that embeds a URI")
+        );
     }
 
-    @Test
-    @DisplayName("Detect SPARQL with complex characters")
-    void detectComplexSparql() {
-        String query = "PREFIX : <http://example.com/>\nASK { :x ?p ?o }";
-        assertEquals(InputType.SPARQL, InputTypeDetector.detect(query));
+    // Data provider for file path detection tests
+    static Stream<Arguments> filePathProvider() {
+        return Stream.of(
+                Arguments.of("data/query.rq", "Detect local file path with extension"),
+                Arguments.of("/home/user/query.rq", "Detect absolute path"),
+                Arguments.of("queryWithoutExtension", "Detect file path without extension"),
+                Arguments.of("select_data.ttl", "Detect text with keywords but clearly not SPARQL"),
+                Arguments.of("queries/select_{lang}?pretty", "Detect complex file name with special characters"),
+                Arguments.of("some/futureQueryFile", "Detect path that doesn't exist but is valid"),
+                Arguments.of("data/my query.rq", "Detect file path with spaces")
+        );
     }
 
-    @Test
-    @DisplayName("Detect invalid SPARQL with typo")
-    void detectTypoSparql() {
-        String query = "SELEeCT * WHERE { ?s ?p ?o }";
-        assertEquals(InputType.SPARQL, InputTypeDetector.detect(query));
+    @ParameterizedTest
+    @MethodSource("sparqlInputProvider")
+    @DisplayName("SPARQL detection tests")
+    void detectSparqlQueries(String input, String description) {
+        assertEquals(InputType.SPARQL, InputTypeDetector.detect(input), description);
+    }
+
+    @ParameterizedTest
+    @MethodSource("filePathProvider")
+    @DisplayName("File path detection tests")
+    void detectFilePaths(String input, String description) {
+        assertEquals(InputType.FILE_PATH, InputTypeDetector.detect(input), description);
     }
 
     @Test
@@ -45,41 +72,6 @@ public class InputTypeDetectorTest {
     }
 
     @Test
-    @DisplayName("Detect local file path with extension")
-    void detectFilePath() {
-        String path = "data/query.rq";
-        assertEquals(InputType.FILE_PATH, InputTypeDetector.detect(path));
-    }
-
-    @Test
-    @DisplayName("Detect absolute path")
-    void detectAbsolutePath() {
-        String path = "/home/user/query.rq";
-        assertEquals(InputType.FILE_PATH, InputTypeDetector.detect(path));
-    }
-
-    @Test
-    @DisplayName("Detect file path without extension")
-    void detectFilePathWithoutExtension() {
-        String path = "queryWithoutExtension";
-        assertEquals(InputType.FILE_PATH, InputTypeDetector.detect(path));
-    }
-
-    @Test
-    @DisplayName("Detect text with keywords but clearly not SPARQL")
-    void detectFilenameWithSparqlKeywords() {
-        String path = "select_data.ttl";
-        assertEquals(InputType.FILE_PATH, InputTypeDetector.detect(path));
-    }
-
-    @Test
-    @DisplayName("Detect complex file name with special characters")
-    void detectFilenameWithSpecialCharacters() {
-        String path = "queries/select_{lang}?pretty";
-        assertEquals(InputType.FILE_PATH, InputTypeDetector.detect(path));
-    }
-
-    @Test
     @DisplayName("Detect empty input")
     void detectEmptyInput() {
         assertEquals(InputType.UNKNOWN, InputTypeDetector.detect(""));
@@ -90,36 +82,4 @@ public class InputTypeDetectorTest {
     void detectNullInput() {
         assertEquals(InputType.UNKNOWN, InputTypeDetector.detect(null));
     }
-
-    @Test
-    @DisplayName("Detect multiline SPARQL")
-    void detectMultilineSparql() {
-        String query = "PREFIX : <http://example.com/>\n" +
-                "SELECT * WHERE {\n" +
-                "  ?s ?p ?o .\n" +
-                "} LIMIT 10";
-        assertEquals(InputType.SPARQL, InputTypeDetector.detect(query));
-    }
-
-    @Test
-    @DisplayName("Detect path that doesn't exist but is valid")
-    void detectNonExistentButValidPath() {
-        String path = "some/futureQueryFile";
-        assertEquals(InputType.FILE_PATH, InputTypeDetector.detect(path));
-    }
-
-    @Test
-    @DisplayName("Detect single-line SPARQL that embeds a URI")
-    void detectInlineSparqlWithUri() {
-        String query = "PREFIX ex: <http://example.org/> SELECT * WHERE { ex:Alice a ex:Person }";
-        assertEquals(InputType.SPARQL, InputTypeDetector.detect(query));
-    }
-
-    @Test
-    @DisplayName("Detect file path with spaces")
-    void detectFilePathWithSpaces() {
-        String path = "data/my query.rq";
-        assertEquals(InputType.FILE_PATH, InputTypeDetector.detect(path));
-    }
-
 }

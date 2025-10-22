@@ -1,16 +1,9 @@
 package fr.inria.corese.command.utils.http;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import fr.inria.corese.command.VersionProvider;
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseSparqlQuery;
+import fr.inria.corese.command.utils.coresecorowrapper.CoreseSparqlQuery;
 import fr.inria.corese.core.sparql.exceptions.EngineException;
+
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -18,32 +11,36 @@ import jakarta.ws.rs.client.Invocation.Builder;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import picocli.CommandLine.Model.CommandSpec;
 
-/**
- * This class provides functionalities to send HTTP requests to a SPARQL
- * endpoint.
- */
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+/** This class provides functionalities to send HTTP requests to a SPARQL endpoint. */
 public class SparqlHttpClient {
 
     private final SparqlHttpPrinter printer;
 
     private final String endpointUrl;
     private EnumRequestMethod requestMethod = EnumRequestMethod.GET;
-    private Boolean requestMethodIsDefinedByUser = false;
+    private boolean requestMethodIsDefinedByUser = false;
     private List<Pair<String, String>> headers = new ArrayList<>();
 
     private boolean verbose = false;
 
-    private final String USERAGENT = "Corese-Command/" + VersionProvider.getCommandVersion();
+    private static final String USERAGENT = "Corese-Command/" + VersionProvider.getCommandVersion();
 
-    /////////////////
-    // Constructor //
-    /////////////////
+    // ===== Constructor ===== //
 
     /**
      * Constructor.
-     * 
+     *
      * @param endpointUrl URL of the SPARQL endpoint to send the request to.
      */
     public SparqlHttpClient(CommandSpec spec, String endpointUrl) {
@@ -54,13 +51,11 @@ public class SparqlHttpClient {
         this.endpointUrl = endpointUrl;
     }
 
-    ///////////////////////
-    // Getters & Setters //
-    ///////////////////////
+    // ===== Getters & Setters ===== //
 
     /**
      * Sets the request method.
-     * 
+     *
      * @param requestMethod the request method
      */
     public void setRequestMethod(EnumRequestMethod requestMethod) {
@@ -72,7 +67,7 @@ public class SparqlHttpClient {
 
     /**
      * Sets the verbose mode.
-     * 
+     *
      * @param verbose true to enable verbose mode, false otherwise
      */
     public void setVerbose(boolean verbose) {
@@ -81,7 +76,7 @@ public class SparqlHttpClient {
 
     /**
      * Gets the endpoint URL.
-     * 
+     *
      * @return the endpoint URL
      */
     public String getEndpointUrl() {
@@ -90,8 +85,8 @@ public class SparqlHttpClient {
 
     /**
      * Sets the personalized header.
-     * 
-     * @param key   the key of the header
+     *
+     * @param key the key of the header
      * @param value the value of the header
      */
     public void addHeader(String key, String value) {
@@ -102,38 +97,43 @@ public class SparqlHttpClient {
         this.headers.add(Pair.of(key.trim(), value.trim()));
     }
 
-    /////////////////////////
-    // HTTP request method //
-    /////////////////////////
+    // ===== HTTP request method ===== //
 
     /**
      * Sends a SPARQL query to the SPARQL endpoint.
-     * 
+     *
      * @param query SPARQL query to send
      * @return the response from the endpoint
-     * @throws Exception if an error occurs while sending the request
+     * @throws EngineException if an error occurs while validating the query
+     * @throws IllegalArgumentException if the query or endpoint configuration is invalid
+     * @throws IllegalStateException if the HTTP response status is not successful
      */
-    public String sendRequest(String query) throws Exception {
+    public String sendRequest(String query) {
         return sendRequest(query, new ArrayList<>(), new ArrayList<>(), false);
     }
 
     /**
      * Sends a SPARQL query to the SPARQL endpoint.
-     * 
-     * @param query                 SPARQL query to send
-     * @param defaultGraphUris      default graph URIs to use
-     * @param namedGraphUris        named graph URIs to use
+     *
+     * @param query SPARQL query to send
+     * @param defaultGraphUris default graph URIs to use
+     * @param namedGraphUris named graph URIs to use
      * @param ignoreQueryValidation true to ignore query validation, false otherwise
      * @return the response from the endpoint
-     * @throws Exception if an error occurs while sending the request
+     * @throws EngineException if an error occurs while validating the query
+     * @throws IllegalArgumentException if the query or endpoint configuration is invalid
+     * @throws IllegalStateException if the HTTP response status is not successful
      */
-    public String sendRequest(String query, List<String> defaultGraphUris, List<String> namedGraphUris,
-            boolean ignoreQueryValidation)
-            throws Exception {
+    public String sendRequest(
+            String query,
+            List<String> defaultGraphUris,
+            List<String> namedGraphUris,
+            boolean ignoreQueryValidation) {
 
         // If the "User-Agent" header is not present, add it
-        if (!this.headers.stream().anyMatch(header -> header.getLeft().equalsIgnoreCase("User-Agent"))) {
-            this.addHeader("User-Agent", this.USERAGENT);
+        if (this.headers.stream()
+                .noneMatch(header -> header.getLeft().equalsIgnoreCase("User-Agent"))) {
+            this.addHeader("User-Agent", SparqlHttpClient.USERAGENT);
         }
 
         // Fix parameters
@@ -151,7 +151,8 @@ public class SparqlHttpClient {
         }
 
         // Create the web target based on type of request method
-        WebTarget webTarget = this.buildWebTarget(this.endpointUrl, query, defaultGraphUris, namedGraphUris);
+        WebTarget webTarget =
+                this.buildWebTarget(this.endpointUrl, query, defaultGraphUris, namedGraphUris);
 
         // Create the request body based on type of request method
         String bodyContent = this.buildRequestBody(query, defaultGraphUris, namedGraphUris);
@@ -160,6 +161,11 @@ public class SparqlHttpClient {
 
         // Execute the request
         response = this.executeRequest(webTarget, bodyContent);
+
+        // Check if response is null
+        if (response == null) {
+            throw new IllegalStateException("Failed to execute request: response is null");
+        }
 
         // Print the response if verbose mode is enabled
         if (this.verbose) {
@@ -173,19 +179,18 @@ public class SparqlHttpClient {
         return response.readEntity(String.class);
     }
 
-    /////////////////////
-    // Private methods //
-    /////////////////////
+    // ===== Private methods ===== //
 
     /**
-     * Validates the query. The query must be defined and must be a valid SPARQL
-     * query and respect the SPARQL specification.
-     * 
-     * @param queryString      the query to validate
+     * Validates the query. The query must be defined and must be a valid SPARQL query and respect
+     * the SPARQL specification.
+     *
+     * @param queryString the query to validate
      * @param defaultGraphUris default graph URIs to use
-     * @param namedGraphUris   named graph URIs to use
+     * @param namedGraphUris named graph URIs to use
      */
-    protected void validateQuery(String queryString, List<String> defaultGraphUris, List<String> namedGraphUris) {
+    protected void validateQuery(
+            String queryString, List<String> defaultGraphUris, List<String> namedGraphUris) {
 
         // Check if the query is defined
         if (queryString == null || queryString.isEmpty()) {
@@ -217,37 +222,45 @@ public class SparqlHttpClient {
         // (see https://www.w3.org/TR/sparql11-protocol/#update-operation)
         if (this.requestMethod == EnumRequestMethod.GET && query.isSPARQLUpdate()) {
             throw new IllegalArgumentException(
-                    "SPARQL query is an update query, but GET method is used. Please use a POST method instead.");
+                    "SPARQL query is an update query, but GET method is used. Please use a POST"
+                            + " method instead.");
         }
 
         // Check if the query contains FROM clause and default/named graph URIs
         // which is not allowed by the SPARQL specification
         // (see https://www.w3.org/TR/sparql11-protocol/#query-operation)
-        if (query.containsFromClause() && (!defaultGraphUris.isEmpty() || !namedGraphUris.isEmpty())) {
+        if (query.containsFromClause()
+                && (!defaultGraphUris.isEmpty() || !namedGraphUris.isEmpty())) {
             throw new IllegalArgumentException(
-                    "SPARQL query contains FROM clause, but default and named graph URIs are specified. It is not allowed to specify both FROM clause and default/named graph URIs. Please remove FROM clause from the query or remove default/named graph URIs.");
+                    "SPARQL query contains FROM clause, but default and named graph URIs are"
+                        + " specified. It is not allowed to specify both FROM clause and"
+                        + " default/named graph URIs. Please remove FROM clause from the query or"
+                        + " remove default/named graph URIs.");
         }
 
         // Check if the update query contains USING, USING NAMED, or WITH clauses
         // and the using-graph-uri/using-named-graph-uri parameters are also specified
         // which is not allowed by the SPARQL specification
         // (see https://www.w3.org/TR/sparql11-protocol/#update-operation)
-        if (query.containsWithClause() && (!defaultGraphUris.isEmpty() || !namedGraphUris.isEmpty())) {
+        if (query.containsWithClause()
+                && (!defaultGraphUris.isEmpty() || !namedGraphUris.isEmpty())) {
             throw new IllegalArgumentException(
-                "SPARQL update query contains USING, USING NAMED, or WITH clause and the using-graph-uri/using-named-graph-uri parameters are also specified."
-                + " It is not allowed to specify both USING, USING NAMED, or WITH clause and the using-graph-uri/using-named-graph-uri parameters."
-                + "Please remove USING, USING NAMED, or WITH clause from the query or remove the using-graph-uri/using-named-graph-uri parameters.");
+                    "SPARQL update query contains USING, USING NAMED, or WITH clause and the"
+                        + " using-graph-uri/using-named-graph-uri parameters are also specified. It"
+                        + " is not allowed to specify both USING, USING NAMED, or WITH clause and"
+                        + " the using-graph-uri/using-named-graph-uri parameters.Please remove"
+                        + " USING, USING NAMED, or WITH clause from the query or remove the"
+                        + " using-graph-uri/using-named-graph-uri parameters.");
         }
-
     }
 
     /**
      * Builds a web target.
-     * 
-     * @param endpoint         the endpoint URL
-     * @param query            the query
+     *
+     * @param endpoint the endpoint URL
+     * @param query the query
      * @param defaultGraphUris default graph URIs to use
-     * @param namedGraphUris   named graph URIs to use
+     * @param namedGraphUris named graph URIs to use
      * @return the web target object
      */
     private WebTarget buildWebTarget(
@@ -267,7 +280,8 @@ public class SparqlHttpClient {
         }
 
         // Add graph URIs
-        if (this.requestMethod == EnumRequestMethod.GET || this.requestMethod == EnumRequestMethod.POST_DIRECT) {
+        if (this.requestMethod == EnumRequestMethod.GET
+                || this.requestMethod == EnumRequestMethod.POST_DIRECT) {
             for (String defaultGraphUri : defaultGraphUris) {
                 webTarget = webTarget.queryParam("default-graph-uri", this.encode(defaultGraphUri));
             }
@@ -281,16 +295,14 @@ public class SparqlHttpClient {
 
     /**
      * Builds the request body.
-     * 
-     * @param query            the query
+     *
+     * @param query the query
      * @param defaultGraphUris default graph URIs to use
-     * @param namedGraphUris   named graph URIs to use
+     * @param namedGraphUris named graph URIs to use
      * @return the request body
      */
     private String buildRequestBody(
-            String query,
-            List<String> defaultGraphUris,
-            List<String> namedGraphUris) {
+            String query, List<String> defaultGraphUris, List<String> namedGraphUris) {
 
         StringBuilder bodyContent = new StringBuilder();
 
@@ -315,8 +327,8 @@ public class SparqlHttpClient {
 
     /**
      * Executes the request.
-     * 
-     * @param webTarget   the web target of the request
+     *
+     * @param webTarget the web target of the request
      * @param bodyContent the body content of the request
      * @return the response from the endpoint
      */
@@ -360,12 +372,10 @@ public class SparqlHttpClient {
      *
      * @param value the value to be encoded
      * @return the encoded value
-     * @throws IllegalStateException if the UTF-8 encoding is not supported, which
-     *                               should never happen as it is guaranteed to be
-     *                               supported by the JVM
-     *                               (see <a href=
-     *                               "https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html">Java
-     *                               Charset documentation</a>).
+     * @throws IllegalStateException if the UTF-8 encoding is not supported, which should never
+     *     happen as it is guaranteed to be supported by the JVM (see <a href=
+     *     "https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html">Java Charset
+     *     documentation</a>).
      */
     private String encode(String value) {
         try {
@@ -376,22 +386,19 @@ public class SparqlHttpClient {
     }
 
     /**
-     * Validates the response. Throws an exception if the HTTP status code is not
-     * 2xx.
+     * Validates the response. Throws an exception if the HTTP status code is not 2xx.
      *
      * @param response the response to validate
-     * @throws Exception if the response status is not successful
+     * @throws IllegalStateException if the response status is not successful
      */
-    private void validateResponse(Response response) throws Exception {
+    private void validateResponse(Response response) {
         int status = response.getStatus();
 
         if (status < 200 || status >= 300) {
             String body = response.readEntity(String.class);
             String reason = response.getStatusInfo().getReasonPhrase();
 
-            throw new Exception("HTTP " + status + " " + reason + "\n" +
-                    "Response body:\n" + body);
+            throw new IllegalStateException("HTTP " + status + " " + reason + "\n" + "Response body:\n" + body);
         }
     }
-
 }

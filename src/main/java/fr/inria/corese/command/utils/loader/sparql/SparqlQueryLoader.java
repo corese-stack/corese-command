@@ -19,9 +19,7 @@ public class SparqlQueryLoader {
     private CommandSpec spec;
     private boolean verbose;
 
-    /////////////////
-    // Constructor //
-    /////////////////
+    // ===== Constructor ===== //
 
     /**
      * Constructor.
@@ -34,9 +32,8 @@ public class SparqlQueryLoader {
         this.verbose = verbose;
     }
 
-    ////////////////////
-    // Public methods //
-    ////////////////////
+    
+    // ===== Public methods ===== //
 
     /**
      * Load a SPARQL query from a path, URL, or standard input.
@@ -71,9 +68,7 @@ public class SparqlQueryLoader {
         }
     }
 
-    /////////////////////
-    // Private methods //
-    /////////////////////
+    // ===== Private methods ===== //
 
     /**
      * Load a SPARQL query from standard input.

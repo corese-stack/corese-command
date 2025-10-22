@@ -1,13 +1,4 @@
-package fr.inria.corese.command.utils.coreseCoreWrapper;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.Optional;
+package fr.inria.corese.command.utils.coresecorowrapper;
 
 import fr.inria.corese.command.utils.ConvertString;
 import fr.inria.corese.command.utils.InputTypeDetector;
@@ -20,40 +11,42 @@ import fr.inria.corese.core.load.Load;
 import fr.inria.corese.core.load.LoadFormat;
 import fr.inria.corese.core.print.CanonicalRdf10Format;
 import fr.inria.corese.core.sparql.datatype.DatatypeMap;
+
 import picocli.CommandLine.Model.CommandSpec;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.Optional;
+
 /**
- * Wrapper class for corese.core.Graph
- * All interactions with corese.core.Graph should be done through this class
+ * Wrapper class for corese.core.Graph All interactions with corese.core.Graph should be done
+ * through this class
  */
 public class CoreseRdfGraph {
 
-    /**
-     * The wrapped RDF graph
-     */
+    /** The wrapped RDF graph */
     private Graph graph;
 
     // Command specification
     private CommandSpec spec = null; // Command specification
     private boolean verbose = false; // If set to true, print information about the loaded files
 
-    //////////////////
-    // Constructors //
-    //////////////////
+    // ===== Constructors ===== //
 
-    /**
-     * Constructor.
-     * Empty graph, empty command specification, verbose is false
-     */
+    /** Constructor. Empty graph, empty command specification, verbose is false */
     public CoreseRdfGraph() {
         this(Graph.create(), null, false);
     }
 
     /**
-     * Constructor.
-     * Empty graph
-     * 
-     * @param spec    Command specification.
+     * Constructor. Empty graph
+     *
+     * @param spec Command specification.
      * @param verbose If true, print information about the loaded files.
      */
     public CoreseRdfGraph(CommandSpec spec, boolean verbose) {
@@ -61,9 +54,8 @@ public class CoreseRdfGraph {
     }
 
     /**
-     * Constructor.
-     * Empty command specification, verbose is false
-     * 
+     * Constructor. Empty command specification, verbose is false
+     *
      * @param graph A given corese Graph
      */
     public CoreseRdfGraph(Graph graph) {
@@ -72,9 +64,9 @@ public class CoreseRdfGraph {
 
     /**
      * Constructor.
-     * 
-     * @param graph   A given corese Graph
-     * @param spec    Command specification.
+     *
+     * @param graph A given corese Graph
+     * @param spec Command specification.
      * @param verbose If true, print information about the loaded files.
      */
     public CoreseRdfGraph(Graph graph, CommandSpec spec, boolean verbose) {
@@ -83,9 +75,7 @@ public class CoreseRdfGraph {
         this.verbose = verbose;
     }
 
-    ////////////////////
-    // Public methods //
-    ////////////////////
+    // ===== Public methods ===== //
 
     public Graph getGraph() {
         return graph;
@@ -99,10 +89,7 @@ public class CoreseRdfGraph {
         graph.init();
     }
 
-    /**
-     * Load data from a path name into a Corese Graph.
-     * Used for testing
-     */
+    /** Load data from a path name into a Corese Graph. Used for testing */
     public void load(String path, String name) {
 
         graph = Graph.create();
@@ -111,15 +98,14 @@ public class CoreseRdfGraph {
         try {
             load.parse(path, name);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse String. Check if it is well-formed. " + e.getMessage(), e);
+            throw new IllegalArgumentException(
+                    "Failed to parse String. Check if it is well-formed. " + e.getMessage(), e);
         }
     }
 
     /**
-     * Load data from an input stream with a given format.
-     * Becareful that the format is a core.api.loader.format,
-     * not a EnumRdfInputFormat as used in LoadFromStdin
-     * Used for testing
+     * Load data from an input stream with a given format. Becareful that the format is a
+     * core.api.loader.format, not a EnumRdfInputFormat as used in LoadFromStdin Used for testing
      */
     public void load(InputStream is, format coreseFormat) {
 
@@ -129,19 +115,20 @@ public class CoreseRdfGraph {
         try {
             load.parse(is, coreseFormat);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse String. Check if it is well-formed. " + e.getMessage(), e);
-        }     
+            throw new IllegalArgumentException(
+                    "Failed to parse String. Check if it is well-formed. " + e.getMessage(), e);
+        }
     }
 
     /**
      * Load RDF data into a Corese Graph.
-     * 
-     * Load from standard input if no input is provided.
-     * Load from URL or file if input is a valid URL or file path.
-     * 
-     * @param inputs      Paths or URLs of the files to load.
+     *
+     * <p>Load from standard input if no input is provided. Load from URL or file if input is a
+     * valid URL or file path.
+     *
+     * @param inputs Paths or URLs of the files to load.
      * @param inputFormat Input file serialization format.
-     * @param recursive   If true, load RDF data from subdirectories.
+     * @param recursive If true, load RDF data from subdirectories.
      * @return The Corese Graph containing the RDF data.
      */
     public void load(String[] inputs, EnumRdfInputFormat inputFormat, boolean recursive)
@@ -182,12 +169,11 @@ public class CoreseRdfGraph {
                     throw new IllegalArgumentException("Invalid input: " + input);
             }
         }
-
     }
 
     /**
      * Returns a Canonical RDF 1.0 representation of the graph serialized in a String.
-     * 
+     *
      * @return A String representing a canonical RDF 1.0 representation of the graph.
      */
     public String canonicalRdf10Format() {
@@ -208,13 +194,11 @@ public class CoreseRdfGraph {
         Node nodeShape = DatatypeMap.createResource("http://www.w3.org/ns/shacl#NodeShape");
         Node propertyShape = DatatypeMap.createResource("http://www.w3.org/ns/shacl#PropertyShape");
 
-        return graph.getEdgesRDF4J(null, null, nodeShape).iterator().hasNext() ||
-                graph.getEdgesRDF4J(null, null, propertyShape).iterator().hasNext();
+        return graph.getEdgesRDF4J(null, null, nodeShape).iterator().hasNext()
+                || graph.getEdgesRDF4J(null, null, propertyShape).iterator().hasNext();
     }
 
-    /////////////////////
-    // Private methods //
-    /////////////////////
+    // ===== Private methods ===== //
 
     /**
      * Load RDF data from standard input into a Corese Graph.
@@ -236,7 +220,7 @@ public class CoreseRdfGraph {
     /**
      * Load RDF data from a path or URL into a Corese Graph.
      *
-     * @param url         URL of the file to load.
+     * @param url URL of the file to load.
      * @param inputFormat Input file serialization format.
      * @return The Corese Graph containing the RDF data.
      */
@@ -244,10 +228,9 @@ public class CoreseRdfGraph {
 
         // If the input format is not provided, try to determine it from the file
         if (inputFormat == null) {
-            Optional<EnumRdfInputFormat> inputFormatOptional = this.guessInputFormat(url.toString());
-            if (inputFormatOptional.isPresent()) {
-                inputFormat = inputFormatOptional.get();
-            }
+            Optional<EnumRdfInputFormat> inputFormatOptional =
+                    this.guessInputFormat(url.toString());
+            inputFormat = inputFormatOptional.get();
         }
 
         // Load RDF data from URL
@@ -268,7 +251,7 @@ public class CoreseRdfGraph {
     /**
      * Load RDF data from a path to a file into a Corese Graph.
      *
-     * @param path        Path of the file to load.
+     * @param path Path of the file to load.
      * @param inputFormat Input file serialization format.
      * @return The Corese Graph containing the RDF data.
      */
@@ -276,10 +259,9 @@ public class CoreseRdfGraph {
 
         // If the input format is not provided, try to determine it from the file
         if (inputFormat == null) {
-            Optional<EnumRdfInputFormat> inputFormatOptional = this.guessInputFormat(path.toString());
-            if (inputFormatOptional.isPresent()) {
-                inputFormat = inputFormatOptional.get();
-            }
+            Optional<EnumRdfInputFormat> inputFormatOptional =
+                    this.guessInputFormat(path.toString());
+            inputFormat = inputFormatOptional.get();
         }
 
         // Load RDF data from file
@@ -287,26 +269,27 @@ public class CoreseRdfGraph {
         try {
             inputStream = new FileInputStream(path.toFile());
         } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("Failed to open RDF data file: " + path.toString(), e);
+            throw new IllegalArgumentException(
+                    "Failed to open RDF data file: " + path.toString(), e);
         }
-        Graph graph = this.loadFromInputStream(inputStream, inputFormat);
+        Graph loadedGraph = this.loadFromInputStream(inputStream, inputFormat);
 
         if (this.verbose) {
             this.spec.commandLine().getErr().println("Loaded file: " + path);
         }
-        return graph;
+        return loadedGraph;
     }
 
     /**
      * Load RDF data from a directory into a Corese Graph.
      *
-     * @param path        Path of the directory to load.
+     * @param path Path of the directory to load.
      * @param inputFormat Input file serialization format.
-     * @param recursive   If true, load RDF data from subdirectories.
+     * @param recursive If true, load RDF data from subdirectories.
      * @return The Corese Graph containing the RDF data.
      */
-    private void loadFromDirectoryRecursive(Path path, EnumRdfInputFormat inputFormat, boolean recursive,
-            Graph loadedGraph) {
+    private void loadFromDirectoryRecursive(
+            Path path, EnumRdfInputFormat inputFormat, boolean recursive, Graph loadedGraph) {
 
         File[] files = path.toFile().listFiles();
 
@@ -314,7 +297,8 @@ public class CoreseRdfGraph {
             for (File childFile : files) {
 
                 if (childFile.isDirectory() && recursive) {
-                    this.loadFromDirectoryRecursive(childFile.toPath(), inputFormat, recursive, loadedGraph);
+                    this.loadFromDirectoryRecursive(
+                            childFile.toPath(), inputFormat, recursive, loadedGraph);
                 } else if (childFile.isFile()) {
                     Graph otherGraph = this.loadFromFile(childFile.toPath(), inputFormat);
                     loadedGraph.merge(otherGraph);
@@ -325,10 +309,10 @@ public class CoreseRdfGraph {
 
     /**
      * Load RDF data from a directory into a Corese Graph.
-     * 
-     * @param path        Path of the directory to load.
+     *
+     * @param path Path of the directory to load.
      * @param inputFormat Input file serialization format.
-     * @param recursive   If true, load RDF data from subdirectories.
+     * @param recursive If true, load RDF data from subdirectories.
      * @return The Corese Graph containing the RDF data.
      */
     private Graph loadFromDirectory(Path path, EnumRdfInputFormat inputFormat, boolean recursive) {
@@ -352,8 +336,8 @@ public class CoreseRdfGraph {
 
         if (inputFormat == null) {
             throw new IllegalArgumentException(
-                    "The input format cannot be automatically determined if you use standard input or na URL. "
-                            + "Please specify the input format with the option -f.");
+                    "The input format cannot be automatically determined if you use standard input"
+                            + " or na URL. Please specify the input format with the option -f.");
         }
 
         Graph loadedGraph = Graph.create();
@@ -363,8 +347,11 @@ public class CoreseRdfGraph {
             load.parse(inputStream, inputFormat.getCoreseFormat());
             return loadedGraph;
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse RDF file. Check if file is well-formed and that "
-                    + "the input format is correct. " + e.getMessage(), e);
+            throw new IllegalArgumentException(
+                    "Failed to parse RDF file. Check if file is well-formed and that "
+                            + "the input format is correct. "
+                            + e.getMessage(),
+                    e);
         }
     }
 
@@ -380,15 +367,20 @@ public class CoreseRdfGraph {
 
         if (inputFormat == null) {
             if (this.verbose) {
-                this.spec.commandLine().getErr().println("Failed to detect input format, defaulting to Turtle");
+                this.spec
+                        .commandLine()
+                        .getErr()
+                        .println("Failed to detect input format, defaulting to Turtle");
             }
             inputFormat = EnumRdfInputFormat.TURTLE;
         }
 
         if (this.verbose) {
-            this.spec.commandLine().getErr().println("Format not specified, detected input format: " + inputFormat);
+            this.spec
+                    .commandLine()
+                    .getErr()
+                    .println("Format not specified, detected input format: " + inputFormat);
         }
         return Optional.of(inputFormat);
     }
-
 }

@@ -1,8 +1,6 @@
 package fr.inria.corese.command.utils.http;
 
-/**
- * Enumeration of SPARQL request methods.
- */
+/** Enumeration of SPARQL request methods. */
 public enum EnumRequestMethod {
     GET("get"),
     POST_URLENCODED("post-urlencoded"),

@@ -1,19 +1,27 @@
 package fr.inria.corese.command.programs;
 
-import java.nio.file.Path;
-
 import fr.inria.corese.command.utils.ConvertString;
 import fr.inria.corese.command.utils.InputTypeDetector;
+
 import picocli.CommandLine.Option;
+
+import java.nio.file.Path;
 
 public abstract class AbstractInputCommand extends AbstractCommand {
 
-    @Option(names = { "-i",
-            "--input-data" }, description = "Specifies the path or URL of the input RDF data. Multiple values are allowed.", arity = "1...")
+    @Option(
+            names = {"-i", "--input-data"},
+            description =
+                    "Specifies the path or URL of the input RDF data. Multiple values are allowed.",
+            arity = "1...")
     protected String[] inputsRdfData;
 
-    @Option(names = { "-R",
-            "--recursive" }, description = "If set to true and an input is a directory, all files in the directory will be loaded recursively. Default value: ${DEFAULT-VALUE}.", defaultValue = "false")
+    @Option(
+            names = {"-R", "--recursive"},
+            description =
+                    "If set to true and an input is a directory, all files in the directory will be"
+                            + " loaded recursively. Default value: ${DEFAULT-VALUE}.",
+            defaultValue = "false")
     protected boolean recursive = false;
 
     @Override
@@ -44,10 +52,10 @@ public abstract class AbstractInputCommand extends AbstractCommand {
 
                 Path inputPath = ConvertString.toPathOrThrow(input);
                 if (inputPath.normalize().equals(this.output.normalize())) {
-                    throw new IllegalArgumentException("Input path cannot be same as output path: " + input);
+                    throw new IllegalArgumentException(
+                            "Input path cannot be same as output path: " + input);
                 }
             }
         }
     }
-
 }

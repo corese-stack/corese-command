@@ -39,6 +39,7 @@ public final class App implements Runnable {
     }
 
     @Override
+    @SuppressWarnings("java:S106") // Standard output is appropriate for CLI usage display
     public void run() {
         // Print usage
         CommandLine.usage(new App(), System.out);

@@ -2,9 +2,7 @@ package fr.inria.corese.command.utils.exporter.rdf;
 
 import fr.inria.corese.core.sparql.api.ResultFormatDef;
 
-/**
- * Enumeration of canonic algorithms.
- */
+/** Enumeration of canonic algorithms. */
 public enum EnumCanonicAlgo {
 
     // Rdfc-1.0-sha256
@@ -20,11 +18,10 @@ public enum EnumCanonicAlgo {
 
     /**
      * Constructor.
-     * 
-     * @param name         The name of the canonic algorithm.
+     *
+     * @param name The name of the canonic algorithm.
      * @param coreseFormat The Corese format.
-     * @param extention    The extension of the file format associated with the
-     *                     canonic algorithm.
+     * @param extention The extension of the file format associated with the canonic algorithm.
      */
     private EnumCanonicAlgo(String name, ResultFormatDef.format coreseFormat, String extention) {
         this.name = name;
@@ -34,7 +31,7 @@ public enum EnumCanonicAlgo {
 
     /**
      * Get the Corese format.
-     * 
+     *
      * @return The Corese format.
      */
     public ResultFormatDef.format getCoreseFormat() {
@@ -43,9 +40,8 @@ public enum EnumCanonicAlgo {
 
     /**
      * Get the extension of the file format associated with the canonic algorithm.
-     * 
-     * @return The extension of the file format associated with the canonic
-     *         algorithm.
+     *
+     * @return The extension of the file format associated with the canonic algorithm.
      */
     public String getExtention() {
         return this.extention;
@@ -55,5 +51,4 @@ public enum EnumCanonicAlgo {
     public String toString() {
         return this.name;
     }
-
 }

@@ -1,32 +1,41 @@
 package fr.inria.corese.command.programs;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseSparqlQuery;
+import fr.inria.corese.command.utils.coresecorowrapper.CoreseRdfGraph;
+import fr.inria.corese.command.utils.coresecorowrapper.CoreseSparqlQuery;
 import fr.inria.corese.command.utils.exporter.sparql.EnumResultFormat;
 import fr.inria.corese.command.utils.exporter.sparql.SparqlResultExporter;
 import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
 import fr.inria.corese.command.utils.loader.sparql.SparqlQueryLoader;
 import fr.inria.corese.core.kgram.core.Mappings;
+import fr.inria.corese.core.sparql.exceptions.EngineException;
+
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @Command(name = "query", description = "Run a SPARQL query.", mixinStandardHelpOptions = true)
 public class Query extends AbstractInputCommand {
 
-    @Option(names = { "-f", "-if",
-            "--input-format" }, description = "Specifies the RDF serialization format of the input file. Possible values are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
+    @Option(
+            names = {"-f", "-if", "--input-format"},
+            description =
+                    "Specifies the RDF serialization format of the input file. Possible values are:"
+                            + " :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
     private EnumRdfInputFormat inputFormat = null;
 
-    @Option(names = { "-r", "-of",
-            "--result-format" }, description = "Specifies the format of the result file. Possible values are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
+    @Option(
+            names = {"-r", "-of", "--result-format"},
+            description =
+                    "Specifies the format of the result file. Possible values are: :@|fg(magenta)"
+                            + " ${COMPLETION-CANDIDATES}|@.")
     private EnumResultFormat resultFormat = null;
 
-    @Option(names = { "-q",
-            "--query" }, description = "Specifies the SPARQL query string or the path/URL to a .rq file containing the query.", required = true)
+    @Option(
+            names = {"-q", "--query"},
+            description =
+                    "Specifies the SPARQL query string or the path/URL to a .rq file containing the"
+                            + " query.",
+            required = true)
     private String queryUrlOrFile;
-
-    public Query() {
-    }
 
     @Override
     public Integer call() {
@@ -47,17 +56,18 @@ public class Query extends AbstractInputCommand {
             Mappings mappings = this.execute(graph, query);
 
             // Export the result
-            SparqlResultExporter exporter = new SparqlResultExporter(this.spec, this.verbose, this.output);
+            SparqlResultExporter exporter =
+                    new SparqlResultExporter(this.spec, this.verbose, this.output);
             exporter.export(mappings, graph, this.resultFormat);
 
-            return this.ERROR_EXIT_CODE_SUCCESS;
+            return AbstractCommand.ERROR_EXIT_CODE_SUCCESS;
         } catch (Exception e) {
             this.spec.commandLine().getErr().println("Error: " + e.getMessage());
-            return this.ERROR_EXIT_CODE_ERROR;
+            return AbstractCommand.ERROR_EXIT_CODE_ERROR;
         }
     }
 
-    private Mappings execute(CoreseRdfGraph graph, String query) throws Exception {
+    private Mappings execute(CoreseRdfGraph graph, String query) throws EngineException {
 
         if (this.verbose) {
             this.spec.commandLine().getErr().println("Query: " + query);
@@ -66,9 +76,8 @@ public class Query extends AbstractInputCommand {
 
         try {
             return CoreseSparqlQuery.execute(graph, query);
-        } catch (Exception e) {
-            throw new Exception("Error when executing SPARQL query : " + e.getMessage(), e);
+        } catch (EngineException e) {
+            throw new EngineException("Error when executing SPARQL query : " + e.getMessage(), e);
         }
     }
-
 }

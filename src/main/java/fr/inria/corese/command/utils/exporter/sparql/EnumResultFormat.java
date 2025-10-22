@@ -1,19 +1,15 @@
 package fr.inria.corese.command.utils.exporter.sparql;
 
+import fr.inria.corese.core.sparql.api.ResultFormatDef;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import fr.inria.corese.core.sparql.api.ResultFormatDef;
-
-/**
- * Enumeration of result serialization formats.
- */
+/** Enumeration of result serialization formats. */
 public enum EnumResultFormat {
 
-    /////////////////
-    // RDF Formats //
-    /////////////////
+    // ===== RDF Formats ===== //
 
     // RdfXml
     RDFXML("rdfxml", ResultFormatDef.format.RDF_XML_FORMAT, "rdf", false),
@@ -31,11 +27,13 @@ public enum EnumResultFormat {
 
     // JsonLd
     JSONLD("jsonld", ResultFormatDef.format.JSONLD_FORMAT, "jsonld", false),
-    APPLICATION_LD_JSON("application/ld+json", ResultFormatDef.format.JSONLD_FORMAT, "jsonld", false),
+    APPLICATION_LD_JSON(
+            "application/ld+json", ResultFormatDef.format.JSONLD_FORMAT, "jsonld", false),
 
     // Ntriples
     NTRIPLES("ntriples", ResultFormatDef.format.NTRIPLES_FORMAT, "nt", false),
-    APPLICATION_N_TRIPLES("application/n-triples", ResultFormatDef.format.NTRIPLES_FORMAT, "nt", false),
+    APPLICATION_N_TRIPLES(
+            "application/n-triples", ResultFormatDef.format.NTRIPLES_FORMAT, "nt", false),
     NT("nt", ResultFormatDef.format.NTRIPLES_FORMAT, "nt", false),
 
     // Nquads
@@ -50,18 +48,18 @@ public enum EnumResultFormat {
     // Rdfc-1.0-sha384
     RDFC10SHA384("rdfc-1.0-sha384", ResultFormatDef.format.RDFC10_SHA384_FORMAT, "nt", false),
 
-    /////////////////////
-    // Mapping Formats //
-    /////////////////////
+    // ===== Mapping Formats ===== //
 
     // Xml
     XML("xml", ResultFormatDef.format.XML_FORMAT, "srx", true),
-    APPLICATION_SPARQL_RESULTS_XML("application/sparql-results+xml", ResultFormatDef.format.XML_FORMAT, "srx", true),
+    APPLICATION_SPARQL_RESULTS_XML(
+            "application/sparql-results+xml", ResultFormatDef.format.XML_FORMAT, "srx", true),
     SRX("srx", ResultFormatDef.format.XML_FORMAT, "srx", true),
 
     // Json
     JSON("json", ResultFormatDef.format.JSON_FORMAT, "srj", true),
-    APPLICATION_SPARQL_RESULTS_JSON("application/sparql-results+json", ResultFormatDef.format.JSON_FORMAT, "srj", true),
+    APPLICATION_SPARQL_RESULTS_JSON(
+            "application/sparql-results+json", ResultFormatDef.format.JSON_FORMAT, "srj", true),
     SRJ("srj", ResultFormatDef.format.JSON_FORMAT, "srj", true),
 
     // Csv
@@ -70,7 +68,8 @@ public enum EnumResultFormat {
 
     // Tsv
     TSV("tsv", ResultFormatDef.format.TSV_FORMAT, "tsv", true),
-    TEXT_TAB_SEPARATED_VALUES("text/tab-separated-values", ResultFormatDef.format.TSV_FORMAT, "tsv", true),
+    TEXT_TAB_SEPARATED_VALUES(
+            "text/tab-separated-values", ResultFormatDef.format.TSV_FORMAT, "tsv", true),
 
     // Markdown
     MARKDOWN("markdown", ResultFormatDef.format.MARKDOWN_FORMAT, "md", true),
@@ -84,14 +83,16 @@ public enum EnumResultFormat {
 
     /**
      * Constructor.
-     * 
-     * @param name            The name of the format.
-     * @param coreseFormat    The Corese format.
-     * @param extention       The extension of the format.
-     * @param isMappingFormat True if the format is a mapping format, false
-     *                        otherwise.
+     *
+     * @param name The name of the format.
+     * @param coreseFormat The Corese format.
+     * @param extention The extension of the format.
+     * @param isMappingFormat True if the format is a mapping format, false otherwise.
      */
-    private EnumResultFormat(String name, ResultFormatDef.format coreseFormat, String extention,
+    private EnumResultFormat(
+            String name,
+            ResultFormatDef.format coreseFormat,
+            String extention,
             boolean isMappingFormat) {
         this.name = name;
         this.coreseFormat = coreseFormat;
@@ -101,7 +102,7 @@ public enum EnumResultFormat {
 
     /**
      * Get the Corese format.
-     * 
+     *
      * @return The Corese format.
      */
     public ResultFormatDef.format getCoreseFormat() {
@@ -110,7 +111,7 @@ public enum EnumResultFormat {
 
     /**
      * Get the extension of the file format associated with the format.
-     * 
+     *
      * @return The extension of the file format associated with the format.
      */
     public String getExtention() {
@@ -119,7 +120,7 @@ public enum EnumResultFormat {
 
     /**
      * Check if the format is a mapping format.
-     * 
+     *
      * @return True if the format is a mapping format, false otherwise.
      */
     public boolean isMappingFormat() {
@@ -128,7 +129,7 @@ public enum EnumResultFormat {
 
     /**
      * Check if the format is an RDF graph format.
-     * 
+     *
      * @return True if the format is an RDF graph format, false otherwise.
      */
     public boolean isRdfGraphFormat() {
@@ -137,7 +138,7 @@ public enum EnumResultFormat {
 
     /**
      * Filter the formats based on the given predicate.
-     * 
+     *
      * @param predicate Predicate to filter the formats.
      * @return List of formats that satisfy the predicate.
      */
@@ -153,7 +154,7 @@ public enum EnumResultFormat {
 
     /**
      * Get the list of RDF graph formats.
-     * 
+     *
      * @return List of RDF graph formats.
      */
     public static List<EnumResultFormat> getRdfFormats() {
@@ -162,7 +163,7 @@ public enum EnumResultFormat {
 
     /**
      * Get the list of mapping formats.
-     * 
+     *
      * @return List of mapping formats.
      */
     public static List<EnumResultFormat> getMappingFormats() {

@@ -1,10 +1,10 @@
-package fr.inria.corese.command.utils.coreseCoreWrapper;
-
-import java.io.IOException;
+package fr.inria.corese.command.utils.coresecorowrapper;
 
 import fr.inria.corese.core.kgram.core.Mappings;
 import fr.inria.corese.core.print.ResultFormat;
 import fr.inria.corese.core.sparql.api.ResultFormatDef;
+
+import java.io.IOException;
 
 public class CoreseResultFormat {
 
@@ -30,9 +30,7 @@ public class CoreseResultFormat {
         try {
             format.write(path);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Failed to open export file: " + path.toString(), e);
+            throw new IllegalArgumentException("Failed to open export file: " + path, e);
         }
     }
-
-    
 }

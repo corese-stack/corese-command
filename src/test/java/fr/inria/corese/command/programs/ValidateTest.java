@@ -4,6 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import fr.inria.corese.command.utils.coresecorowrapper.CoreseRdfGraph;
+import fr.inria.corese.core.api.Loader;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import picocli.CommandLine;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,14 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
-import fr.inria.corese.core.api.Loader;
-import picocli.CommandLine;
-
-public class ValidateTest {
+class ValidateTest {
 
     private Validate validate = new Validate();
     private CommandLine cmd = new CommandLine(validate);
@@ -35,36 +36,55 @@ public class ValidateTest {
     Path referencesPath;
     Path resultPath;
 
-    public ValidateTest() throws URISyntaxException {
-        this.inputRdfPath = Paths.get(
-                ValidateTest.class.getResource("/fr/inria/corese/command/programs/validate/inputRdf").toURI());
+    ValidateTest() throws URISyntaxException {
+        this.inputRdfPath =
+                Paths.get(
+                        ValidateTest.class
+                                .getResource("/fr/inria/corese/command/programs/validate/inputRdf")
+                                .toURI());
 
-        this.inputRdfPathRecursive = Paths.get(
-                ValidateTest.class.getResource("/fr/inria/corese/command/programs/validate/inputRdf-Recursive1")
-                        .toURI());
+        this.inputRdfPathRecursive =
+                Paths.get(
+                        ValidateTest.class
+                                .getResource(
+                                        "/fr/inria/corese/command/programs/validate/inputRdf-Recursive1")
+                                .toURI());
 
-        this.inputShaclPath = Paths.get(
-                ValidateTest.class.getResource("/fr/inria/corese/command/programs/validate/inputShacl").toURI());
+        this.inputShaclPath =
+                Paths.get(
+                        ValidateTest.class
+                                .getResource(
+                                        "/fr/inria/corese/command/programs/validate/inputShacl")
+                                .toURI());
 
-        this.referencesPath = Paths.get(
-                ValidateTest.class.getResource("/fr/inria/corese/command/programs/validate/references").toURI());
+        this.referencesPath =
+                Paths.get(
+                        ValidateTest.class
+                                .getResource(
+                                        "/fr/inria/corese/command/programs/validate/references")
+                                .toURI());
 
-        this.resultPath = Paths.get(
-                ValidateTest.class.getResource("/fr/inria/corese/command/programs/validate/results").toURI());
+        this.resultPath =
+                Paths.get(
+                        ValidateTest.class
+                                .getResource("/fr/inria/corese/command/programs/validate/results")
+                                .toURI());
     }
 
-    private static final String UUID_REGEX = "<urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}>";
+    private static final String UUID_REGEX =
+            "<urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}>";
     private static final String NEUTRAL_UUID = "<urn:uuid:00000000-0000-0000-0000-000000000000>";
 
     @BeforeEach
-    public void setUp() {
-        PrintWriter out = new PrintWriter(this.out);
-        PrintWriter err = new PrintWriter(this.err);
-        cmd.setOut(out);
-        cmd.setErr(err);
+    void setUp() {
+        PrintWriter outputWriter = new PrintWriter(this.out);
+        PrintWriter errorWriter = new PrintWriter(this.err);
+        cmd.setOut(outputWriter);
+        cmd.setErr(errorWriter);
     }
 
-    public boolean compareFiles(String filePath1, String filePath2, Loader.format coreseFormat) throws IOException {
+    boolean compareFiles(String filePath1, String filePath2, Loader.format coreseFormat)
+            throws IOException {
         // Get content of files
         String content1 = getStringContent(filePath1);
         String content2 = getStringContent(filePath2);
@@ -103,7 +123,7 @@ public class ValidateTest {
     }
 
     @Test
-    public void test1RDF1SHACLBeatlesOk() throws IOException {
+    void test1RDF1SHACLBeatlesOk() throws IOException {
 
         String inputRdf = this.inputRdfPath.resolve("beatles-ok.ttl").toString();
         String inputShacl = this.inputShaclPath.resolve("beatles-validator.ttl").toString();
@@ -111,10 +131,11 @@ public class ValidateTest {
         String expected = this.referencesPath.resolve("beatles-ok.ttl").toString();
         String result = this.resultPath.resolve("beatles-ok.ttl").toString();
 
-        int exitCode = cmd.execute(
-                "-i", inputRdf,
-                "-s", inputShacl,
-                "-o", result);
+        int exitCode =
+                cmd.execute(
+                        "-i", inputRdf,
+                        "-s", inputShacl,
+                        "-o", result);
 
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
@@ -124,7 +145,7 @@ public class ValidateTest {
     }
 
     @Test
-    public void test1RDF1SHACLBeatlesErr() throws IOException {
+    void test1RDF1SHACLBeatlesErr() throws IOException {
 
         String inputRdf = this.inputRdfPath.resolve("beatles-err.ttl").toString();
         String inputShacl = this.inputShaclPath.resolve("beatles-validator.ttl").toString();
@@ -132,10 +153,11 @@ public class ValidateTest {
         String expected = this.referencesPath.resolve("beatles-err.ttl").toString();
         String result = this.resultPath.resolve("beatles-err.ttl").toString();
 
-        int exitCode = cmd.execute(
-                "-i", inputRdf,
-                "-s", inputShacl,
-                "-o", result);
+        int exitCode =
+                cmd.execute(
+                        "-i", inputRdf,
+                        "-s", inputShacl,
+                        "-o", result);
 
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
@@ -145,7 +167,7 @@ public class ValidateTest {
     }
 
     @Test
-    public void test2RDF2SHACLBeatlesOk() throws IOException {
+    void test2RDF2SHACLBeatlesOk() throws IOException {
 
         String inputRdf1 = this.inputRdfPath.resolve("beatles-ok.ttl").toString();
         String inputShacl1 = this.inputShaclPath.resolve("beatles-validator.ttl").toString();
@@ -156,12 +178,13 @@ public class ValidateTest {
         String expected = this.referencesPath.resolve("beatles-person-ok.ttl").toString();
         String result = this.resultPath.resolve("beatles-person-ok.ttl").toString();
 
-        int exitCode = cmd.execute(
-                "-i", inputRdf1,
-                "-i", inputRdf2,
-                "-s", inputShacl1,
-                "-s", inputShacl2,
-                "-o", result);
+        int exitCode =
+                cmd.execute(
+                        "-i", inputRdf1,
+                        "-i", inputRdf2,
+                        "-s", inputShacl1,
+                        "-s", inputShacl2,
+                        "-o", result);
 
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
@@ -171,7 +194,7 @@ public class ValidateTest {
     }
 
     @Test
-    public void test2RDF2SHACLBeatlesErr() throws IOException {
+    void test2RDF2SHACLBeatlesErr() throws IOException {
 
         String inputRdf1 = this.inputRdfPath.resolve("beatles-err.ttl").toString();
         String inputShacl1 = this.inputShaclPath.resolve("beatles-validator.ttl").toString();
@@ -182,12 +205,13 @@ public class ValidateTest {
         String expected = this.referencesPath.resolve("beatles-person-err.ttl").toString();
         String result = this.resultPath.resolve("beatles-person-err.ttl").toString();
 
-        int exitCode = cmd.execute(
-                "-i", inputRdf1,
-                "-i", inputRdf2,
-                "-s", inputShacl1,
-                "-s", inputShacl2,
-                "-o", result);
+        int exitCode =
+                cmd.execute(
+                        "-i", inputRdf1,
+                        "-i", inputRdf2,
+                        "-s", inputShacl1,
+                        "-s", inputShacl2,
+                        "-o", result);
 
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
@@ -197,7 +221,7 @@ public class ValidateTest {
     }
 
     @Test
-    public void test1RDFUrl1SHACLBeatlesOk() throws IOException {
+    void test1RDFUrl1SHACLBeatlesOk() throws IOException {
 
         String inputRdf = "https://files.inria.fr/corese/data/unit-test/beatles.ttl";
         String inputShacl = this.inputShaclPath.resolve("beatles-validator.ttl").toString();
@@ -205,10 +229,11 @@ public class ValidateTest {
         String expected = this.referencesPath.resolve("beatles-ok.ttl").toString();
         String result = this.resultPath.resolve("beatles-ok.ttl").toString();
 
-        int exitCode = cmd.execute(
-                "-i", inputRdf,
-                "-s", inputShacl,
-                "-o", result);
+        int exitCode =
+                cmd.execute(
+                        "-i", inputRdf,
+                        "-s", inputShacl,
+                        "-o", result);
 
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
@@ -218,7 +243,7 @@ public class ValidateTest {
     }
 
     @Test
-    public void test1RDF1SHACLUrlBeatlesOk() throws IOException {
+    void test1RDF1SHACLUrlBeatlesOk() throws IOException {
 
         String inputRdf = this.inputRdfPath.resolve("beatles-ok.ttl").toString();
         String inputShacl = "https://files.inria.fr/corese/data/unit-test/beatles-validator.ttl";
@@ -226,10 +251,11 @@ public class ValidateTest {
         String expected = this.referencesPath.resolve("beatles-ok.ttl").toString();
         String result = this.resultPath.resolve("beatles-ok.ttl").toString();
 
-        int exitCode = cmd.execute(
-                "-i", inputRdf,
-                "-s", inputShacl,
-                "-o", result);
+        int exitCode =
+                cmd.execute(
+                        "-i", inputRdf,
+                        "-s", inputShacl,
+                        "-o", result);
 
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
@@ -239,7 +265,7 @@ public class ValidateTest {
     }
 
     @Test
-    public void testRDFSHACLDirectoryBeatlesErr() throws IOException {
+    void testRDFSHACLDirectoryBeatlesErr() throws IOException {
 
         String inputRdf = this.inputRdfPath.toString();
         String inputShacl = this.inputShaclPath.toString();
@@ -247,10 +273,11 @@ public class ValidateTest {
         String expected = this.referencesPath.resolve("directory-err.ttl").toString();
         String result = this.resultPath.resolve("directory-err.ttl").toString();
 
-        int exitCode = cmd.execute(
-                "-i", inputRdf,
-                "-s", inputShacl,
-                "-o", result);
+        int exitCode =
+                cmd.execute(
+                        "-i", inputRdf,
+                        "-s", inputShacl,
+                        "-o", result);
 
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
@@ -260,7 +287,7 @@ public class ValidateTest {
     }
 
     @Test
-    public void test1RDF1SHACLBeatlesOkrdf() throws IOException {
+    void test1RDF1SHACLBeatlesOkrdf() throws IOException {
 
         String inputRdf = this.inputRdfPath.resolve("beatles-ok.rdf").toString();
         String inputShacl = this.inputShaclPath.resolve("beatles-validator.rdf").toString();
@@ -268,13 +295,20 @@ public class ValidateTest {
         String expected = this.referencesPath.resolve("beatles-ok.rdf").toString();
         String result = this.resultPath.resolve("beatles-ok.rdf").toString();
 
-        int exitCode = cmd.execute(
-                "-i", inputRdf,
-                "-if", "rdfxml",
-                "-s", inputShacl,
-                "-sf", "rdfxml",
-                "-o", result,
-                "-of", "rdfxml");
+        int exitCode =
+                cmd.execute(
+                        "-i",
+                        inputRdf,
+                        "-if",
+                        "rdfxml",
+                        "-s",
+                        inputShacl,
+                        "-sf",
+                        "rdfxml",
+                        "-o",
+                        result,
+                        "-of",
+                        "rdfxml");
 
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
@@ -284,7 +318,7 @@ public class ValidateTest {
     }
 
     @Test
-    public void test1RDF1SHACLBeatlesOkjsonld() throws IOException {
+    void test1RDF1SHACLBeatlesOkjsonld() throws IOException {
 
         String inputRdf = this.inputRdfPath.resolve("beatles-ok.jsonld").toString();
         String inputShacl = this.inputShaclPath.resolve("beatles-validator.jsonld").toString();
@@ -292,13 +326,20 @@ public class ValidateTest {
         String expected = this.referencesPath.resolve("beatles-ok.jsonld").toString();
         String result = this.resultPath.resolve("beatles-ok.jsonld").toString();
 
-        int exitCode = cmd.execute(
-                "-i", inputRdf,
-                "-if", "jsonld",
-                "-s", inputShacl,
-                "-sf", "jsonld",
-                "-o", result,
-                "-of", "jsonld");
+        int exitCode =
+                cmd.execute(
+                        "-i",
+                        inputRdf,
+                        "-if",
+                        "jsonld",
+                        "-s",
+                        inputShacl,
+                        "-sf",
+                        "jsonld",
+                        "-o",
+                        result,
+                        "-of",
+                        "jsonld");
 
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
@@ -308,7 +349,7 @@ public class ValidateTest {
     }
 
     @Test
-    public void testRDFSHACLDirectoryRecursiveBeatlesErr() throws IOException {
+    void testRDFSHACLDirectoryRecursiveBeatlesErr() throws IOException {
 
         String inputRdf = this.inputRdfPathRecursive.toString();
         String inputShacl = this.inputShaclPath.toString();
@@ -316,11 +357,7 @@ public class ValidateTest {
         String expected = this.referencesPath.resolve("directory-err.ttl").toString();
         String result = this.resultPath.resolve("directory-err.ttl").toString();
 
-        int exitCode = cmd.execute(
-                "-i", inputRdf,
-                "-s", inputShacl,
-                "-o", result,
-                "-R");
+        int exitCode = cmd.execute("-i", inputRdf, "-s", inputShacl, "-o", result, "-R");
 
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
@@ -328,5 +365,4 @@ public class ValidateTest {
         assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
         assertNotEquals("", result);
     }
-
 }

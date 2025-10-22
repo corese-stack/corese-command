@@ -2,13 +2,17 @@ package fr.inria.corese.command.utils;
 
 import java.nio.file.Path;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseUtils;
+import fr.inria.corese.command.utils.coresecorowrapper.CoreseUtils;
 import picocli.CommandLine.Model.CommandSpec;
 
 /**
  * Utility class to manage configuration files.
  */
 public class ConfigManager {
+
+    private ConfigManager() {
+        // Prevent instantiation
+    }
 
     /**
      * Load a configuration file.
