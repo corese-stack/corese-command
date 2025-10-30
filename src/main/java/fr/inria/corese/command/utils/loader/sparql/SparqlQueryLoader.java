@@ -1,32 +1,29 @@
 package fr.inria.corese.command.utils.loader.sparql;
 
+import fr.inria.corese.command.utils.ConvertString;
+import fr.inria.corese.command.utils.InputTypeDetector;
+
+import picocli.CommandLine.Model.CommandSpec;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 
-import fr.inria.corese.command.utils.ConvertString;
-import fr.inria.corese.command.utils.InputTypeDetector;
-import picocli.CommandLine.Model.CommandSpec;
-
-/**
- * Utility class to load SPARQL queries.
- */
+/** Utility class to load SPARQL queries. */
 public class SparqlQueryLoader {
 
     // Command specification
     private CommandSpec spec;
     private boolean verbose;
 
-    /////////////////
-    // Constructor //
-    /////////////////
+    // ===== Constructor ===== //
 
     /**
      * Constructor.
      *
-     * @param spec    Command specification.
+     * @param spec Command specification.
      * @param verbose If true, print information about the loaded files.
      */
     public SparqlQueryLoader(CommandSpec spec, boolean verbose) {
@@ -34,16 +31,14 @@ public class SparqlQueryLoader {
         this.verbose = verbose;
     }
 
-    ////////////////////
-    // Public methods //
-    ////////////////////
+    // ===== Public methods ===== //
 
     /**
      * Load a SPARQL query from a path, URL, or standard input.
-     * 
-     * Load from standard input if no input is provided.
-     * Load from URL or file if input is a valid URL or file path.
-     * 
+     *
+     * <p>Load from standard input if no input is provided. Load from URL or file if input is a
+     * valid URL or file path.
+     *
      * @param input Path, URL, or SPARQL query to load.
      * @return The loaded query.
      */
@@ -71,9 +66,7 @@ public class SparqlQueryLoader {
         }
     }
 
-    /////////////////////
-    // Private methods //
-    /////////////////////
+    // ===== Private methods ===== //
 
     /**
      * Load a SPARQL query from standard input.
@@ -101,13 +94,17 @@ public class SparqlQueryLoader {
         try {
             inputStream = new FileInputStream(path.toString());
         } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("Failed to open SPARQL query file: " + path.toString(), e);
+            throw new IllegalArgumentException(
+                    "Failed to open SPARQL query file: " + path.toString(), e);
         }
 
         String query = this.loadFromInputStream(inputStream);
 
         if (this.verbose) {
-            this.spec.commandLine().getErr().println("Loaded SPAQRL query file: " + path.toString());
+            this.spec
+                    .commandLine()
+                    .getErr()
+                    .println("Loaded SPAQRL query file: " + path.toString());
         }
 
         return query;
@@ -124,7 +121,8 @@ public class SparqlQueryLoader {
         try {
             inputStream = url.openStream();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to open SPARQL query file: " + url.toString(), e);
+            throw new IllegalArgumentException(
+                    "Failed to open SPARQL query file: " + url.toString(), e);
         }
 
         String query = this.loadFromInputStream(inputStream);

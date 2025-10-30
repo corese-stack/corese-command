@@ -3,6 +3,11 @@ package fr.inria.corese.command.programs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import picocli.CommandLine;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -11,12 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import picocli.CommandLine;
-
-public class CanonicalizeTest {
+class CanonicalizeTest {
 
     private Canonicalize canonicalize = new Canonicalize();
     private CommandLine cmd = new CommandLine(canonicalize);
@@ -28,23 +28,35 @@ public class CanonicalizeTest {
     Path referencesPath;
     Path resultPath;
 
-    public CanonicalizeTest() throws URISyntaxException {
-        this.inputPath = Paths.get(
-                CanonicalizeTest.class.getResource("/fr/inria/corese/command/programs/canonicalize/input/").toURI());
+    CanonicalizeTest() throws URISyntaxException {
+        this.inputPath =
+                Paths.get(
+                        CanonicalizeTest.class
+                                .getResource(
+                                        "/fr/inria/corese/command/programs/canonicalize/input/")
+                                .toURI());
 
-        this.referencesPath = Paths.get(CanonicalizeTest.class
-                .getResource("/fr/inria/corese/command/programs/canonicalize/references/").toURI());
+        this.referencesPath =
+                Paths.get(
+                        CanonicalizeTest.class
+                                .getResource(
+                                        "/fr/inria/corese/command/programs/canonicalize/references/")
+                                .toURI());
 
-        this.resultPath = Paths.get(
-                CanonicalizeTest.class.getResource("/fr/inria/corese/command/programs/canonicalize/results/").toURI());
+        this.resultPath =
+                Paths.get(
+                        CanonicalizeTest.class
+                                .getResource(
+                                        "/fr/inria/corese/command/programs/canonicalize/results/")
+                                .toURI());
     }
 
     @BeforeEach
-    public void setUp() {
-        PrintWriter out = new PrintWriter(this.out);
-        PrintWriter err = new PrintWriter(this.err);
-        cmd.setOut(out);
-        cmd.setErr(err);
+    void setUp() {
+        PrintWriter outputWriter = new PrintWriter(this.out);
+        PrintWriter errorWriter = new PrintWriter(this.err);
+        cmd.setOut(outputWriter);
+        cmd.setErr(errorWriter);
     }
 
     private String getStringContent(String path) {
@@ -57,12 +69,12 @@ public class CanonicalizeTest {
     }
 
     @Test
-    public void test1InputFile() {
+    void test1InputFile() {
         String input = inputPath.resolve("beatles.ttl").toString();
         String expected = referencesPath.resolve("beatles.nq").toString();
         String output = resultPath.resolve("beatles.nq").toString();
 
-        String[] args = { "-i", input, "-a", "rdfc-1.0-sha256", "-o", output };
+        String[] args = {"-i", input, "-a", "rdfc-1.0-sha256", "-o", output};
         int exitCode = cmd.execute(args);
 
         assertEquals(0, exitCode);
@@ -72,12 +84,12 @@ public class CanonicalizeTest {
     }
 
     @Test
-    public void test1Url() {
+    void test1Url() {
         String input = "https://files.inria.fr/corese/data/unit-test/beatles.ttl";
         String expected = referencesPath.resolve("beatles.nq").toString();
         String output = resultPath.resolve("beatles.nq").toString();
 
-        String[] args = { "-i", input, "-a", "rdfc-1.0-sha256", "-o", output };
+        String[] args = {"-i", input, "-a", "rdfc-1.0-sha256", "-o", output};
         int exitCode = cmd.execute(args);
 
         assertEquals(0, exitCode);
@@ -87,12 +99,12 @@ public class CanonicalizeTest {
     }
 
     @Test
-    public void test1Directory() {
+    void test1Directory() {
         String input = inputPath.toString();
         String expected = referencesPath.resolve("beatles.nq").toString();
         String output = resultPath.resolve("beatles.nq").toString();
 
-        String[] args = { "-i", input, "-a", "rdfc-1.0-sha256", "-o", output };
+        String[] args = {"-i", input, "-a", "rdfc-1.0-sha256", "-o", output};
         int exitCode = cmd.execute(args);
 
         assertEquals(0, exitCode);
@@ -102,12 +114,12 @@ public class CanonicalizeTest {
     }
 
     @Test
-    public void test1DirectoryRecursive() {
+    void test1DirectoryRecursive() {
         String input = inputPath.toString();
         String expected = referencesPath.resolve("recursive.nq").toString();
         String output = resultPath.resolve("recursive.nq").toString();
 
-        String[] args = { "-i", input, "-a", "rdfc-1.0-sha256", "-o", output, "-R" };
+        String[] args = {"-i", input, "-a", "rdfc-1.0-sha256", "-o", output, "-R"};
         int exitCode = cmd.execute(args);
 
         assertEquals(0, exitCode);
@@ -117,13 +129,14 @@ public class CanonicalizeTest {
     }
 
     @Test
-    public void testMultipleSources() {
+    void testMultipleSources() {
         String input1 = inputPath.resolve("beatles.ttl").toString();
-        String input2 = Paths.get(inputPath.toString(), "recursive-level1", "person.ttl").toString();
+        String input2 =
+                Paths.get(inputPath.toString(), "recursive-level1", "person.ttl").toString();
         String expected = referencesPath.resolve("multiple.nq").toString();
         String output = resultPath.resolve("multiple.nq").toString();
 
-        String[] args = { "-i", input1, input2, "-a", "rdfc-1.0-sha256", "-o", output };
+        String[] args = {"-i", input1, input2, "-a", "rdfc-1.0-sha256", "-o", output};
         int exitCode = cmd.execute(args);
 
         assertEquals(0, exitCode);
@@ -133,12 +146,12 @@ public class CanonicalizeTest {
     }
 
     @Test
-    public void testInputFormat() {
+    void testInputFormat() {
         String input = inputPath.resolve("beatles.ttl").toString();
         String expected = referencesPath.resolve("beatles.nq").toString();
         String output = resultPath.resolve("beatles.nq").toString();
 
-        String[] args = { "-i", input, "-f", "text/turtle", "-a", "rdfc-1.0-sha256", "-o", output };
+        String[] args = {"-i", input, "-f", "text/turtle", "-a", "rdfc-1.0-sha256", "-o", output};
         int exitCode = cmd.execute(args);
 
         assertEquals(0, exitCode);
@@ -148,11 +161,11 @@ public class CanonicalizeTest {
     }
 
     @Test
-    public void testInputBadFormat() {
+    void testInputBadFormat() {
         String input = inputPath.resolve("beatles.ttl").toString();
         String output = resultPath.resolve("beatles.nq").toString();
 
-        String[] args = { "-i", input, "-f", "rdfxml", "-a", "rdfc-1.0-sha256", "-o", output };
+        String[] args = {"-i", input, "-f", "rdfxml", "-a", "rdfc-1.0-sha256", "-o", output};
         int exitCode = cmd.execute(args);
 
         assertEquals(1, exitCode);
@@ -161,12 +174,12 @@ public class CanonicalizeTest {
     }
 
     @Test
-    public void testSha384() {
+    void testSha384() {
         String input = inputPath.resolve("beatles.ttl").toString();
         String expected = referencesPath.resolve("beatles-sha384.nq").toString();
         String output = resultPath.resolve("beatles-sha384.nq").toString();
 
-        String[] args = { "-i", input, "-a", "rdfc-1.0-sha384", "-o", output };
+        String[] args = {"-i", input, "-a", "rdfc-1.0-sha384", "-o", output};
         int exitCode = cmd.execute(args);
 
         assertEquals(0, exitCode);
@@ -176,12 +189,12 @@ public class CanonicalizeTest {
     }
 
     @Test
-    public void testDefaultAlgorithm() {
+    void testDefaultAlgorithm() {
         String input = inputPath.resolve("beatles.ttl").toString();
         String expected = referencesPath.resolve("beatles.nq").toString();
         String output = resultPath.resolve("beatles.nq").toString();
 
-        String[] args = { "-i", input, "-o", output };
+        String[] args = {"-i", input, "-o", output};
         int exitCode = cmd.execute(args);
 
         assertEquals(0, exitCode);
@@ -189,5 +202,4 @@ public class CanonicalizeTest {
         assertEquals("", out.toString());
         assertEquals(getStringContent(expected), getStringContent(output));
     }
-
 }

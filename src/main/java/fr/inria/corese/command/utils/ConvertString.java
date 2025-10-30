@@ -11,6 +11,10 @@ import java.nio.file.Path;
  */
 public class ConvertString {
 
+    private ConvertString() {
+        // Prevent instantiation
+    }
+
     /**
      * Convert a string to a URL, throwing an exception if invalid.
      *

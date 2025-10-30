@@ -1,32 +1,51 @@
 package fr.inria.corese.command.programs;
 
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseSparqlQuery;
-import fr.inria.corese.command.utils.exporter.sparql.EnumResultFormat;
+import fr.inria.corese.command.exceptions.CoreseCommandException;
+import fr.inria.corese.command.exceptions.SparqlExecutionException;
+import fr.inria.corese.command.utils.exporter.OutputFormat;
+import fr.inria.corese.command.utils.exporter.sparql.SparqlOutputFormatCandidates;
+import fr.inria.corese.command.utils.exporter.sparql.SparqlOutputFormatConverter;
 import fr.inria.corese.command.utils.exporter.sparql.SparqlResultExporter;
-import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
+import fr.inria.corese.command.utils.loader.rdf.RdfLoader;
+import fr.inria.corese.command.utils.loader.rdf.RdfInputFormat;
+import fr.inria.corese.command.utils.loader.rdf.RdfInputFormatCandidates;
+import fr.inria.corese.command.utils.loader.rdf.RdfInputFormatConverter;
 import fr.inria.corese.command.utils.loader.sparql.SparqlQueryLoader;
-import fr.inria.corese.core.kgram.core.Mappings;
+import fr.inria.corese.command.utils.wrapper.CoreseRdfGraph;
+import fr.inria.corese.command.utils.wrapper.CoreseSparqlQuery;
+import fr.inria.corese.command.utils.wrapper.CoreseSparqlResult;
+
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @Command(name = "query", description = "Run a SPARQL query.", mixinStandardHelpOptions = true)
 public class Query extends AbstractInputCommand {
 
-    @Option(names = { "-f", "-if",
-            "--input-format" }, description = "Specifies the RDF serialization format of the input file. Possible values are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
-    private EnumRdfInputFormat inputFormat = null;
+    @Option(
+            names = {"-f", "-if", "--input-format"},
+            description =
+                    "Specifies the RDF serialization format of the input file. Possible values are:"
+                            + " :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.",
+            converter = RdfInputFormatConverter.class,
+            completionCandidates = RdfInputFormatCandidates.class)
+    private RdfInputFormat inputFormat = null;
 
-    @Option(names = { "-r", "-of",
-            "--result-format" }, description = "Specifies the format of the result file. Possible values are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
-    private EnumResultFormat resultFormat = null;
+    @Option(
+            names = {"-r", "-of", "--result-format"},
+            description =
+                    "Specifies the format of the result file. Possible values are: :@|fg(magenta)"
+                            + " ${COMPLETION-CANDIDATES}|@.",
+            converter = SparqlOutputFormatConverter.class,
+            completionCandidates = SparqlOutputFormatCandidates.class)
+    private OutputFormat resultFormat = null;
 
-    @Option(names = { "-q",
-            "--query" }, description = "Specifies the SPARQL query string or the path/URL to a .rq file containing the query.", required = true)
+    @Option(
+            names = {"-q", "--query"},
+            description =
+                    "Specifies the SPARQL query string or the path/URL to a .rq file containing the"
+                            + " query.",
+            required = true)
     private String queryUrlOrFile;
-
-    public Query() {
-    }
 
     @Override
     public Integer call() {
@@ -34,30 +53,44 @@ public class Query extends AbstractInputCommand {
         super.call();
 
         try {
+            // Create data graph
+            CoreseRdfGraph graph = new CoreseRdfGraph();
 
-            // Load the input file(s)
-            CoreseRdfGraph graph = new CoreseRdfGraph(this.spec, this.verbose);
-            graph.load(this.inputsRdfData, this.inputFormat, this.recursive);
+            // Load the data file(s)
+            RdfLoader loader = new RdfLoader(this.spec, this.verbose, graph);
+            loader.load(this.inputsRdfData, this.inputFormat, this.recursive);
 
             // Load the query
             SparqlQueryLoader queryLoader = new SparqlQueryLoader(this.spec, this.verbose);
             String query = queryLoader.load(this.queryUrlOrFile);
 
             // Execute the query
-            Mappings mappings = this.execute(graph, query);
+            CoreseSparqlResult mappings = this.execute(graph, query);
 
             // Export the result
-            SparqlResultExporter exporter = new SparqlResultExporter(this.spec, this.verbose, this.output);
+            SparqlResultExporter exporter =
+                    new SparqlResultExporter(this.spec, this.verbose, this.output);
             exporter.export(mappings, graph, this.resultFormat);
 
-            return this.ERROR_EXIT_CODE_SUCCESS;
-        } catch (Exception e) {
+            return AbstractCommand.ERROR_EXIT_CODE_SUCCESS;
+        } catch (CoreseCommandException e) {
             this.spec.commandLine().getErr().println("Error: " + e.getMessage());
-            return this.ERROR_EXIT_CODE_ERROR;
+            if (this.verbose && e.getCause() != null) {
+                e.printStackTrace(this.spec.commandLine().getErr());
+            }
+            return AbstractCommand.ERROR_EXIT_CODE_ERROR;
         }
     }
 
-    private Mappings execute(CoreseRdfGraph graph, String query) throws Exception {
+    /**
+     * Execute SPARQL query on the given graph.
+     * 
+     * @param graph The RDF graph
+     * @param query The SPARQL query string
+     * @return The SPARQL result
+     * @throws SparqlExecutionException if an error occurs during query execution
+     */
+    private CoreseSparqlResult execute(CoreseRdfGraph graph, String query) {
 
         if (this.verbose) {
             this.spec.commandLine().getErr().println("Query: " + query);
@@ -65,10 +98,11 @@ public class Query extends AbstractInputCommand {
         }
 
         try {
-            return CoreseSparqlQuery.execute(graph, query);
+            CoreseSparqlQuery sparqlQuery = new CoreseSparqlQuery(query);
+            return sparqlQuery.execute(graph);
         } catch (Exception e) {
-            throw new Exception("Error when executing SPARQL query : " + e.getMessage(), e);
+            throw new SparqlExecutionException(
+                    "Error when executing SPARQL query : " + e.getMessage(), e);
         }
     }
-
 }

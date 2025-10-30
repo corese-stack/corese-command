@@ -1,85 +1,89 @@
 package fr.inria.corese.command.programs;
 
-import java.nio.file.Path;
-import java.util.Optional;
-import java.util.concurrent.Callable;
+import fr.inria.corese.command.utils.exporter.AbstractExporter;
+import fr.inria.corese.command.utils.wrapper.CoreseConfigManager;
+import fr.inria.corese.command.utils.wrapper.CoreseVersionProvider;
 
-import fr.inria.corese.command.VersionProvider;
-import fr.inria.corese.command.utils.ConfigManager;
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseUtils;
-import fr.inria.corese.command.utils.exporter.rdf.RdfDataExporter;
-import fr.inria.corese.core.util.Property;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Spec;
 
+import java.nio.file.Path;
+import java.util.concurrent.Callable;
+
 /**
  * Abstract class for all commands.
- * 
- * This class provides common options and methods for all commands.
+ *
+ * <p>This class provides common options and methods for all commands.
  */
-@Command(versionProvider = VersionProvider.class)
+@Command(versionProvider = CoreseVersionProvider.class)
 public abstract class AbstractCommand implements Callable<Integer> {
 
-    ///////////////
-    // Constants //
-    ///////////////
+    // ===== Constants =====
 
     // Exit codes
-    protected final int ERROR_EXIT_CODE_SUCCESS = 0;
-    protected final int ERROR_EXIT_CODE_ERROR = 1;
+    protected static final int ERROR_EXIT_CODE_SUCCESS = 0;
+    protected static final int ERROR_EXIT_CODE_ERROR = 1;
 
-    /////////////
-    // Options //
-    /////////////
+    // ===== Options =====
 
-    @Option(names = { "-o",
-            "--output-data" }, description = "Specifies the output file path. If not provided, the result will be written to standard output.", arity = "0..1", fallbackValue = RdfDataExporter.DEFAULT_OUTPUT)
+    @Option(
+            names = {"-o", "--output-data"},
+            description =
+                    "Specifies the output file path. If not provided, the result will be written to"
+                            + " standard output.",
+            arity = "0..1",
+            fallbackValue = AbstractExporter.DEFAULT_OUTPUT)
     protected Path output;
 
-    @Option(names = { "-c", "--config",
-            "--init" }, description = "Specifies the path to a configuration file. If not provided, the default configuration file will be used.", required = false)
+    @Option(
+            names = {"-c", "--config", "--init"},
+            description =
+                    "Specifies the path to a configuration file. If not provided, the default"
+                            + " configuration file will be used.",
+            required = false)
     private Path configFilePath;
 
-    @Option(names = { "-v",
-            "--verbose" }, description = "Enables verbose mode, printing more information about the execution of the command.", negatable = true)
+    @Option(
+            names = {"-v", "--verbose"},
+            description =
+                    "Enables verbose mode, printing more information about the execution of the"
+                            + " command.",
+            negatable = true)
     protected boolean verbose = false;
 
-    @Option(names = { "-w",
-            "--owl-import" }, description = "Enables the automatic importation of ontologies specified in 'owl:imports' statements. When this flag is set, the application will fetch and include referenced ontologies. Default is '${DEFAULT-VALUE}'.", required = false, defaultValue = "false")
+    @Option(
+            names = {"-w", "--owl-import"},
+            description =
+                    "Enables the automatic importation of ontologies specified in 'owl:imports'"
+                            + " statements. When this flag is set, the application will fetch and"
+                            + " include referenced ontologies. Default is '${DEFAULT-VALUE}'.",
+            required = false,
+            defaultValue = "false")
     private boolean owlImport;
 
-    ////////////////
-    // Properties //
-    ////////////////
+    // ===== Properties =====
 
     // Command specification
-    @Spec
-    protected CommandSpec spec;
+    @Spec protected CommandSpec spec;
 
     // Output
     protected Boolean outputToFileIsDefault = false;
 
-    /////////////
-    // Methods //
-    /////////////
+    // ===== Methods =====
 
     @Override
     public Integer call() {
 
-        // Load configuration file
-        Optional<Path> configFilePath = Optional.ofNullable(this.configFilePath);
-        if (configFilePath.isPresent()) {
-            ConfigManager.loadFromFile(configFilePath.get(), this.spec, this.verbose);
-        } else {
-            ConfigManager.loadDefaultConfig(this.spec, this.verbose);
-        }
+        // Load configuration
+        CoreseConfigManager configManager =
+                new CoreseConfigManager(this.spec, this.verbose, this.configFilePath);
+        configManager.loadConfig();
 
         // Set owl import
-        CoreseUtils.setProperty(Property.Value.OWL_AUTO_IMPORT, this.owlImport);
+        configManager.setOwlAutoImports(this.owlImport);
 
         return 0;
     }
-
 }

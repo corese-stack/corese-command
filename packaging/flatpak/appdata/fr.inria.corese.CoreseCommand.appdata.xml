@@ -136,6 +136,20 @@
     </screenshots>
 
     <releases>
+        <release version="4.6.3" date="2025-10-30">
+            <url type="details">https://github.com/corese-stack/corese-command/releases/tag/v4.6.3</url>
+            <description>
+                <ul>
+                    <li>Major code refactoring for improved quality and maintainability.</li>
+                    <li>Introduced custom exception hierarchy and wrapper classes.</li>
+                    <li>Reorganized package structure and standardized error messages.</li>
+                    
+                    <li xml:lang="fr">Refonte majeure du code pour améliorer la qualité et la maintenabilité.</li>
+                    <li xml:lang="fr">Introduction d'une hiérarchie d'exceptions personnalisée et de classes wrapper.</li>
+                    <li xml:lang="fr">Réorganisation de la structure des packages et standardisation des messages d'erreur.</li>
+                </ul>
+            </description>
+        </release>
         <release version="4.6.2" date="2025-08-01">
             <url type="details">https://github.com/corese-stack/corese-command/releases/tag/v4.6.2</url>
             <description>

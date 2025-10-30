@@ -95,11 +95,7 @@ public class InputTypeDetector {
         boolean looksLikePath = input.matches(".*[\\\\/].*") // slash or back-slash
                 || input.matches(".*\\.[\\w]{1,4}$"); // ends with .ext
 
-        if (isSingleLine && !hasWhitespace && looksLikePath) {
-            return false; // definitely a path ⇒ not SPARQL
-        }
-
-        return true;
+        return !(isSingleLine && !hasWhitespace && looksLikePath); // definitely a path ⇒ not SPARQL
     }
 
     /**

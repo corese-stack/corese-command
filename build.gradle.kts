@@ -60,22 +60,48 @@ repositories {
 
 dependencies {
     val coreseVersion = "4.6.4"
-    val picocliVersion = "4.7.6"
+    val picocliVersion = "4.7.7"
+    val jacksonVersion = "2.17.1" // Version compatible with WireMock 3.13.1
 
-    implementation("fr.inria.corese:corese-core:$coreseVersion") // Core module of Corese
+    implementation("fr.inria.corese:corese-core:$coreseVersion") {
+        // Exclude Log4j2 dependencies to avoid SLF4J multiple bindings warning
+        // corese-core includes Log4j2, but corese-command uses Logback
+        exclude(group = "org.apache.logging.log4j", module = "log4j-slf4j2-impl")
+        exclude(group = "org.apache.logging.log4j", module = "log4j-core")
+    }
     implementation("info.picocli:picocli:$picocliVersion") // Library for building a Command-Line Interface (CLI)
 
-    implementation("org.apache.commons:commons-lang3:3.17.0") // Library for utility functions (e.g., StringUtils)
+    implementation("org.apache.commons:commons-lang3:3.19.0") // Library for utility functions (e.g., StringUtils)
     implementation("com.github.jsonld-java:jsonld-java:0.13.6") // Library for JSON-LD support
-    implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0") // Jakarta REST API specifications
-    implementation("jakarta.activation:jakarta.activation-api:2.1.3") // Jakarta Activation API
+    implementation("jakarta.ws.rs:jakarta.ws.rs-api:4.0.0") // Jakarta REST API specifications
+    implementation("jakarta.activation:jakarta.activation-api:2.2.0-M1") // Jakarta Activation API
     implementation("fr.com.hp.hpl.jena.rdf.arp:arp:2.2.b") // Jena implementation for RDF parsing
-    implementation("org.slf4j:slf4j-api:2.0.16") // Simple Logging Facade for Java (SLF4J)
-    runtimeOnly("ch.qos.logback:logback-classic:1.5.12") // Logging framework for SLF4J
+    implementation("org.slf4j:slf4j-api:2.0.17") // Simple Logging Facade for Java (SLF4J)
+    runtimeOnly("ch.qos.logback:logback-classic:1.5.20") // Logging framework for SLF4J
 
-    testImplementation("org.wiremock:wiremock:3.9.2") // HTTP server mocking for API testing
-    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3") // JUnit 5 for testing
+    testImplementation("org.wiremock:wiremock:3.13.1") // HTTP server mocking for API testing
+    testImplementation("org.junit.jupiter:junit-jupiter:6.0.0") // JUnit 5 for testing
+    testImplementation("org.mockito:mockito-core:5.15.2") // Mockito for mocking in tests
+    testImplementation("org.mockito:mockito-junit-jupiter:5.15.2") // Mockito JUnit 5 integration
     testRuntimeOnly("org.junit.platform:junit-platform-launcher") // JUnit Platform launcher for running tests
+
+    // Force Jackson version to fix compatibility issues with WireMock
+    // WireMock 3.13.1 requires Jackson 2.17.x for the configure(DatatypeFeature, boolean) method
+    // Without this, running tests from IDE may fail with NoSuchMethodError
+    testImplementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
+    testImplementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+}
+
+// Force Jackson version across all configurations to prevent version conflicts
+// This ensures that transitive dependencies from corese-core or other libraries
+// do not introduce older Jackson versions that are incompatible with WireMock
+configurations.all {
+    resolutionStrategy {
+        force("com.fasterxml.jackson.core:jackson-core:2.17.1")
+        force("com.fasterxml.jackson.core:jackson-annotations:2.17.1")
+        force("com.fasterxml.jackson.core:jackson-databind:2.17.1")
+    }
 }
 
 /////////////////////////

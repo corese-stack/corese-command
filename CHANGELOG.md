@@ -1,6 +1,21 @@
 <!-- markdownlint-disable MD024 -->
 # Corese Changelog
 
+## Version 4.6.3
+
+### Changed
+
+- Major code refactoring to improve code quality and maintainability.
+- Introduced custom exception hierarchy for better error handling.
+- Reorganized format handling classes and package structure.
+- Added wrapper classes to encapsulate Corese-Core functionality.
+- Standardized error messages and improved code documentation.
+
+### Fixed
+
+- Fixed inconsistent error handling across commands.
+- Improved test reliability and code quality.
+
 ## Version 4.6.2 - 2025-08-01
 
 ### Changed

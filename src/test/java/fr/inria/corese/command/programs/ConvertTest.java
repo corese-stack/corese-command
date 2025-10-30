@@ -2,8 +2,18 @@ package fr.inria.corese.command.programs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+
+import fr.inria.corese.command.utils.TestCanonicalizer;
+import fr.inria.corese.command.utils.loader.rdf.RdfLoader;
+import fr.inria.corese.command.utils.loader.rdf.RdfInputFormat;
+import fr.inria.corese.command.utils.wrapper.CoreseRdfGraph;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import picocli.CommandLine;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -11,14 +21,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import fr.inria.corese.command.utils.coreseCoreWrapper.CoreseRdfGraph;
-import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
-import picocli.CommandLine;
-
-public class ConvertTest {
+class ConvertTest {
 
     private Convert convert = new Convert();
     private CommandLine cmd = new CommandLine(convert);
@@ -30,746 +33,840 @@ public class ConvertTest {
     Path referencesPath;
     Path resultPath;
 
-    public ConvertTest() throws URISyntaxException {
-        this.inputPath = Paths
-                .get(ConvertTest.class.getResource("/fr/inria/corese/command/programs/convert/input/").toURI());
+    ConvertTest() throws URISyntaxException {
+        this.inputPath =
+                Paths.get(
+                        ConvertTest.class
+                                .getResource("/fr/inria/corese/command/programs/convert/input/")
+                                .toURI());
 
-        this.referencesPath = Paths.get(
-                ConvertTest.class.getResource("/fr/inria/corese/command/programs/convert/references/").toURI());
+        this.referencesPath =
+                Paths.get(
+                        ConvertTest.class
+                                .getResource(
+                                        "/fr/inria/corese/command/programs/convert/references/")
+                                .toURI());
 
-        this.resultPath = Paths.get(
-                ConvertTest.class.getResource("/fr/inria/corese/command/programs/convert/results/").toURI());
-    }
-
-    private String canonicalize(String path) {
-        CoreseRdfGraph graph = new CoreseRdfGraph();
-        graph.load(path, "");
-    
-        return graph.canonicalRdf10Format();
+        this.resultPath =
+                Paths.get(
+                        ConvertTest.class
+                                .getResource("/fr/inria/corese/command/programs/convert/results/")
+                                .toURI());
     }
 
     @BeforeEach
-    public void setUp() {
-        PrintWriter out = new PrintWriter(this.out);
-        PrintWriter err = new PrintWriter(this.err);
-        cmd.setOut(out);
-        cmd.setErr(err);
+    void setUp() {
+        PrintWriter outputWriter = new PrintWriter(this.out);
+        PrintWriter errorWriter = new PrintWriter(this.err);
+        cmd.setOut(outputWriter);
+        cmd.setErr(errorWriter);
     }
 
     @Test
-    public void testConvertTurtleToxml() {
-        String pathinputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+    void testConvertTurtleToXml() {
+        String pathInputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
         String pathRefBeatlesXML = referencesPath.resolve("ttl.beatles.rdf").toString();
         String pathOutBeatlesXML = resultPath.resolve("ttl.beatles.rdf").toString();
 
-        int exitCode = cmd.execute("-i", pathinputBeatlesTTL, "-of", "RDFXML", "-o", pathOutBeatlesXML);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTTL, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
-
     }
 
     @Test
-    public void testConvertTurtleToJsonld() {
+    void testConvertTurtleToJsonld() {
         String pathInputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
         String pathRefBeatlesJSON = referencesPath.resolve("ttl.beatles.jsonld").toString();
         String pathOutBeatlesJSON = resultPath.resolve("ttl.beatles.jsonld").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesTTL, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTTL, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
-
     }
 
     @Test
-    public void testConvertTurtleToTrig() {
+    void testConvertTurtleToTrig() {
         String pathInputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
         String pathRefBeatlesTRIG = referencesPath.resolve("ttl.beatles.trig").toString();
         String pathOutBeatlesTRIG = resultPath.resolve("ttl.beatles.trig").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesTTL, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTTL, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
-
     }
 
     @Test
-    public void testConvertTurtleToTurtle() {
+    void testConvertTurtleToTurtle() {
         String pathInputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
         String pathRefBeatlesTTL = referencesPath.resolve("ttl.beatles.ttl").toString();
         String pathOutBeatlesTTL = resultPath.resolve("ttl.beatles.ttl").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesTTL, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTTL, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
-
     }
 
     @Test
-    public void testConvertTurtleToNt() {
+    void testConvertTurtleToNt() {
         String pathInputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
         String pathRefBeatlesNT = referencesPath.resolve("ttl.beatles.nt").toString();
         String pathOutBeatlesNT = resultPath.resolve("ttl.beatles.nt").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesTTL, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTTL, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
-
     }
 
     @Test
-    public void testConvertTurtleToNq() {
+    void testConvertTurtleToNq() {
         String pathInputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
         String pathRefBeatlesNQ = referencesPath.resolve("ttl.beatles.nq").toString();
         String pathOutBeatlesNQ = resultPath.resolve("ttl.beatles.nq").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesTTL, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTTL, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
-
     }
 
     @Test
-    public void testConvertXmltoXml() {
+    void testConvertXmltoXml() {
         String pathInputBeatlesXML = inputPath.resolve("beatles.rdf").toString();
         String pathRefBeatlesXML = referencesPath.resolve("rdf.beatles.rdf").toString();
         String pathOutBeatlesXML = resultPath.resolve("rdf.beatles.rdf").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesXML, "-of", "RDFXML", "-o", pathOutBeatlesXML);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesXML, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
-
     }
 
     @Test
-    public void testConvertXmlToJsonld() {
+    void testConvertXmlToJsonld() {
         String pathInputBeatlesXML = inputPath.resolve("beatles.rdf").toString();
         String pathRefBeatlesJSON = referencesPath.resolve("rdf.beatles.jsonld").toString();
         String pathOutBeatlesJSON = resultPath.resolve("rdf.beatles.jsonld").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesXML, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesXML, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
-
     }
 
     @Test
-    public void testConvertXmlToTrig() {
+    void testConvertXmlToTrig() {
         String pathInputBeatlesXML = inputPath.resolve("beatles.rdf").toString();
         String pathRefBeatlesTRIG = referencesPath.resolve("rdf.beatles.trig").toString();
         String pathOutBeatlesTRIG = resultPath.resolve("rdf.beatles.trig").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesXML, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesXML, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
-
     }
 
     @Test
-    public void testConvertXmlTiTurtle() {
+    void testConvertXmlTiTurtle() {
         String pathInputBeatlesXML = inputPath.resolve("beatles.rdf").toString();
         String pathRefBeatlesTTL = referencesPath.resolve("rdf.beatles.ttl").toString();
         String pathOutBeatlesTTL = resultPath.resolve("rdf.beatles.ttl").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesXML, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesXML, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
-
     }
 
     @Test
-    public void testConvertXmlToNt() {
+    void testConvertXmlToNt() {
         String pathInputBeatlesXML = inputPath.resolve("beatles.rdf").toString();
         String pathRefBeatlesNT = referencesPath.resolve("rdf.beatles.nt").toString();
         String pathOutBeatlesNT = resultPath.resolve("rdf.beatles.nt").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesXML, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesXML, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
-
     }
 
     @Test
-    public void testConvertXmlToNq() {
+    void testConvertXmlToNq() {
         String pathInputBeatlesXML = inputPath.resolve("beatles.rdf").toString();
         String pathRefBeatlesNQ = referencesPath.resolve("rdf.beatles.nq").toString();
         String pathOutBeatlesNQ = resultPath.resolve("rdf.beatles.nq").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesXML, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesXML, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
-
     }
 
     @Test
-    public void testConvertTrigToXml() {
+    void testConvertTrigToXml() {
         String pathInputBeatlesTRIG = inputPath.resolve("beatles.trig").toString();
         String pathRefBeatlesXML = referencesPath.resolve("trig.beatles.rdf").toString();
         String pathOutBeatlesXML = resultPath.resolve("trig.beatles.rdf").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesTRIG, "-of", "RDFXML", "-o", pathOutBeatlesXML);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTRIG, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
-
     }
 
     @Test
-    public void testConvertTrigToJsonld() {
+    void testConvertTrigToJsonld() {
         String pathInputBeatlesTRIG = inputPath.resolve("beatles.trig").toString();
         String pathRefBeatlesJSON = referencesPath.resolve("trig.beatles.jsonld").toString();
         String pathOutBeatlesJSON = resultPath.resolve("trig.beatles.jsonld").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesTRIG, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTRIG, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
-
     }
 
     @Test
-    public void testConvertTrigToTrig() {
+    void testConvertTrigToTrig() {
         String pathInputBeatlesTRIG = inputPath.resolve("beatles.trig").toString();
         String pathExpectBeatlesTRIG = referencesPath.resolve("trig.beatles.trig").toString();
         String pathOutBeatlesTRIG = resultPath.resolve("trig.beatles.trig").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesTRIG, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTRIG, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathExpectBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathExpectBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
-
     }
 
     @Test
-    public void testConvertTrigToTurtle() {
+    void testConvertTrigToTurtle() {
         String pathInputBeatlesTRIG = inputPath.resolve("beatles.trig").toString();
         String pathRefBeatlesTTL = referencesPath.resolve("trig.beatles.ttl").toString();
         String pathOutBeatlesTTL = resultPath.resolve("trig.beatles.ttl").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesTRIG, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTRIG, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
-
     }
 
     @Test
-    public void testConvertTrigToNt() {
+    void testConvertTrigToNt() {
         String pathInputBeatlesTRIG = inputPath.resolve("beatles.trig").toString();
         String pathRefBeatlesNT = referencesPath.resolve("trig.beatles.nt").toString();
         String pathOutBeatlesNT = resultPath.resolve("trig.beatles.nt").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesTRIG, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTRIG, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
-
     }
 
     @Test
-    public void testConvertTrigToNq() {
+    void testConvertTrigToNq() {
         String pathInputBeatlesTRIG = inputPath.resolve("beatles.trig").toString();
         String pathRefBeatlesNQ = referencesPath.resolve("trig.beatles.nq").toString();
         String pathOutBeatlesNQ = resultPath.resolve("trig.beatles.nq").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesTRIG, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTRIG, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
-
     }
 
     @Test
-    public void testConvertJsonldToXml() {
+    void testConvertJsonldToXml() {
         String pathInputBeatlesJSONLD = inputPath.resolve("beatles.jsonld").toString();
         String pathRefBeatlesXML = referencesPath.resolve("jsonld.beatles.rdf").toString();
         String pathOutBeatlesXML = resultPath.resolve("jsonld.beatles.rdf").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "RDFXML", "-o", pathOutBeatlesXML);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
-
     }
 
     @Test
-    public void testConvertJsonldToJsonld() {
+    void testConvertJsonldToJsonld() {
         String pathInputBeatlesJSONLD = inputPath.resolve("beatles.jsonld").toString();
         String pathRefBeatlesJSON = referencesPath.resolve("jsonld.beatles.jsonld").toString();
         String pathOutBeatlesJSON = resultPath.resolve("jsonld.beatles.jsonld").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
+        int exitCode =
+                cmd.execute(
+                        "-i", pathInputBeatlesJSONLD, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
-
     }
 
     @Test
-    public void testConvertJsonldToTrig() {
+    void testConvertJsonldToTrig() {
         String pathInputBeatlesJSONLD = inputPath.resolve("beatles.jsonld").toString();
         String pathRefBeatlesTRIG = referencesPath.resolve("jsonld.beatles.trig").toString();
         String pathOutBeatlesTRIG = resultPath.resolve("jsonld.beatles.trig").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
-
     }
 
     @Test
-    public void testConvertJsonldToTurtle() {
+    void testConvertJsonldToTurtle() {
         String pathInputBeatlesJSONLD = inputPath.resolve("beatles.jsonld").toString();
         String pathRefBeatlesTTL = referencesPath.resolve("jsonld.beatles.ttl").toString();
         String pathOutBeatlesTTL = resultPath.resolve("jsonld.beatles.ttl").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
-
     }
 
     @Test
-    public void testConvertJsonldToNt() {
+    void testConvertJsonldToNt() {
         String pathInputBeatlesJSONLD = inputPath.resolve("beatles.jsonld").toString();
         String pathRefBeatlesNT = referencesPath.resolve("jsonld.beatles.nt").toString();
         String pathOutBeatlesNT = resultPath.resolve("jsonld.beatles.nt").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
+        int exitCode =
+                cmd.execute(
+                        "-i", pathInputBeatlesJSONLD, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
-
     }
 
     @Test
-    public void testConvertJsonldToNq() {
+    void testConvertJsonldToNq() {
         String pathInputBeatlesJSONLD = inputPath.resolve("beatles.jsonld").toString();
         String pathRefBeatlesNQ = referencesPath.resolve("jsonld.beatles.nq").toString();
         String pathOutBeatlesNQ = resultPath.resolve("jsonld.beatles.nq").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesJSONLD, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
-
     }
 
     @Test
-    public void testConvertNtToXml() {
+    void testConvertNtToXml() {
         String pathInputBeatlesNT = inputPath.resolve("beatles.nt").toString();
         String pathRefBeatlesXML = referencesPath.resolve("nt.beatles.rdf").toString();
         String pathOutBeatlesXML = resultPath.resolve("nt.beatles.rdf").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesNT, "-of", "RDFXML", "-o", pathOutBeatlesXML);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesNT, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
-
     }
 
     @Test
-    public void testConvertNtToJsonld() {
+    void testConvertNtToJsonld() {
         String pathInputBeatlesNT = inputPath.resolve("beatles.nt").toString();
         String pathRefBeatlesJSON = referencesPath.resolve("nt.beatles.jsonld").toString();
         String pathOutBeatlesJSON = resultPath.resolve("nt.beatles.jsonld").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesNT, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesNT, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
-
     }
 
     @Test
-    public void testConvertNtToTrig() {
+    void testConvertNtToTrig() {
         String pathInputBeatlesNT = inputPath.resolve("beatles.nt").toString();
         String pathRefBeatlesTRIG = referencesPath.resolve("nt.beatles.trig").toString();
         String pathOutBeatlesTRIG = resultPath.resolve("nt.beatles.trig").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesNT, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesNT, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
-
     }
 
     @Test
-    public void testConvertNtToTurtle() {
+    void testConvertNtToTurtle() {
         String pathInputBeatlesNT = inputPath.resolve("beatles.nt").toString();
         String pathRefBeatlesTTL = referencesPath.resolve("nt.beatles.ttl").toString();
         String pathOutBeatlesTTL = resultPath.resolve("nt.beatles.ttl").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesNT, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesNT, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
-
     }
 
     @Test
-    public void testConvertNtToNt() {
+    void testConvertNtToNt() {
         String pathInputBeatlesNT = inputPath.resolve("beatles.nt").toString();
         String pathRefBeatlesNT = referencesPath.resolve("nt.beatles.nt").toString();
         String pathOutBeatlesNT = resultPath.resolve("nt.beatles.nt").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesNT, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesNT, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
-
     }
 
     @Test
-    public void testConvertNtToNq() {
+    void testConvertNtToNq() {
         String pathInputBeatlesNT = inputPath.resolve("beatles.nt").toString();
         String pathRefBeatlesNQ = referencesPath.resolve("nt.beatles.nq").toString();
         String pathOutBeatlesNQ = resultPath.resolve("nt.beatles.nq").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesNT, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesNT, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
-
     }
 
     @Test
-    public void testConvertNqToXml() {
+    void testConvertNqToXml() {
         String pathInputBeatlesNQ = inputPath.resolve("beatles.nq").toString();
         String pathRefBeatlesXML = referencesPath.resolve("nq.beatles.rdf").toString();
         String pathOutBeatlesXML = resultPath.resolve("nq.beatles.rdf").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesNQ, "-of", "RDFXML", "-o", pathOutBeatlesXML);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesNQ, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
-
     }
 
     @Test
-    public void testConvertNqToJsonld() {
+    void testConvertNqToJsonld() {
         String pathInputBeatlesNQ = inputPath.resolve("beatles.nq").toString();
         String pathRefBeatlesJSON = referencesPath.resolve("nq.beatles.jsonld").toString();
         String pathOutBeatlesJSON = resultPath.resolve("nq.beatles.jsonld").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesNQ, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesNQ, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
-
     }
 
     @Test
-    public void testConvertNqToTrig() {
+    void testConvertNqToTrig() {
         String pathInputBeatlesNQ = inputPath.resolve("beatles.nq").toString();
         String pathRefBeatlesTRIG = referencesPath.resolve("nq.beatles.trig").toString();
         String pathOutBeatlesTRIG = resultPath.resolve("nq.beatles.trig").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesNQ, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesNQ, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
-
     }
 
     @Test
-    public void testConvertNqToTurtle() {
+    void testConvertNqToTurtle() {
         String pathInputBeatlesNQ = inputPath.resolve("beatles.nq").toString();
         String pathRefBeatlesTTL = referencesPath.resolve("nq.beatles.ttl").toString();
         String pathOutBeatlesTTL = resultPath.resolve("nq.beatles.ttl").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesNQ, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesNQ, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
-
     }
 
     @Test
-    public void testConvertNqToNt() {
+    void testConvertNqToNt() {
         String pathInputBeatlesNQ = inputPath.resolve("beatles.nq").toString();
         String pathRefBeatlesNT = referencesPath.resolve("nq.beatles.nt").toString();
         String pathOutBeatlesNT = resultPath.resolve("nq.beatles.nt").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesNQ, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesNQ, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
-
     }
 
     @Test
-    public void testConvertNqToNq() {
+    void testConvertNqToNq() {
         String pathInputBeatlesNQ = inputPath.resolve("beatles.nq").toString();
         String pathRefBeatlesNQ = referencesPath.resolve("nq.beatles.nq").toString();
         String pathOutBeatlesNQ = resultPath.resolve("nq.beatles.nq").toString();
 
-        int exitCode = cmd.execute("-i", pathInputBeatlesNQ, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesNQ, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
-
     }
 
     @Test
-    public void testConvertRdfaToXml() {
+    void testConvertRdfaToXml() {
         String pathInputStringHtml = inputPath.resolve("beatles.html").toString();
         String pathRefBeatlesXML = referencesPath.resolve("html.beatles.rdf").toString();
         String pathOutBeatlesXML = resultPath.resolve("html.beatles.rdf").toString();
 
-        int exitCode = cmd.execute("-i", pathInputStringHtml, "-of", "RDFXML", "-o", pathOutBeatlesXML);
+        int exitCode =
+                cmd.execute("-i", pathInputStringHtml, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
-
     }
 
     @Test
-    public void testConvertRdfaToJsonld() {
+    void testConvertRdfaToJsonld() {
         String pathInputStringHtml = inputPath.resolve("beatles.html").toString();
         String pathRefBeatlesJSON = referencesPath.resolve("html.beatles.jsonld").toString();
         String pathOutBeatlesJSON = resultPath.resolve("html.beatles.jsonld").toString();
 
-        int exitCode = cmd.execute("-i", pathInputStringHtml, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
+        int exitCode =
+                cmd.execute("-i", pathInputStringHtml, "-of", "JSONLD", "-o", pathOutBeatlesJSON);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
-
     }
 
     @Test
-    public void testConvertRdfaToTrig() {
+    void testConvertRdfaToTrig() {
         String pathInputStringHtml = inputPath.resolve("beatles.html").toString();
         String pathRefBeatlesTRIG = referencesPath.resolve("html.beatles.trig").toString();
         String pathOutBeatlesTRIG = resultPath.resolve("html.beatles.trig").toString();
 
-        int exitCode = cmd.execute("-i", pathInputStringHtml, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
+        int exitCode =
+                cmd.execute("-i", pathInputStringHtml, "-of", "TRIG", "-o", pathOutBeatlesTRIG);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
-
     }
 
     @Test
-    public void testConvertRdfaToTurtle() {
+    void testConvertRdfaToTurtle() {
         String pathInputStringHtml = inputPath.resolve("beatles.html").toString();
         String pathRefBeatlesTTL = referencesPath.resolve("html.beatles.ttl").toString();
         String pathOutBeatlesTTL = resultPath.resolve("html.beatles.ttl").toString();
 
-        int exitCode = cmd.execute("-i", pathInputStringHtml, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
+        int exitCode =
+                cmd.execute("-i", pathInputStringHtml, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
-
     }
 
     @Test
-    public void testConvertRdfaToNt() {
+    void testConvertRdfaToNt() {
         String pathInputStringHtml = inputPath.resolve("beatles.html").toString();
         String pathRefBeatlesNT = referencesPath.resolve("html.beatles.nt").toString();
         String pathOutBeatlesNT = resultPath.resolve("html.beatles.nt").toString();
 
-        int exitCode = cmd.execute("-i", pathInputStringHtml, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
+        int exitCode =
+                cmd.execute("-i", pathInputStringHtml, "-of", "NTRIPLES", "-o", pathOutBeatlesNT);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
-
     }
 
     @Test
-    public void testConvertRdfaToNq() {
+    void testConvertRdfaToNq() {
         String pathInputStringHtml = inputPath.resolve("beatles.html").toString();
         String pathRefBeatlesNQ = referencesPath.resolve("html.beatles.nq").toString();
         String pathOutBeatlesNQ = resultPath.resolve("html.beatles.nq").toString();
 
-        int exitCode = cmd.execute("-i", pathInputStringHtml, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
+        int exitCode =
+                cmd.execute("-i", pathInputStringHtml, "-of", "NQUADS", "-o", pathOutBeatlesNQ);
 
         assertEquals(0, exitCode);
-        assertEquals(out.toString(), "");
-        assertEquals(err.toString(), "");
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals("", out.toString());
+        assertEquals("", err.toString());
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
-
     }
 
     @Test
-    public void testConvertWithSameInputAndOutputPath() {
-        String inputPath = referencesPath.resolve("beatles.ttl").toString();
-        int exitCode = cmd.execute("-i", inputPath, "-of", "TURTLE", "-o", inputPath);
+    void testConvertWithSameInputAndOutputPath() {
+        String pathInputBeatlesTTL = referencesPath.resolve("beatles.ttl").toString();
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTTL, "-of", "TURTLE", "-o", pathInputBeatlesTTL);
         assertEquals(1, exitCode);
-        assertEquals(out.toString(), "");
+        assertEquals("", out.toString());
         assertTrue(err.toString().trim().contains("Input path cannot be same as output path"));
     }
 
     @Test
-    public void testConvertWithInvalidInputPath() {
-        String inputPath = "invalid_path.ttl";
-        String outputPath = resultPath.resolve("ttlbeatles.ttl").toString();
+    void testConvertWithInvalidInputPath() {
+        String pathInputBeatlesTTL = "invalid_path.ttl";
+        String pathOutBeatlesTTL = resultPath.resolve("ttlbeatles.ttl").toString();
 
-        int exitCode = cmd.execute("-i", inputPath, "-of", "TURTLE", "-o", outputPath);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTTL, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
         assertEquals(1, exitCode);
-        assertEquals(out.toString(), "");
+        assertEquals("", out.toString());
         assertTrue(err.toString().trim().contains("Failed to open RDF data file:"));
     }
 
     @Test
-    public void testConvertWithInvalidOutputPath() {
-        String inputPath = referencesPath.resolve("beatles.ttl").toString();
-        String outputPath = "/invalid/path/for/output.ttl";
+    void testConvertWithInvalidOutputPath() {
+        String pathInputBeatlesTTL = referencesPath.resolve("beatles.ttl").toString();
+        String pathOutBeatlesTTL = "/invalid/path/for/output.ttl";
 
-        int exitCode = cmd.execute("-i", inputPath, "-of", "TURTLE", "-o", outputPath);
+        int exitCode =
+                cmd.execute("-i", pathInputBeatlesTTL, "-of", "TURTLE", "-o", pathOutBeatlesTTL);
         assertEquals(1, exitCode);
-        assertEquals(out.toString(), "");
+        assertEquals("", out.toString());
         assertTrue(err.toString().trim().contains("Failed to open RDF data file:"));
     }
 
     @Test
-    public void testGraphUtilsLoadWithInvalidFormat() {
-        Path inputPath = referencesPath.resolve("beatles.ttl");
+    @SuppressWarnings("java:S5778") // Multiple invocations in tested method is unavoidable
+    void testGraphUtilsLoadWithInvalidFormat() {
+        Path pathInputBeatlesTTL = referencesPath.resolve("beatles.ttl");
+        CoreseRdfGraph graph = new CoreseRdfGraph();
+        RdfLoader loader = new RdfLoader(null, false, graph);
 
-        try {
-            CoreseRdfGraph graph = new CoreseRdfGraph();
-            graph.load(new String[] { inputPath.toString() }, EnumRdfInputFormat.JSONLD, false);
-            fail("Expected an IllegalArgumentException to be thrown");
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("Failed to open RDF data file:"));
-        }
+        assertThrows(
+                fr.inria.corese.command.exceptions.RdfLoadException.class,
+                () ->
+                        loader.load(
+                                new String[] {pathInputBeatlesTTL.toString()},
+                                RdfInputFormat.JSONLD,
+                                false));
     }
-
 }
