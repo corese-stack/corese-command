@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseRdfGraph;
-import fr.inria.corese.core.api.Loader;
+import fr.inria.corese.command.utils.TestCanonicalizer;
+import fr.inria.corese.command.utils.loader.rdf.RdfInputFormat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,7 +83,7 @@ class ValidateTest {
         cmd.setErr(errorWriter);
     }
 
-    boolean compareFiles(String filePath1, String filePath2, Loader.format coreseFormat)
+    boolean compareFiles(String filePath1, String filePath2, RdfInputFormat format)
             throws IOException {
         // Get content of files
         String content1 = getStringContent(filePath1);
@@ -94,8 +94,8 @@ class ValidateTest {
         String clearContent2 = maskUUIDs(content2);
 
         // Canonicalize RDF content
-        String canonicallFile1 = canonicalize(clearContent1, coreseFormat);
-        String canonicallFile2 = canonicalize(clearContent2, coreseFormat);
+        String canonicallFile1 = canonicalize(clearContent1, format);
+        String canonicallFile2 = canonicalize(clearContent2, format);
 
         return canonicallFile1.equals(canonicallFile2);
     }
@@ -109,17 +109,12 @@ class ValidateTest {
         return new String(java.nio.file.Files.readAllBytes(Paths.get(path)));
     }
 
-    private String canonicalize(String content, Loader.format coreseFormat) {
-
+    private String canonicalize(String content, RdfInputFormat format) {
         // Content String to Input Stream
         InputStream is = new ByteArrayInputStream(content.getBytes());
 
-        // Load RDF content into a Graph
-        CoreseRdfGraph graph = new CoreseRdfGraph();
-        graph.load(is, coreseFormat);
-
-        // Return Canonical RDF content
-        return graph.canonicalRdf10Format();
+        // Canonicalize using TestCanonicalizer
+        return TestCanonicalizer.canonicalize(is, format);
     }
 
     @Test
@@ -140,7 +135,7 @@ class ValidateTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, RdfInputFormat.TURTLE));
         assertNotEquals("", result);
     }
 
@@ -162,7 +157,7 @@ class ValidateTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, RdfInputFormat.TURTLE));
         assertNotEquals("", result);
     }
 
@@ -189,7 +184,7 @@ class ValidateTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, RdfInputFormat.TURTLE));
         assertNotEquals("", result);
     }
 
@@ -216,7 +211,7 @@ class ValidateTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, RdfInputFormat.TURTLE));
         assertNotEquals("", result);
     }
 
@@ -238,7 +233,7 @@ class ValidateTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, RdfInputFormat.TURTLE));
         assertNotEquals("", result);
     }
 
@@ -260,7 +255,7 @@ class ValidateTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, RdfInputFormat.TURTLE));
         assertNotEquals("", result);
     }
 
@@ -282,7 +277,7 @@ class ValidateTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, RdfInputFormat.TURTLE));
         assertNotEquals("", result);
     }
 
@@ -313,7 +308,7 @@ class ValidateTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Loader.format.RDFXML_FORMAT));
+        assertTrue(this.compareFiles(expected, result, RdfInputFormat.RDFXML));
         assertNotEquals("", result);
     }
 
@@ -344,7 +339,7 @@ class ValidateTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Loader.format.JSONLD_FORMAT));
+        assertTrue(this.compareFiles(expected, result, RdfInputFormat.JSONLD));
         assertNotEquals("", result);
     }
 
@@ -362,7 +357,7 @@ class ValidateTest {
         assertEquals(0, exitCode);
         assertEquals("", this.out.toString());
         assertEquals("", this.err.toString());
-        assertTrue(this.compareFiles(expected, result, Loader.format.TURTLE_FORMAT));
+        assertTrue(this.compareFiles(expected, result, RdfInputFormat.TURTLE));
         assertNotEquals("", result);
     }
 }

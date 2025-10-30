@@ -5,27 +5,40 @@ import fr.inria.corese.command.programs.Convert;
 import fr.inria.corese.command.programs.Query;
 import fr.inria.corese.command.programs.QueryEndpoint;
 import fr.inria.corese.command.programs.Validate;
+import fr.inria.corese.command.utils.wrapper.CoreseVersionProvider;
+
 import picocli.AutoComplete.GenerateCompletion;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Help.Ansi.Style;
 import picocli.CommandLine.Help.ColorScheme;
 
-@Command(name = "Corese", versionProvider = VersionProvider.class, mixinStandardHelpOptions = true, subcommands = {
-        Convert.class, Query.class, QueryEndpoint.class, Validate.class, Canonicalize.class, GenerateCompletion.class })
+@Command(
+        name = "Corese",
+        versionProvider = CoreseVersionProvider.class,
+        mixinStandardHelpOptions = true,
+        subcommands = {
+            Convert.class,
+            Query.class,
+            QueryEndpoint.class,
+            Validate.class,
+            Canonicalize.class,
+            GenerateCompletion.class
+        })
 public final class App implements Runnable {
 
     public static void main(String[] args) {
         // Define the color scheme
-        ColorScheme colorScheme = new ColorScheme.Builder()
-                .commands(Style.bold) // Commands in blue
-                .options(Style.fg_yellow) // Options in yellow
-                .parameters(Style.fg_cyan, Style.bold) // Parameters in cyan and bold
-                .optionParams(Style.italic, Style.fg_cyan) // Option parameters in italic
-                .errors(Style.fg_red, Style.bold) // Errors in red and bold
-                .stackTraces(Style.italic) // Stack traces in italic
-                .applySystemProperties() // Apply system properties for colors
-                .build();
+        ColorScheme colorScheme =
+                new ColorScheme.Builder()
+                        .commands(Style.bold) // Commands in blue
+                        .options(Style.fg_yellow) // Options in yellow
+                        .parameters(Style.fg_cyan, Style.bold) // Parameters in cyan and bold
+                        .optionParams(Style.italic, Style.fg_cyan) // Option parameters in italic
+                        .errors(Style.fg_red, Style.bold) // Errors in red and bold
+                        .stackTraces(Style.italic) // Stack traces in italic
+                        .applySystemProperties() // Apply system properties for colors
+                        .build();
 
         CommandLine commandLine = new CommandLine(new App()).setColorScheme(colorScheme);
 

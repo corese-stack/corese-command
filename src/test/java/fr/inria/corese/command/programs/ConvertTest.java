@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseRdfGraph;
-import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
+import fr.inria.corese.command.utils.TestCanonicalizer;
+import fr.inria.corese.command.utils.loader.rdf.RdfLoader;
+import fr.inria.corese.command.utils.loader.rdf.RdfInputFormat;
+import fr.inria.corese.command.utils.wrapper.CoreseRdfGraph;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,13 +54,6 @@ class ConvertTest {
                                 .toURI());
     }
 
-    private String canonicalize(String path) {
-        CoreseRdfGraph graph = new CoreseRdfGraph();
-        graph.load(path, "");
-
-        return graph.canonicalRdf10Format();
-    }
-
     @BeforeEach
     void setUp() {
         PrintWriter outputWriter = new PrintWriter(this.out);
@@ -68,18 +63,20 @@ class ConvertTest {
     }
 
     @Test
-    void testConvertTurtleToxml() {
-        String pathinputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
+    void testConvertTurtleToXml() {
+        String pathInputBeatlesTTL = inputPath.resolve("beatles.ttl").toString();
         String pathRefBeatlesXML = referencesPath.resolve("ttl.beatles.rdf").toString();
         String pathOutBeatlesXML = resultPath.resolve("ttl.beatles.rdf").toString();
 
         int exitCode =
-                cmd.execute("-i", pathinputBeatlesTTL, "-of", "RDFXML", "-o", pathOutBeatlesXML);
+                cmd.execute("-i", pathInputBeatlesTTL, "-of", "RDFXML", "-o", pathOutBeatlesXML);
 
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
     }
 
@@ -95,7 +92,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
     }
 
@@ -111,7 +110,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
     }
 
@@ -127,7 +128,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
     }
 
@@ -143,7 +146,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
     }
 
@@ -159,7 +164,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
     }
 
@@ -175,7 +182,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
     }
 
@@ -191,7 +200,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
     }
 
@@ -207,7 +218,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
     }
 
@@ -223,7 +236,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
     }
 
@@ -239,7 +254,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
     }
 
@@ -255,7 +272,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
     }
 
@@ -271,7 +290,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
     }
 
@@ -287,7 +308,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
     }
 
@@ -303,7 +326,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathExpectBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathExpectBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
     }
 
@@ -319,7 +344,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
     }
 
@@ -335,7 +362,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
     }
 
@@ -351,7 +380,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
     }
 
@@ -367,7 +398,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
     }
 
@@ -384,7 +417,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
     }
 
@@ -400,7 +435,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
     }
 
@@ -416,7 +453,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
     }
 
@@ -433,7 +472,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
     }
 
@@ -449,7 +490,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
     }
 
@@ -465,7 +508,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
     }
 
@@ -481,7 +526,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
     }
 
@@ -497,7 +544,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
     }
 
@@ -513,7 +562,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
     }
 
@@ -529,7 +580,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
     }
 
@@ -545,7 +598,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
     }
 
@@ -561,7 +616,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
     }
 
@@ -577,7 +634,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
     }
 
@@ -593,7 +652,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
     }
 
@@ -609,7 +670,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
     }
 
@@ -625,7 +688,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
     }
 
@@ -641,7 +706,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
     }
 
@@ -657,7 +724,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesXML), canonicalize(pathOutBeatlesXML));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesXML),
+                TestCanonicalizer.canonicalize(pathOutBeatlesXML));
         assertNotEquals("", pathOutBeatlesXML);
     }
 
@@ -673,7 +742,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesJSON), canonicalize(pathOutBeatlesJSON));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesJSON),
+                TestCanonicalizer.canonicalize(pathOutBeatlesJSON));
         assertNotEquals("", pathOutBeatlesJSON);
     }
 
@@ -689,7 +760,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTRIG), canonicalize(pathOutBeatlesTRIG));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTRIG),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTRIG));
         assertNotEquals("", pathOutBeatlesTRIG);
     }
 
@@ -705,7 +778,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesTTL), canonicalize(pathOutBeatlesTTL));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesTTL),
+                TestCanonicalizer.canonicalize(pathOutBeatlesTTL));
         assertNotEquals("", pathOutBeatlesTTL);
     }
 
@@ -721,7 +796,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNT), canonicalize(pathOutBeatlesNT));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNT),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNT));
         assertNotEquals("", pathOutBeatlesNT);
     }
 
@@ -737,7 +814,9 @@ class ConvertTest {
         assertEquals(0, exitCode);
         assertEquals("", out.toString());
         assertEquals("", err.toString());
-        assertEquals(canonicalize(pathRefBeatlesNQ), canonicalize(pathOutBeatlesNQ));
+        assertEquals(
+                TestCanonicalizer.canonicalize(pathRefBeatlesNQ),
+                TestCanonicalizer.canonicalize(pathOutBeatlesNQ));
         assertNotEquals("", pathOutBeatlesNQ);
     }
 
@@ -780,13 +859,14 @@ class ConvertTest {
     void testGraphUtilsLoadWithInvalidFormat() {
         Path pathInputBeatlesTTL = referencesPath.resolve("beatles.ttl");
         CoreseRdfGraph graph = new CoreseRdfGraph();
-        
+        RdfLoader loader = new RdfLoader(null, false, graph);
+
         assertThrows(
-            IllegalArgumentException.class,
-            () -> graph.load(
-                    new String[] {pathInputBeatlesTTL.toString()},
-                    EnumRdfInputFormat.JSONLD,
-                    false)
-        );
+                fr.inria.corese.command.exceptions.RdfLoadException.class,
+                () ->
+                        loader.load(
+                                new String[] {pathInputBeatlesTTL.toString()},
+                                RdfInputFormat.JSONLD,
+                                false));
     }
 }

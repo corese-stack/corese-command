@@ -1,13 +1,12 @@
 package fr.inria.corese.command.utils.exporter;
 
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseRdfGraph;
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseResultFormat;
-import fr.inria.corese.core.kgram.core.Mappings;
-import fr.inria.corese.core.sparql.api.ResultFormatDef;
-
 import picocli.CommandLine.Model.CommandSpec;
 
 import java.nio.file.Path;
+
+import fr.inria.corese.command.utils.wrapper.CoreseExporter;
+import fr.inria.corese.command.utils.wrapper.CoreseRdfGraph;
+import fr.inria.corese.command.utils.wrapper.CoreseSparqlResult;
 
 /** Utility class to export SPARQL query results and RDF graphs. */
 public abstract class AbstractExporter {
@@ -54,57 +53,49 @@ public abstract class AbstractExporter {
      * Export the result to a file.
      *
      * @param path Path of the file to export to.
-     * @param coreseFormat Corese format.
-     * @param formatName Name of the format.
+     * @param exportFormat Export format.
      * @param graph Graph to export.
      */
-    protected void exportToFile(
-            Path path,
-            ResultFormatDef.format coreseFormat,
-            String formatName,
-            CoreseRdfGraph graph) {
-        CoreseResultFormat resultFormater = new CoreseResultFormat(graph);
-        exportToFile(path, coreseFormat, formatName, resultFormater);
+    protected void exportToFile(Path path, OutputFormat exportFormat, CoreseRdfGraph graph) {
+        CoreseExporter resultFormater = new CoreseExporter(graph);
+        exportToFile(path, exportFormat, resultFormater);
     }
 
     /**
      * Export the result to standard output.
      *
-     * @param coreseFormat Corese format.
-     * @param formatName Name of the format.
+     * @param exportFormat Export format.
      * @param graph Graph to export.
      */
     protected void exportToStdout(
-            ResultFormatDef.format coreseFormat, String formatName, CoreseRdfGraph graph) {
-        CoreseResultFormat resultFormater = new CoreseResultFormat(graph);
-        exportToStdout(coreseFormat, formatName, resultFormater);
+            OutputFormat exportFormat, CoreseRdfGraph graph) {
+        CoreseExporter resultFormater = new CoreseExporter(graph);
+        exportToStdout(exportFormat, resultFormater);
     }
 
     /**
      * Export the result to a file.
      *
      * @param path Path of the file to export to.
-     * @param coreseFormat Corese format.
-     * @param formatName Name of the format.
-     * @param mappings Mappings to export.
+     * @param exportFormat Export format.
+     * @param sparqlResult SPARQL result to export.
      */
     protected void exportToFile(
-            Path path, ResultFormatDef.format coreseFormat, String formatName, Mappings mappings) {
-        CoreseResultFormat resultFormater = new CoreseResultFormat(mappings);
-        exportToFile(path, coreseFormat, formatName, resultFormater);
+            Path path, OutputFormat exportFormat, CoreseSparqlResult sparqlResult) {
+        CoreseExporter resultFormater = new CoreseExporter(sparqlResult);
+        exportToFile(path, exportFormat, resultFormater);
     }
 
     /**
      * Export the result to standard output.
      *
-     * @param coreseFormat Corese format.
-     * @param formatName Name of the format.
-     * @param mappings Mappings to export.
+     * @param exportFormat Export format.
+     * @param sparqlResult SPARQL result to export.
      */
     protected void exportToStdout(
-            ResultFormatDef.format coreseFormat, String formatName, Mappings mappings) {
-        CoreseResultFormat resultFormater = new CoreseResultFormat(mappings);
-        exportToStdout(coreseFormat, formatName, resultFormater);
+            OutputFormat exportFormat, CoreseSparqlResult sparqlResult) {
+        CoreseExporter resultFormater = new CoreseExporter(sparqlResult);
+        exportToStdout(exportFormat, resultFormater);
     }
 
     // ===== Private methods ===== //
@@ -113,18 +104,14 @@ public abstract class AbstractExporter {
      * Export the result to a file.
      *
      * @param path Path of the file to export to.
-     * @param coreseFormat Corese format.
-     * @param formatName Name of the format.
+     * @param exportFormat Export format.
      * @param ResultFormat Result formater.
      */
     private void exportToFile(
-            Path path,
-            ResultFormatDef.format coreseFormat,
-            String formatName,
-            CoreseResultFormat resultFormater) {
+            Path path, OutputFormat exportFormat, CoreseExporter resultFormater) {
 
-        resultFormater.setSelectFormat(coreseFormat);
-        resultFormater.setConstructFormat(coreseFormat);
+        resultFormater.setSelectFormat(exportFormat);
+        resultFormater.setConstructFormat(exportFormat);
 
         resultFormater.write(path.toString());
 
@@ -136,25 +123,22 @@ public abstract class AbstractExporter {
                             "Exported result in file: "
                                     + path.toString()
                                     + " with format: "
-                                    + formatName);
+                                    + exportFormat.getName());
         }
     }
 
     /**
      * Export the result to standard output.
      *
-     * @param coreseFormat Corese format.
-     * @param formatName Name of the format.
+     * @param exportFormat Export format.
      * @param ResultFormat Result formater.
      */
     private void exportToStdout(
-            ResultFormatDef.format coreseFormat,
-            String formatName,
-            CoreseResultFormat resultFormater) {
+            OutputFormat exportFormat, CoreseExporter resultFormater) {
 
         // Configure the result formater
-        resultFormater.setSelectFormat(coreseFormat);
-        resultFormater.setConstructFormat(coreseFormat);
+        resultFormater.setSelectFormat(exportFormat);
+        resultFormater.setConstructFormat(exportFormat);
 
         // Write the result to standard output
         try {
@@ -168,7 +152,7 @@ public abstract class AbstractExporter {
         if (verbose) {
             spec.commandLine()
                     .getErr()
-                    .println("Exported result to standard output with format: " + formatName);
+                    .println("Exported result to standard output with format: " + exportFormat.getName());
         }
     }
 

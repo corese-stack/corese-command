@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseRdfGraph;
+import fr.inria.corese.command.utils.TestCanonicalizer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,11 +79,11 @@ class QueryTest {
                 || filePath1.endsWith(".jsonld")) {
             return compareFilesRdfGraph(filePath1, filePath2);
         } else {
-            return comapreFilesRaw(filePath1, filePath2);
+            return compareFilesRaw(filePath1, filePath2);
         }
     }
 
-    private boolean comapreFilesRaw(String filePath1, String filePath2) {
+    private boolean compareFilesRaw(String filePath1, String filePath2) {
 
         // Load in string content of both files
         String content1 = "";
@@ -124,13 +124,8 @@ class QueryTest {
     }
 
     private String canonicalize(String filePath) {
-
-        // Load RDF content into a Graph
-        CoreseRdfGraph graph = new CoreseRdfGraph();
-        graph.load(filePath, "");
-
-        // Return Canonical RDF content
-        return graph.canonicalRdf10Format();
+        // Use TestCanonicalizer for canonicalization
+        return TestCanonicalizer.canonicalize(filePath);
     }
 
     // Data source for invalid Select output formats
@@ -138,16 +133,16 @@ class QueryTest {
         return Stream.of(
                 Arguments.of(
                         "rdfxml",
-                        "Error: rdfxml is not a valid output format for select or ask requests."),
+                        "error: rdfxml is not a valid output format for select or ask requests."),
                 Arguments.of(
                         "turtle",
-                        "Error: turtle is not a valid output format for select or ask requests."),
+                        "error: turtle is not a valid output format for select or ask requests."),
                 Arguments.of(
                         "trig",
-                        "Error: trig is not a valid output format for select or ask requests."),
+                        "error: trig is not a valid output format for select or ask requests."),
                 Arguments.of(
                         "jsonld",
-                        "Error: jsonld is not a valid output format for select or ask requests."));
+                        "error: jsonld is not a valid output format for select or ask requests."));
     }
 
     @ParameterizedTest
@@ -173,7 +168,7 @@ class QueryTest {
                         "-q",
                         pathQueryBeatlesAlbum);
 
-        String actualOutput = err.toString().trim();
+        String actualOutput = err.toString().toLowerCase().trim();
 
         assertEquals(1, exitCode);
         assertEquals("", out.toString());
@@ -328,35 +323,35 @@ class QueryTest {
                 Arguments.of(
                         "rdfxml",
                         "beatlesTrue.rq",
-                        "Error: rdfxml is not a valid output format for select or ask requests."),
+                        "error: rdfxml is not a valid output format for select or ask requests."),
                 Arguments.of(
                         "rdfxml",
                         "beatlesFalse.rq",
-                        "Error: rdfxml is not a valid output format for select or ask requests."),
+                        "error: rdfxml is not a valid output format for select or ask requests."),
                 Arguments.of(
                         "turtle",
                         "beatlesTrue.rq",
-                        "Error: turtle is not a valid output format for select or ask requests."),
+                        "error: turtle is not a valid output format for select or ask requests."),
                 Arguments.of(
                         "turtle",
                         "beatlesFalse.rq",
-                        "Error: turtle is not a valid output format for select or ask requests."),
+                        "error: turtle is not a valid output format for select or ask requests."),
                 Arguments.of(
                         "trig",
                         "beatlesTrue.rq",
-                        "Error: trig is not a valid output format for select or ask requests."),
+                        "error: trig is not a valid output format for select or ask requests."),
                 Arguments.of(
                         "trig",
                         "beatlesFalse.rq",
-                        "Error: trig is not a valid output format for select or ask requests."),
+                        "error: trig is not a valid output format for select or ask requests."),
                 Arguments.of(
                         "jsonld",
                         "beatlesTrue.rq",
-                        "Error: jsonld is not a valid output format for select or ask requests."),
+                        "error: jsonld is not a valid output format for select or ask requests."),
                 Arguments.of(
                         "jsonld",
                         "beatlesFalse.rq",
-                        "Error: jsonld is not a valid output format for select or ask requests."));
+                        "error: jsonld is not a valid output format for select or ask requests."));
     }
 
     @ParameterizedTest
@@ -378,7 +373,7 @@ class QueryTest {
                         "-q",
                         pathQueryAsk);
 
-        String actualOutput = err.toString().trim();
+        String actualOutput = err.toString().toLowerCase().trim();
 
         assertEquals(1, exitCode);
         assertEquals("", out.toString());
@@ -718,24 +713,24 @@ class QueryTest {
         return Stream.of(
                 Arguments.of(
                         "xml",
-                        "Error: xml is not a valid output format for insert, delete, describe or"
-                            + " construct requests."),
+                        "error: xml is not a valid output format for insert, delete, describe or"
+                                + " construct requests."),
                 Arguments.of(
                         "json",
-                        "Error: json is not a valid output format for insert, delete, describe or"
-                            + " construct requests."),
+                        "error: json is not a valid output format for insert, delete, describe or"
+                                + " construct requests."),
                 Arguments.of(
                         "csv",
-                        "Error: csv is not a valid output format for insert, delete, describe or"
-                            + " construct requests."),
+                        "error: csv is not a valid output format for insert, delete, describe or"
+                                + " construct requests."),
                 Arguments.of(
                         "tsv",
-                        "Error: tsv is not a valid output format for insert, delete, describe or"
-                            + " construct requests."),
+                        "error: tsv is not a valid output format for insert, delete, describe or"
+                                + " construct requests."),
                 Arguments.of(
                         "markdown",
-                        "Error: markdown is not a valid output format for insert, delete, describe"
-                            + " or construct requests."));
+                        "error: markdown is not a valid output format for insert, delete, describe"
+                                + " or construct requests."));
     }
 
     @ParameterizedTest
@@ -758,7 +753,7 @@ class QueryTest {
                         "-q",
                         pathQueryBeatlesInsert);
 
-        String actualOutput = err.toString().trim();
+        String actualOutput = err.toString().toLowerCase().trim();
 
         assertEquals(1, exitCode);
         assertEquals("", out.toString());
@@ -825,7 +820,7 @@ class QueryTest {
                         "-q",
                         pathQueryBeatlesInsertwhere);
 
-        String actualOutput = err.toString().trim();
+        String actualOutput = err.toString().toLowerCase().trim();
 
         assertEquals(1, exitCode);
         assertEquals("", out.toString());
@@ -890,7 +885,7 @@ class QueryTest {
                         "-q",
                         pathQueryBeatlesDelete);
 
-        String actualOutput = err.toString().trim();
+        String actualOutput = err.toString().toLowerCase().trim();
 
         assertEquals(1, exitCode);
         assertEquals("", out.toString());
@@ -952,7 +947,7 @@ class QueryTest {
                         "-q",
                         pathQueryBeatlesDelete);
 
-        String actualOutput = err.toString().trim();
+        String actualOutput = err.toString().toLowerCase().trim();
 
         assertEquals(1, exitCode);
         assertEquals("", out.toString());
@@ -1017,7 +1012,7 @@ class QueryTest {
                         "-q",
                         pathQueryBeatlesConstruct);
 
-        String actualOutput = err.toString().trim();
+        String actualOutput = err.toString().toLowerCase().trim();
 
         assertEquals(1, exitCode);
         assertEquals("", out.toString());
@@ -1082,7 +1077,7 @@ class QueryTest {
                         "-q",
                         pathQueryBeatlesDescribe);
 
-        String actualOutput = err.toString().trim();
+        String actualOutput = err.toString().toLowerCase().trim();
 
         assertEquals(1, exitCode);
         assertEquals("", out.toString());
@@ -1151,7 +1146,7 @@ class QueryTest {
                         "SERRORELECT * WHERE { ?s ?p ?o }");
 
         assertEquals(1, exitCode);
-        assertTrue(err.toString().contains("Error when executing SPARQL query"));
+        assertTrue(err.toString().contains("Invalid SPARQL query"));
     }
 
     @Test

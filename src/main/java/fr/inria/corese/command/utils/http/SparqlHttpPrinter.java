@@ -47,7 +47,7 @@ public class SparqlHttpPrinter {
             String bodyContent,
             String contentType,
             List<Pair<String, String>> headers,
-            EnumRequestMethod method) {
+            HttpRequestMethod method) {
         err.println("╔════════════════════════════════╗");
         err.println("║        REQUEST DETAILS         ║");
         err.println("╚════════════════════════════════╝\n");
@@ -78,7 +78,7 @@ public class SparqlHttpPrinter {
      *
      * @param method The HTTP method used for the request.
      */
-    private void printMethod(EnumRequestMethod method) {
+    private void printMethod(HttpRequestMethod method) {
         if (method != null) {
             err.println("\n► METHOD");
             err.println("  " + method.name());

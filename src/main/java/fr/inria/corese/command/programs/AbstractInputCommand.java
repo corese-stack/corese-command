@@ -35,7 +35,9 @@ public abstract class AbstractInputCommand extends AbstractCommand {
     }
 
     /**
-     * Check if the input values are correct.
+     * Check if input values are valid.
+     *
+     * <p>input path cannot be same as output path.
      *
      * @throws IllegalArgumentException if input path is same as output path.
      */

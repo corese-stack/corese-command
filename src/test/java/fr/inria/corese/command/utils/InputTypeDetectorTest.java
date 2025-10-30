@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+/** Unit tests for InputTypeDetector. */
 class InputTypeDetectorTest {
 
     // Data provider for SPARQL detection tests

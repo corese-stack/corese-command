@@ -1,10 +1,8 @@
 package fr.inria.corese.command.programs;
 
-import fr.inria.corese.command.VersionProvider;
-import fr.inria.corese.command.utils.ConfigManager;
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseUtils;
 import fr.inria.corese.command.utils.exporter.AbstractExporter;
-import fr.inria.corese.core.util.Property;
+import fr.inria.corese.command.utils.wrapper.CoreseConfigManager;
+import fr.inria.corese.command.utils.wrapper.CoreseVersionProvider;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
@@ -12,7 +10,6 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Spec;
 
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 
 /**
@@ -20,7 +17,7 @@ import java.util.concurrent.Callable;
  *
  * <p>This class provides common options and methods for all commands.
  */
-@Command(versionProvider = VersionProvider.class)
+@Command(versionProvider = CoreseVersionProvider.class)
 public abstract class AbstractCommand implements Callable<Integer> {
 
     // ===== Constants =====
@@ -79,16 +76,13 @@ public abstract class AbstractCommand implements Callable<Integer> {
     @Override
     public Integer call() {
 
-        // Load configuration file
-        Optional<Path> configFilePathOpt = Optional.ofNullable(this.configFilePath);
-        if (configFilePathOpt.isPresent()) {
-            ConfigManager.loadFromFile(configFilePathOpt.get(), this.spec, this.verbose);
-        } else {
-            ConfigManager.loadDefaultConfig(this.spec, this.verbose);
-        }
+        // Load configuration
+        CoreseConfigManager configManager =
+                new CoreseConfigManager(this.spec, this.verbose, this.configFilePath);
+        configManager.loadConfig();
 
         // Set owl import
-        CoreseUtils.setProperty(Property.Value.OWL_AUTO_IMPORT, this.owlImport);
+        configManager.setOwlAutoImports(this.owlImport);
 
         return 0;
     }

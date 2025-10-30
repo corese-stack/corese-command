@@ -1,14 +1,15 @@
 package fr.inria.corese.command.utils.exporter.rdf;
 
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseRdfGraph;
 import fr.inria.corese.command.utils.exporter.AbstractExporter;
+import fr.inria.corese.command.utils.exporter.OutputFormat;
+import fr.inria.corese.command.utils.wrapper.CoreseRdfGraph;
 
 import picocli.CommandLine.Model.CommandSpec;
 
 import java.nio.file.Path;
 
-/** Utility class to canonicalize RDF graphs. */
-public class RdfDataCanonicalizer extends AbstractExporter {
+/** Utility class to export RDF graphs. */
+public class RdfExporter extends AbstractExporter {
 
     // ===== Constructor ===== //
 
@@ -20,28 +21,28 @@ public class RdfDataCanonicalizer extends AbstractExporter {
      * @param output Output file path. If not provided, the result will be written to standard
      *     output.
      */
-    public RdfDataCanonicalizer(CommandSpec spec, boolean verbose, Path output) {
+    public RdfExporter(CommandSpec spec, boolean verbose, Path output) {
         super(spec, verbose, output);
     }
 
     // ===== Public methods ===== //
 
     /**
-     * Canonicalize an RDF graph to a file or standard output.
+     * Export an RDF graph to a file or standard output.
      *
-     * @param format Serialization format.
      * @param graph RDF graph to export.
+     * @param format Serialization format.
      */
-    public void export(CoreseRdfGraph graph, EnumCanonicAlgo format) {
+    public void export(CoreseRdfGraph graph, OutputFormat format) {
 
         if (this.outputIsDefined) {
             Path path =
                     this.needToAppendExtension
-                            ? Path.of(this.output + "." + format.getExtention())
+                            ? Path.of(this.output + "." + format.getExtension())
                             : this.output;
-            exportToFile(path, format.getCoreseFormat(), format.toString(), graph);
+            exportToFile(path, format, graph);
         } else {
-            exportToStdout(format.getCoreseFormat(), format.toString(), graph);
+            exportToStdout(format, graph);
         }
     }
 }

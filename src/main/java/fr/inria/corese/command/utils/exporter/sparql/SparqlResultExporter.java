@@ -1,9 +1,9 @@
 package fr.inria.corese.command.utils.exporter.sparql;
 
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseMappingType;
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseRdfGraph;
 import fr.inria.corese.command.utils.exporter.AbstractExporter;
-import fr.inria.corese.core.kgram.core.Mappings;
+import fr.inria.corese.command.utils.exporter.OutputFormat;
+import fr.inria.corese.command.utils.wrapper.CoreseRdfGraph;
+import fr.inria.corese.command.utils.wrapper.CoreseSparqlResult;
 
 import picocli.CommandLine.Model.CommandSpec;
 
@@ -13,8 +13,8 @@ import java.nio.file.Path;
 public class SparqlResultExporter extends AbstractExporter {
 
     // Default output
-    private static final EnumResultFormat DEFAULT_GRAPH_OUTPUT = EnumResultFormat.TURTLE;
-    private static final EnumResultFormat DEFAULT_MAPPING_OUTPUT = EnumResultFormat.MARKDOWN;
+    private static final OutputFormat DEFAULT_GRAPH_OUTPUT = OutputFormat.TURTLE;
+    private static final OutputFormat DEFAULT_MAPPING_OUTPUT = OutputFormat.MARKDOWN;
 
     // ===== Constructor ===== //
 
@@ -37,15 +37,14 @@ public class SparqlResultExporter extends AbstractExporter {
      *
      * @param format Serialization format.
      * @param graph SPARQL graph to export.
-     * @param map SPARQL query result to export.
+     * @param sparqlResult SPARQL query result to export.
      */
-    public void export(Mappings map, CoreseRdfGraph graph, EnumResultFormat format) {
-        CoreseMappingType mappingType = new CoreseMappingType(map);
+    public void export(CoreseSparqlResult sparqlResult, CoreseRdfGraph graph, OutputFormat format) {
 
-        EnumResultFormat outputFormat = determineOutputFormat(format, mappingType);
-        validateFormatCompatibility(outputFormat, mappingType);
+        OutputFormat outputFormat = determineOutputFormat(format, sparqlResult);
+        validateFormatCompatibility(outputFormat, sparqlResult);
         prepareOutputPath(outputFormat);
-        performExport(map, graph, outputFormat, mappingType.isUpdate());
+        performExport(sparqlResult, graph, outputFormat, sparqlResult.isUpdate());
     }
 
     // ===== Private methods ===== //
@@ -57,8 +56,7 @@ public class SparqlResultExporter extends AbstractExporter {
      * @param mappingType The type of SPARQL query result.
      * @return The determined output format.
      */
-    private EnumResultFormat determineOutputFormat(
-            EnumResultFormat format, CoreseMappingType mappingType) {
+    private OutputFormat determineOutputFormat(OutputFormat format, CoreseSparqlResult mappingType) {
         if (format != null) {
             return format;
         }
@@ -76,8 +74,7 @@ public class SparqlResultExporter extends AbstractExporter {
      * @param mappingType The type of SPARQL query result.
      * @throws IllegalArgumentException if the format is incompatible.
      */
-    private void validateFormatCompatibility(
-            EnumResultFormat format, CoreseMappingType mappingType) {
+    private void validateFormatCompatibility(OutputFormat format, CoreseSparqlResult mappingType) {
         boolean isGraphQuery = mappingType.isUpdate() || mappingType.isConstruct();
         boolean isMappingQuery =
                 mappingType.isSelect() || mappingType.isAsk() || mappingType.isDescribe();
@@ -87,15 +84,15 @@ public class SparqlResultExporter extends AbstractExporter {
                     String.format(
                             "Error: %s is not a valid output format for insert, delete, describe or"
                                 + " construct requests. Use one of the following RDF formats: %s",
-                            format, EnumResultFormat.getRdfFormats()));
+                            format, OutputFormat.rdfAliases()));
         }
 
-        if (isMappingQuery && format.isRdfGraphFormat()) {
+        if (isMappingQuery && format.isRdfFormat()) {
             throw new IllegalArgumentException(
                     String.format(
                             "Error: %s is not a valid output format for select or ask requests. Use"
                                     + " one of the following mapping formats: %s",
-                            format, EnumResultFormat.getMappingFormats()));
+                            format, OutputFormat.sparqlAliases()));
         }
     }
 
@@ -104,28 +101,28 @@ public class SparqlResultExporter extends AbstractExporter {
      *
      * @param format The output format.
      */
-    private void prepareOutputPath(EnumResultFormat format) {
+    private void prepareOutputPath(OutputFormat format) {
         if (!this.outputIsDefined) {
-            this.output = Path.of(DEFAULT_OUTPUT + format.getExtention());
+            this.output = Path.of(DEFAULT_OUTPUT + format.getExtension());
         } else if (this.needToAppendExtension) {
-            this.output = Path.of(this.output + format.getExtention());
+            this.output = Path.of(this.output + format.getExtension());
         }
     }
 
     /**
      * Perform the actual export operation.
      *
-     * @param map The SPARQL query result mappings.
+     * @param sparqlResult The SPARQL query result mappings.
      * @param graph The SPARQL graph.
      * @param format The output format.
      * @param isUpdate Whether this is an update query.
      */
     private void performExport(
-            Mappings map, CoreseRdfGraph graph, EnumResultFormat format, boolean isUpdate) {
+            CoreseSparqlResult sparqlResult, CoreseRdfGraph graph, OutputFormat format, boolean isUpdate) {
         if (isUpdate) {
             exportGraph(graph, format);
         } else {
-            exportMappings(map, format);
+            exportMappings(sparqlResult, format);
         }
     }
 
@@ -135,25 +132,25 @@ public class SparqlResultExporter extends AbstractExporter {
      * @param graph The graph to export.
      * @param format The output format.
      */
-    private void exportGraph(CoreseRdfGraph graph, EnumResultFormat format) {
+    private void exportGraph(CoreseRdfGraph graph, OutputFormat format) {
         if (this.outputIsDefined) {
-            exportToFile(this.output, format.getCoreseFormat(), format.toString(), graph);
+            exportToFile(this.output, format, graph);
         } else {
-            exportToStdout(format.getCoreseFormat(), format.toString(), graph);
+            exportToStdout(format, graph);
         }
     }
 
     /**
      * Export mappings to file or stdout.
      *
-     * @param map The mappings to export.
+     * @param sparqlResult The mappings to export.
      * @param format The output format.
      */
-    private void exportMappings(Mappings map, EnumResultFormat format) {
+    private void exportMappings(CoreseSparqlResult sparqlResult, OutputFormat format) {
         if (this.outputIsDefined) {
-            exportToFile(this.output, format.getCoreseFormat(), format.toString(), map);
+            exportToFile(this.output, format, sparqlResult);
         } else {
-            exportToStdout(format.getCoreseFormat(), format.toString(), map);
+            exportToStdout(format, sparqlResult);
         }
     }
 }

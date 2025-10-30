@@ -1,14 +1,15 @@
-package fr.inria.corese.command.utils.exporter.rdf;
+package fr.inria.corese.command.utils.exporter.canonical;
 
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseRdfGraph;
 import fr.inria.corese.command.utils.exporter.AbstractExporter;
+import fr.inria.corese.command.utils.exporter.OutputFormat;
+import fr.inria.corese.command.utils.wrapper.CoreseRdfGraph;
 
 import picocli.CommandLine.Model.CommandSpec;
 
 import java.nio.file.Path;
 
-/** Utility class to export RDF graphs. */
-public class RdfDataExporter extends AbstractExporter {
+/** Utility class to canonicalize RDF graphs. */
+public class CanonicalExporter extends AbstractExporter {
 
     // ===== Constructor ===== //
 
@@ -20,28 +21,28 @@ public class RdfDataExporter extends AbstractExporter {
      * @param output Output file path. If not provided, the result will be written to standard
      *     output.
      */
-    public RdfDataExporter(CommandSpec spec, boolean verbose, Path output) {
+    public CanonicalExporter(CommandSpec spec, boolean verbose, Path output) {
         super(spec, verbose, output);
     }
 
     // ===== Public methods ===== //
 
     /**
-     * Export an RDF graph to a file or standard output.
+     * Canonicalize an RDF graph to a file or standard output.
      *
-     * @param graph RDF graph to export.
      * @param format Serialization format.
+     * @param graph RDF graph to export.
      */
-    public void export(CoreseRdfGraph graph, EnumRdfOutputFormat format) {
+    public void export(CoreseRdfGraph graph, OutputFormat format) {
 
         if (this.outputIsDefined) {
             Path path =
                     this.needToAppendExtension
-                            ? Path.of(this.output + "." + format.getExtention())
+                            ? Path.of(this.output + "." + format.getExtension())
                             : this.output;
-            exportToFile(path, format.getCoreseFormat(), format.toString(), graph);
+            exportToFile(path, format, graph);
         } else {
-            exportToStdout(format.getCoreseFormat(), format.toString(), graph);
+            exportToStdout(format, graph);
         }
     }
 }

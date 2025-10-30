@@ -1,9 +1,7 @@
 package fr.inria.corese.command.utils.http;
 
-import fr.inria.corese.command.VersionProvider;
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseSparqlQuery;
-import fr.inria.corese.core.sparql.exceptions.EngineException;
-
+import fr.inria.corese.command.exceptions.HttpClientException;
+import fr.inria.corese.command.exceptions.SparqlExecutionException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -14,6 +12,8 @@ import jakarta.ws.rs.core.Response;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import fr.inria.corese.command.utils.wrapper.CoreseSparqlQuery;
+import fr.inria.corese.command.utils.wrapper.CoreseVersionProvider;
 import picocli.CommandLine.Model.CommandSpec;
 
 import java.io.UnsupportedEncodingException;
@@ -28,13 +28,13 @@ public class SparqlHttpClient {
     private final SparqlHttpPrinter printer;
 
     private final String endpointUrl;
-    private EnumRequestMethod requestMethod = EnumRequestMethod.GET;
+    private HttpRequestMethod requestMethod = HttpRequestMethod.GET;
     private boolean requestMethodIsDefinedByUser = false;
     private List<Pair<String, String>> headers = new ArrayList<>();
 
     private boolean verbose = false;
 
-    private static final String USERAGENT = "Corese-Command/" + VersionProvider.getCommandVersion();
+    private static final String USERAGENT = "Corese-Command/" + CoreseVersionProvider.getCommandVersion();
 
     // ===== Constructor ===== //
 
@@ -42,11 +42,12 @@ public class SparqlHttpClient {
      * Constructor.
      *
      * @param endpointUrl URL of the SPARQL endpoint to send the request to.
+     * @throws SparqlExecutionException if the endpoint URL is null or empty
      */
     public SparqlHttpClient(CommandSpec spec, String endpointUrl) {
         this.printer = new SparqlHttpPrinter(spec);
         if (endpointUrl == null || endpointUrl.isEmpty()) {
-            throw new IllegalArgumentException("Endpoint URL must be specified");
+            throw new SparqlExecutionException("Endpoint URL must be specified");
         }
         this.endpointUrl = endpointUrl;
     }
@@ -58,7 +59,7 @@ public class SparqlHttpClient {
      *
      * @param requestMethod the request method
      */
-    public void setRequestMethod(EnumRequestMethod requestMethod) {
+    public void setRequestMethod(HttpRequestMethod requestMethod) {
         if (requestMethod != null) {
             this.requestMethod = requestMethod;
             this.requestMethodIsDefinedByUser = true;
@@ -104,7 +105,6 @@ public class SparqlHttpClient {
      *
      * @param query SPARQL query to send
      * @return the response from the endpoint
-     * @throws EngineException if an error occurs while validating the query
      * @throws IllegalArgumentException if the query or endpoint configuration is invalid
      * @throws IllegalStateException if the HTTP response status is not successful
      */
@@ -120,9 +120,8 @@ public class SparqlHttpClient {
      * @param namedGraphUris named graph URIs to use
      * @param ignoreQueryValidation true to ignore query validation, false otherwise
      * @return the response from the endpoint
-     * @throws EngineException if an error occurs while validating the query
-     * @throws IllegalArgumentException if the query or endpoint configuration is invalid
-     * @throws IllegalStateException if the HTTP response status is not successful
+     * @throws SparqlExecutionException if the query or endpoint configuration is invalid
+     * @throws HttpClientException if the HTTP response status is not successful
      */
     public String sendRequest(
             String query,
@@ -164,7 +163,7 @@ public class SparqlHttpClient {
 
         // Check if response is null
         if (response == null) {
-            throw new IllegalStateException("Failed to execute request: response is null");
+            throw new HttpClientException("Failed to execute request: response is null", 0);
         }
 
         // Print the response if verbose mode is enabled
@@ -188,13 +187,14 @@ public class SparqlHttpClient {
      * @param queryString the query to validate
      * @param defaultGraphUris default graph URIs to use
      * @param namedGraphUris named graph URIs to use
+     * @throws SparqlExecutionException if the query is invalid or violates SPARQL specification
      */
     protected void validateQuery(
             String queryString, List<String> defaultGraphUris, List<String> namedGraphUris) {
 
         // Check if the query is defined
         if (queryString == null || queryString.isEmpty()) {
-            throw new IllegalArgumentException("SPARQL query must be specified");
+            throw new SparqlExecutionException("SPARQL query must be specified");
         }
 
         // Try to build a SPARQL query from the queryString
@@ -202,15 +202,15 @@ public class SparqlHttpClient {
         CoreseSparqlQuery query = null;
         try {
             query = new CoreseSparqlQuery(queryString);
-        } catch (EngineException e) {
-            throw new IllegalArgumentException("Invalid SPARQL query", e);
+        } catch (SparqlExecutionException e) {
+            throw new SparqlExecutionException("Invalid SPARQL query", e);
         }
 
         if (!this.requestMethodIsDefinedByUser) {
             // Check if the query is an update query.
-            if (query.isSPARQLUpdate()) {
+            if (query.isSparqlUpdate()) {
                 // If it is an update query, set the request method to POST_Encoded.
-                this.requestMethod = EnumRequestMethod.POST_URLENCODED;
+                this.requestMethod = HttpRequestMethod.POST_URLENCODED;
             } else {
                 // If the query is not an update query, set the request method to GET.
                 // No need to set it here as GET is already the default value.
@@ -220,8 +220,8 @@ public class SparqlHttpClient {
         // Check if the query is an update query and the method is GET
         // which is not allowed by the SPARQL specification
         // (see https://www.w3.org/TR/sparql11-protocol/#update-operation)
-        if (this.requestMethod == EnumRequestMethod.GET && query.isSPARQLUpdate()) {
-            throw new IllegalArgumentException(
+        if (this.requestMethod == HttpRequestMethod.GET && query.isSparqlUpdate()) {
+            throw new SparqlExecutionException(
                     "SPARQL query is an update query, but GET method is used. Please use a POST"
                             + " method instead.");
         }
@@ -231,7 +231,7 @@ public class SparqlHttpClient {
         // (see https://www.w3.org/TR/sparql11-protocol/#query-operation)
         if (query.containsFromClause()
                 && (!defaultGraphUris.isEmpty() || !namedGraphUris.isEmpty())) {
-            throw new IllegalArgumentException(
+            throw new SparqlExecutionException(
                     "SPARQL query contains FROM clause, but default and named graph URIs are"
                         + " specified. It is not allowed to specify both FROM clause and"
                         + " default/named graph URIs. Please remove FROM clause from the query or"
@@ -244,7 +244,7 @@ public class SparqlHttpClient {
         // (see https://www.w3.org/TR/sparql11-protocol/#update-operation)
         if (query.containsWithClause()
                 && (!defaultGraphUris.isEmpty() || !namedGraphUris.isEmpty())) {
-            throw new IllegalArgumentException(
+            throw new SparqlExecutionException(
                     "SPARQL update query contains USING, USING NAMED, or WITH clause and the"
                         + " using-graph-uri/using-named-graph-uri parameters are also specified. It"
                         + " is not allowed to specify both USING, USING NAMED, or WITH clause and"
@@ -275,13 +275,13 @@ public class SparqlHttpClient {
         WebTarget webTarget = client.target(endpoint);
 
         // Add the query parameter
-        if (this.requestMethod == EnumRequestMethod.GET) {
+        if (this.requestMethod == HttpRequestMethod.GET) {
             webTarget = webTarget.queryParam("query", this.encode(query));
         }
 
         // Add graph URIs
-        if (this.requestMethod == EnumRequestMethod.GET
-                || this.requestMethod == EnumRequestMethod.POST_DIRECT) {
+        if (this.requestMethod == HttpRequestMethod.GET
+                || this.requestMethod == HttpRequestMethod.POST_DIRECT) {
             for (String defaultGraphUri : defaultGraphUris) {
                 webTarget = webTarget.queryParam("default-graph-uri", this.encode(defaultGraphUri));
             }
@@ -306,7 +306,7 @@ public class SparqlHttpClient {
 
         StringBuilder bodyContent = new StringBuilder();
 
-        if (this.requestMethod == EnumRequestMethod.POST_URLENCODED) {
+        if (this.requestMethod == HttpRequestMethod.POST_URLENCODED) {
             // Add the query parameter
             bodyContent.append("query=").append(this.encode(query));
 
@@ -317,7 +317,7 @@ public class SparqlHttpClient {
             for (String namedGraphUri : namedGraphUris) {
                 bodyContent.append("&named-graph-uri=").append(this.encode(namedGraphUri));
             }
-        } else if (this.requestMethod == EnumRequestMethod.POST_DIRECT) {
+        } else if (this.requestMethod == HttpRequestMethod.POST_DIRECT) {
             // Add the query parameter
             bodyContent.append(query);
         }
@@ -344,9 +344,9 @@ public class SparqlHttpClient {
 
         // Add request content types
         String contentType = null;
-        if (this.requestMethod == EnumRequestMethod.POST_URLENCODED) {
+        if (this.requestMethod == HttpRequestMethod.POST_URLENCODED) {
             contentType = MediaType.APPLICATION_FORM_URLENCODED;
-        } else if (this.requestMethod == EnumRequestMethod.POST_DIRECT) {
+        } else if (this.requestMethod == HttpRequestMethod.POST_DIRECT) {
             contentType = "application/sparql-query";
         }
 
@@ -356,11 +356,11 @@ public class SparqlHttpClient {
         }
 
         // Send the request
-        if (this.requestMethod == EnumRequestMethod.GET) {
+        if (this.requestMethod == HttpRequestMethod.GET) {
             response = builder.get();
-        } else if (this.requestMethod == EnumRequestMethod.POST_URLENCODED) {
+        } else if (this.requestMethod == HttpRequestMethod.POST_URLENCODED) {
             response = builder.post(Entity.entity(bodyContent, contentType));
-        } else if (this.requestMethod == EnumRequestMethod.POST_DIRECT) {
+        } else if (this.requestMethod == HttpRequestMethod.POST_DIRECT) {
             response = builder.post(Entity.entity(bodyContent, contentType));
         }
 
@@ -389,7 +389,7 @@ public class SparqlHttpClient {
      * Validates the response. Throws an exception if the HTTP status code is not 2xx.
      *
      * @param response the response to validate
-     * @throws IllegalStateException if the response status is not successful
+     * @throws HttpClientException if the response status is not successful
      */
     private void validateResponse(Response response) {
         int status = response.getStatus();
@@ -398,7 +398,9 @@ public class SparqlHttpClient {
             String body = response.readEntity(String.class);
             String reason = response.getStatusInfo().getReasonPhrase();
 
-            throw new IllegalStateException("HTTP " + status + " " + reason + "\n" + "Response body:\n" + body);
+            throw new HttpClientException(
+                    "HTTP " + status + " " + reason + "\n" + "Response body:\n" + body,
+                    status);
         }
     }
 }

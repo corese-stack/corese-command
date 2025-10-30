@@ -2,7 +2,8 @@ package fr.inria.corese.command.programs;
 
 import com.github.jsonldjava.shaded.com.google.common.io.Files;
 
-import fr.inria.corese.command.utils.http.EnumRequestMethod;
+import fr.inria.corese.command.exceptions.CoreseCommandException;
+import fr.inria.corese.command.utils.http.HttpRequestMethod;
 import fr.inria.corese.command.utils.http.SparqlHttpClient;
 import fr.inria.corese.command.utils.loader.sparql.SparqlQueryLoader;
 
@@ -52,7 +53,7 @@ public class QueryEndpoint extends AbstractCommand {
             description =
                     "Specifies the HTTP request method to use. Possible values are: :@|fg(magenta)"
                             + " ${COMPLETION-CANDIDATES}|@.")
-    private EnumRequestMethod requestMethod;
+    private HttpRequestMethod requestMethod;
 
     @Option(
             names = {"-d", "--default-graph"},
@@ -105,8 +106,14 @@ public class QueryEndpoint extends AbstractCommand {
             // Export result
             this.exportResult(res);
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             this.spec.commandLine().getErr().println("Error: " + e.getMessage());
+            return AbstractCommand.ERROR_EXIT_CODE_ERROR;
+        } catch (CoreseCommandException e) {
+            this.spec.commandLine().getErr().println("Error: " + e.getMessage());
+            if (this.verbose && e.getCause() != null) {
+                e.printStackTrace(this.spec.commandLine().getErr());
+            }
             return AbstractCommand.ERROR_EXIT_CODE_ERROR;
         }
 
@@ -129,9 +136,9 @@ public class QueryEndpoint extends AbstractCommand {
      * Send the SPARQL query to the endpoint.
      *
      * @return The response from the endpoint.
-     * @throws Exception If an error occurs.
+     * @throws IOException If an I/O error occurs.
      */
-    public String sendRequest() throws Exception {
+    public String sendRequest() throws IOException {
 
         SparqlHttpClient client = new SparqlHttpClient(this.spec, this.endpointUrl);
         this.parseHeader(client);

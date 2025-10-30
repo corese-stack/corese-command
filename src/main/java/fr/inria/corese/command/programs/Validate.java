@@ -1,11 +1,17 @@
 package fr.inria.corese.command.programs;
 
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseRdfGraph;
-import fr.inria.corese.command.utils.coresecorowrapper.CoreseShacl;
-import fr.inria.corese.command.utils.exporter.rdf.EnumRdfOutputFormat;
-import fr.inria.corese.command.utils.exporter.rdf.RdfDataExporter;
-import fr.inria.corese.command.utils.loader.rdf.EnumRdfInputFormat;
-import fr.inria.corese.core.sparql.exceptions.EngineException;
+import fr.inria.corese.command.exceptions.CoreseCommandException;
+import fr.inria.corese.command.exceptions.ValidationException;
+import fr.inria.corese.command.utils.exporter.OutputFormat;
+import fr.inria.corese.command.utils.exporter.rdf.RdfExporter;
+import fr.inria.corese.command.utils.exporter.rdf.RdfOutputFormatCandidates;
+import fr.inria.corese.command.utils.exporter.rdf.RdfOutputFormatConverter;
+import fr.inria.corese.command.utils.loader.rdf.RdfLoader;
+import fr.inria.corese.command.utils.loader.rdf.RdfInputFormat;
+import fr.inria.corese.command.utils.loader.rdf.RdfInputFormatCandidates;
+import fr.inria.corese.command.utils.loader.rdf.RdfInputFormatConverter;
+import fr.inria.corese.command.utils.wrapper.CoreseRdfGraph;
+import fr.inria.corese.command.utils.wrapper.CoreseShaclValidator;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -20,15 +26,19 @@ public class Validate extends AbstractInputCommand {
             names = {"-f", "-if", "--input-format"},
             description =
                     "Specifies the RDF serialization format of the input file. Possible values are:"
-                            + " :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.")
-    private EnumRdfInputFormat inputFormat = null;
+                            + " :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.",
+            converter = RdfInputFormatConverter.class,
+            completionCandidates = RdfInputFormatCandidates.class)
+    private RdfInputFormat inputFormat = null;
 
     @Option(
             names = {"-a", "-sf", "--shapes-format"},
             description =
                     "Specifies the serialization format of the SHACL shapes. Possible values are:"
-                            + " :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.)")
-    private EnumRdfInputFormat reportFormat = null;
+                            + " :@|fg(magenta) ${COMPLETION-CANDIDATES}|@.",
+            converter = RdfInputFormatConverter.class,
+            completionCandidates = RdfInputFormatCandidates.class)
+    private RdfInputFormat reportFormat = null;
 
     @Option(
             names = {"-s", "--shapes"},
@@ -43,8 +53,10 @@ public class Validate extends AbstractInputCommand {
                     "Specifies the serialization format of the validation report. Possible values"
                             + " are: :@|fg(magenta) ${COMPLETION-CANDIDATES}|@. Default value:"
                             + " ${DEFAULT-VALUE}.",
-            defaultValue = "TURTLE")
-    private EnumRdfOutputFormat outputFormat = null;
+            defaultValue = "TURTLE",
+            converter = RdfOutputFormatConverter.class,
+            completionCandidates = RdfOutputFormatCandidates.class)
+    private OutputFormat outputFormat = null;
 
     @Override
     public Integer call() {
@@ -52,29 +64,36 @@ public class Validate extends AbstractInputCommand {
         super.call();
 
         try {
-            // Load input file(s)
-            CoreseRdfGraph dataGraph = new CoreseRdfGraph(this.spec, this.verbose);
-            dataGraph.load(this.inputsRdfData, this.inputFormat, this.recursive);
+            // Create data graph
+            CoreseRdfGraph dataGraph = new CoreseRdfGraph();
+
+            // Load data file(s)
+            RdfLoader dataLoader = new RdfLoader(this.spec, this.verbose, dataGraph);
+            dataLoader.load(this.inputsRdfData, this.inputFormat, this.recursive);
 
             // Load shapes file(s)
-            CoreseRdfGraph shapesGraph = new CoreseRdfGraph(this.spec, this.verbose);
-            shapesGraph.load(this.shaclShapes, this.reportFormat, this.recursive);
+            CoreseRdfGraph shapesGraph = new CoreseRdfGraph();
+            RdfLoader shapesLoader = new RdfLoader(this.spec, this.verbose, shapesGraph);
+            shapesLoader.load(this.shaclShapes, this.reportFormat, false);
 
             // Check if shapes graph contains SHACL shapes
-            if (!shapesGraph.containsShaclShapes()) {
-                throw new IllegalArgumentException("No SHACL shapes found in the input file(s).");
+            if (!CoreseShaclValidator.containsShaclShapes(shapesGraph)) {
+                throw new ValidationException("No SHACL shapes found in the input file(s).");
             }
 
             // Evaluation of SHACL shapes
             CoreseRdfGraph reportGraph = this.evaluateSHACLShapes(dataGraph, shapesGraph);
 
             // Export the report graph
-            RdfDataExporter rdfExporter = new RdfDataExporter(this.spec, this.verbose, this.output);
+            RdfExporter rdfExporter = new RdfExporter(this.spec, this.verbose, this.output);
             rdfExporter.export(reportGraph, this.outputFormat);
 
             return AbstractCommand.ERROR_EXIT_CODE_SUCCESS;
-        } catch (Exception e) {
+        } catch (CoreseCommandException e) {
             this.spec.commandLine().getErr().println("Error: " + e.getMessage());
+            if (this.verbose && e.getCause() != null) {
+                e.printStackTrace(this.spec.commandLine().getErr());
+            }
             return AbstractCommand.ERROR_EXIT_CODE_ERROR;
         }
     }
@@ -85,20 +104,20 @@ public class Validate extends AbstractInputCommand {
      * @param dataGraph The data graph.
      * @param shapesGraph The shapes graph.
      * @return The report graph.
-     * @throws Exception If an error occurs while evaluating SHACL shapes.
+     * @throws ValidationException If an error occurs while evaluating SHACL shapes.
      */
-    private CoreseRdfGraph evaluateSHACLShapes(CoreseRdfGraph dataGraph, CoreseRdfGraph shapesGraph)
-            throws EngineException {
+    private CoreseRdfGraph evaluateSHACLShapes(CoreseRdfGraph dataGraph, CoreseRdfGraph shapesGraph) {
 
         if (this.verbose) {
             this.spec.commandLine().getErr().println("Evaluating SHACL shapes...");
         }
 
-        CoreseShacl shacl = new CoreseShacl(dataGraph.getGraph(), shapesGraph.getGraph());
+        CoreseShaclValidator shacl = new CoreseShaclValidator(dataGraph);
         try {
-            return new CoreseRdfGraph(shacl.eval());
-        } catch (EngineException e) {
-            throw new EngineException("Error while evaluating SHACL shapes: " + e.getMessage(), e);
+            return shacl.eval(shapesGraph);
+        } catch (Exception e) {
+            throw new ValidationException(
+                    "Error while evaluating SHACL shapes: " + e.getMessage(), e);
         }
     }
 }
